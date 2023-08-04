@@ -9,5 +9,6 @@
         public User User { get; set; }
         public ICollection<User_Warn> warnlist { get; set; }
         public ICollection<User_UnWarn> unwarnlist { get; set; }
+        public bool Active { get; set; }
     }
 }

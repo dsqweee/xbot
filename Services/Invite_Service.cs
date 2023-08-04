@@ -5,10 +5,18 @@ namespace XBOT.Services
 {
     public class Invite_Service
     {
-        public static async Task InviteScanning(IReadOnlyCollection<RestInviteMetadata> Invites)
+        private readonly DiscordSocketClient _client;
+
+        public Invite_Service(DiscordSocketClient client)
+        {
+            _client = client;
+        }
+
+        public async Task InviteScanning()
         {
             using (var db = new db())
             {
+                var Invites = await _client.Guilds.First().GetInvitesAsync();
                 foreach (var Invite in Invites)
                 {
                     var InviteDB = db.DiscordInvite.FirstOrDefault(x => x.InviteKey == Invite.Code);
@@ -39,7 +47,7 @@ namespace XBOT.Services
         //        }
         //    }
         //}
-        public static async Task InviteCreate(SocketInvite Invite)
+        public async Task InviteCreate(SocketInvite Invite)
         {
             using (db _db = new())
             {
@@ -49,11 +57,12 @@ namespace XBOT.Services
                 await _db.SaveChangesAsync();
             }
         }
-        public static async Task<RestInviteMetadata> JoinedUserInviteAttach(IReadOnlyCollection<RestInviteMetadata> Invites,SocketGuildUser JoinedUser)
+        public async Task<RestInviteMetadata> JoinedUserInviteAttach(SocketGuildUser JoinedUser)
         {
             using (var db = new db())
             {
                 RestInviteMetadata ReadedInvite = null;
+                var Invites = await _client.Guilds.First().GetInvitesAsync();
                 foreach (var InviteDs in Invites)
                 {
                     var InviteDb = db.DiscordInvite.FirstOrDefault(x => x.InviteKey == InviteDs.Code);

@@ -16,6 +16,10 @@ namespace XBOT.DataBase
         public DbSet<DiscordInvite_ReferralLink> ReferralLinks { get; set; }
         public DbSet<DiscordInvite_ReferralRole> ReferralRole { get; set; }
 
+        public DbSet<GiveAways> GiveAways { get; set; }
+
+        public DbSet<EmojiGift> EmojiGift { get; set; }
+        public DbSet<EmojiGift_emojiadded> EmojiGift_emojiadded { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<User_Warn> User_Warn { get; set; }
         public DbSet<User_UnWarn> User_UnWarn { get; set; }

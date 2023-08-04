@@ -1,6 +1,4 @@
-﻿
-
-namespace XBOT.Modules.Command
+﻿namespace XBOT.Modules.Command
 {
     public class RolePlayModule : ModuleBase<SocketCommandContext>
     {

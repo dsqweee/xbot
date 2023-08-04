@@ -3,7 +3,8 @@ using XBOT.Services;
 using XBOT.Services.Attribute;
 using XBOT.DataBase.Models.Roles_data;
 using System.Text;
-using XBOT.DataBase;
+using Microsoft.EntityFrameworkCore;
+using Discord;
 
 namespace XBOT.Modules.Command
 {
@@ -16,6 +17,7 @@ namespace XBOT.Modules.Command
         {
             _componentEventService = componentEventService;
         }
+
 
         [Aliases, Commands, Usage, Descriptions]
         public async Task usertop()
@@ -231,6 +233,8 @@ namespace XBOT.Modules.Command
 
                 emb.AddField("Coins", $"Количество: {UserDataBase.money}\nКомбо: {UserDataBase.streak}\n{DailyCoin}", true);
 
+                var Settings = _db.Settings.FirstOrDefault();
+                emb.AddField("Реферальная система", $"{Settings.Prefix}refferal", true);
 
                 var TimePublic = ConvertTime(UserDataBase.voiceActive_public);
                 var TimePrivate = ConvertTime(UserDataBase.voiceActive_private);
@@ -250,6 +254,105 @@ namespace XBOT.Modules.Command
                 await Context.Channel.SendMessageAsync("", false, emb.Build());
             }
         }
+
+        [Aliases, Commands, Usage, Descriptions]
+        public async Task refferal()
+        {
+            using (db _db = new())
+            {
+                var emb = new EmbedBuilder()
+                    .WithColor(BotSettings.DiscordColor)
+                    .WithAuthor($"Реферальная система");
+                var userDs = Context.User as SocketGuildUser;
+                var userDb = _db.User.Include(x => x.MyInvites).ThenInclude(x => x.ReferralLinks).ThenInclude(x => x.User).FirstOrDefault(x => x.Id == userDs.Id);
+                var UserValue = Refferal_Service.GetRefferalValue(userDb);
+
+                var RefferalRoles = _db.ReferralRole.OrderBy(x=>x.UserJoinedValue).ToList();
+
+                var ThisRole = RefferalRoles.FirstOrDefault(x => UserValue.CountRef >= x.UserJoinedValue && UserValue.WriteInWeek >= x.UserWriteInWeekValue && UserValue.Level5up >= x.UserUp5LevelValue);
+                var indexThisRole = RefferalRoles.IndexOf(ThisRole);
+                var NextRole = RefferalRoles[indexThisRole + 1];
+
+                emb.WithDescription("Это реферальная система друзей. Приглашая на сервер друга, вы получаете за него ачько и дополнительные плюшки.\n" +
+                                    "Чем больше вы пригласите активных друзей, тем лучше. Мы надеемся что вы не будете тревожить незнакомых людей, ведь это не круто!\n\n" +
+                                    $"Ваша текущая роль: <@&{ThisRole.Id}> -> <@&{NextRole.Id}>\n" +
+                                    $"Приведенных клиентов: {UserValue.CountRef}/{ThisRole.UserJoinedValue}\n" +
+                                    $"Писали в течении недели: {UserValue.WriteInWeek}/{ThisRole.UserWriteInWeekValue}\n" +
+                                    $"Достигли 5 уровня: {UserValue.Level5up}/{ThisRole.UserUp5LevelValue}")
+                    .WithFooter("Роль может выдаваться в течении часа.");
+
+                await Context.Channel.SendMessageAsync("", false, emb.Build());
+            }
+        }
+
+        //[Aliases, Commands, Usage, Descriptions]
+        //[ActivityPermission]
+        //public async Task warnappilation(ulong warnid = 0)
+        //{
+        //    using (db _db = new())
+        //    {
+        //        var emb = new EmbedBuilder()
+        //            .WithColor(BotSettings.DiscordColor)
+        //            .WithAuthor($"Аппеляция на нарушение");
+                    
+
+        //        if(warnid == 0)
+        //        {
+        //            emb.WithDescription("");
+        //            var user = _db.User.Include(x => x.User_Warn).ThenInclude(x => x.UnWarn).FirstOrDefault(x => x.Id == Context.User.Id);
+        //            var OldDate = DateTime.Now.AddDays(-3);
+        //            var ActiveWarns = user.User_Warn.Where(x => x.TimeSetWarn >= OldDate);
+        //            if (ActiveWarns.Any())
+        //            {
+        //                foreach (var warn in ActiveWarns)
+        //                {
+        //                    emb.Description += $"{warn.Id}.<@{warn.Admin_Id}> [{warn.TimeSetWarn:dd.MM HH:mm}] Причина: {warn.Reason}\n";
+        //                }
+        //                var Settings = _db.Settings.FirstOrDefault();
+        //                emb.WithFooter($"Чтоб подать аппеляция - {Settings.Prefix}warnappilation [number]");
+        //            }
+        //            else
+        //                emb.WithDescription("Нарушений за 3 дня не найдено!")
+        //                   .WithColor(BotSettings.DiscordColorError);
+                    
+        //        }
+        //        else
+        //        {
+        //            var warninfo = _db.User_Warn.Include(x => x.User).FirstOrDefault(x=>x.Id == warnid);
+        //            if (warninfo is null)
+        //                emb.WithDescription($"Нарушение под номером [{warnid}] не найдено.").WithColor(BotSettings.DiscordColorError);
+        //            else
+        //            {
+        //                var Settings = _db.Settings.Include(x=>x.AdminRole).FirstOrDefault();
+        //                List<SocketGuildUser> users = new();
+        //                foreach (var user_perm in _db.User_Permission)
+        //                {
+        //                    var User = Context.Guild.GetUser(user_perm.User_Id);
+        //                    if(User != null && User.Roles.Any(x=>x.Id == Settings.AdminRole.Id))
+        //                    {
+        //                        users.Add(User);
+        //                    }
+        //                }
+
+        //                var PinAdmin = users.ElementAt(new Random().Next(0, users.Count));
+
+        //                var Appilation = new User_UnWarn {Admin_Id = PinAdmin.Id, Warn_Id = warnid,ReviewAdd = DateTime.Now,Status = User_UnWarn.WarnStatus.review};
+        //                _db.User_UnWarn.Add(Appilation);
+        //                await _db.SaveChangesAsync();
+                        
+        //                emb.WithDescription($"Пользователь: {Context.User.Mention}\n" +
+        //                                    $"Id: {Context.User.Id}\n" +
+        //                                    $"Модератор/администратор: <@{warninfo.Admin_Id}>\n" +
+        //                                    $"Чтобы принять аппиляцию, перейдите в {Settings.Prefix}appilationlist");
+        //                await PinAdmin.SendMessageAsync("",false,emb.Build());
+        //                emb.WithDescription("Вы успешно подали аппиляцию, ожидайте ответа админа.");
+                        
+        //            }
+        //        }
+        //        await Context.Channel.SendMessageAsync("",false, emb.Build());
+        //    }
+        //}
+
 
         [Aliases, Commands, Usage, Descriptions]
         [ActivityPermission]
@@ -492,7 +595,7 @@ namespace XBOT.Modules.Command
 
                 var ContextUser = await _db.GetUser(Context.User.Id);
                 emb.WithAuthor($"{Context.User} 💞 {user}")
-                   .WithDescription($"Пользователь {Context.User.Mention} отправил заявку на помолвку {user.Mention}.\n{user.Nickname}, хочешь пожениться?")
+                   .WithDescription($"{Context.User.Mention} отправил заявку на помолвку {user.Mention}.\n\n{user.Username}, хочешь пожениться?")
                    .WithFooter("Заявка активна 60 секунд.")
                    .WithThumbnailUrl(user.GetAvatarUrl());
 
@@ -597,6 +700,28 @@ namespace XBOT.Modules.Command
         }
 
         [Aliases, Commands, Usage, Descriptions]
+        public async Task refferalrole()
+        {
+            using (db _db = new())
+            {
+                var RefRoles = _db.ReferralRole.OrderBy(u => u.UserJoinedValue);
+
+                var embed = new EmbedBuilder()
+                    .WithAuthor($"🔨 Реферальные роли {(RefRoles.Any() ? "" : "отсутствуют ⚠️")}")
+                    .WithColor(BotSettings.DiscordColor);
+
+                foreach (var Role in RefRoles)
+                    embed.Description += $"<@&{Role.RoleId}> - [{Role.UserJoinedValue} приглашенных] [{Role.UserWriteInWeekValue} писали в течении недели] [{Role.UserUp5LevelValue} получили 5lvl]\n";
+
+                var prefix = _db.Settings.FirstOrDefault().Prefix;
+                RoleForOwnerMessage(RoleType.Refferal, prefix, ref embed);
+
+                await Context.Channel.SendMessageAsync("", false, embed.Build());
+            }
+        }
+
+
+        [Aliases, Commands, Usage, Descriptions]
         public async Task buyrole()
         {
             using (db _db = new())
@@ -655,7 +780,8 @@ namespace XBOT.Modules.Command
         {
             Level,
             Reputation,
-            Buy
+            Buy,
+            Refferal
         }
 
         private void RoleForOwnerMessage(RoleType Type, string prefix, ref EmbedBuilder emb)
@@ -683,10 +809,110 @@ namespace XBOT.Modules.Command
                     commandtype = "bra";
                     valuetype = "price";
                     break;
+                case RoleType.Refferal:
+                    commandtype = "rfa";
+                    valuetype = "values";
+                    break;
             }
 
             emb.AddField("Добавить", $"{prefix}{commandtype} [ROLE] [{valuetype}]");
             emb.AddField("Удалить", $"{prefix}{commandtype} [ROLE]");
         }
+
+
+
+
+        //[Aliases, Commands, Usage, Descriptions]
+        //public async Task emojigiftshop(ulong number = 0, ulong price = 0)
+        //{
+        //    using (var _db = new db())
+        //    {
+        //        var emb = new EmbedBuilder()
+        //            .WithColor(BotSettings.DiscordColor)
+        //            .WithAuthor("Магазин эмодзи");
+
+        //        if(number == 0 && price == 0)
+        //        {
+        //            var gifts = _db.EmojiGift.Include(x => x.User).Include(x => x.Emoji).Where(x => x.PriceTrade != 0).ToList();
+        //            var giftsordered = gifts.OrderBy(x => x.Emoji.Factor).ThenBy(x => x.PriceTrade).ToList();
+        //            if (giftsordered.Count == 0)
+        //            {
+        //                var prefix = _db.Settings.FirstOrDefault().Prefix;
+        //                emb.WithDescription("Эмодзи на продажу еще не выставлены!").WithFooter($"Выставить - {prefix}emojigiftshop [number] [price]");
+        //                await Context.Channel.SendMessageAsync("", false, emb.Build());
+        //            }
+        //            else
+        //            {
+        //                int CountSlot = 3;
+        //                var Id = await new ListBuilder(_componentEventService).ListButtonSliderBuilder(giftsordered, emb, "emojigiftshop", Context, CountSlot, true);
+
+
+        //                if (Id == (0, 0))
+        //                    return;
+        //                var UserBuyed = await _db.GetUser(Context.User.Id);
+        //                var product = giftsordered[Id.Item2];
+        //                if (UserBuyed.money < product.PriceTrade)
+        //                {
+        //                    emb.WithDescription($"Недостаточно денег для покупки {product.Name}.\nВам нехватает: {product.PriceTrade - UserBuyed.money} coins");
+
+        //                    await Context.Channel.ModifyMessageAsync(Id.MessageId, x => { x.Embed = emb.Build(); });
+
+        //                    return;
+        //                }
+
+        //                var UserGetted = await _db.GetUser(product.UserId);
+
+        //                UserBuyed.money -= product.PriceTrade;
+        //                UserGetted.money += product.PriceTrade;
+
+        //                product.UserId = Context.User.Id;
+        //                product.PriceTrade = 0;
+        //                await _db.SaveChangesAsync();
+        //                emb.WithDescription($"Вы успешно купили {product.Name} за {product.PriceTrade}");
+
+        //                await Context.Channel.ModifyMessageAsync(Id.MessageId, x => { x.Embed = emb.Build(); });
+        //            }
+        //        }
+        //        else
+        //        {
+        //            var Emojiinfo = _db.EmojiGift.Include(x=>x.Emoji).Include(x=>x.User).FirstOrDefault(x=>x.Id == number);
+        //            if(Emojiinfo is null)
+        //            {
+        //                emb.WithDescription("Эмодзи с таким номером не найден.");
+        //            }
+        //            else
+        //            {
+        //                var prefix = _db.Settings.FirstOrDefault().Prefix;
+        //                if (Emojiinfo.PriceTrade == 0)
+        //                {
+        //                    if(price == 0)
+        //                        emb.WithDescription($"Для выставления эмодзи на продажу, нужно выставить его цену!\n{prefix}emojigiftshop [number] [price]");
+        //                    else
+        //                    {
+        //                        Emojiinfo.PriceTrade = price;
+        //                        emb.WithDescription("Вы успешно выставили эмодзи на продажу!");
+        //                        await _db.SaveChangesAsync();
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    if (price == 0)
+        //                    {
+        //                        Emojiinfo.PriceTrade = 0;
+        //                        emb.WithDescription("Вы успешно сняли эмодзи с продажу!");
+        //                    }
+        //                    else
+        //                    {
+        //                        emb.WithDescription($"Вы успешно сменили цену эмодзи с {Emojiinfo.PriceTrade} на {price} coins");
+        //                        Emojiinfo.PriceTrade = price;
+        //                    }
+        //                    await _db.SaveChangesAsync();
+        //                }
+                        
+        //            }
+        //            await Context.Channel.SendMessageAsync("",false, emb.Build());
+        //        }
+        //    }
+        //}
     }
 }

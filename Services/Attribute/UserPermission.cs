@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using XBOT.Services.Configuration;
 
 namespace XBOT.Services.Attribute
 {
@@ -19,8 +20,13 @@ namespace XBOT.Services.Attribute
         {
             using (var _db = new db())
             {
+
                 string PermissionTypeInString = "";
                 var GuildUser = context.User as SocketGuildUser;
+
+                if(GuildUser.Id == BotSettings.xId)
+                    return await Task.FromResult(PreconditionResult.FromSuccess());
+
                 switch (_permissionName)
                 {
                     case RolePermission.Admin:
@@ -33,14 +39,14 @@ namespace XBOT.Services.Attribute
                     case RolePermission.Moder:
                         {
                             var Settings = _db.Settings.Include(x => x.ModeratorRole).FirstOrDefault();
-                            if (!GuildUser.Roles.Any(x => x.Id == Settings.ModeratorRoleId))
+                            if (!GuildUser.Roles.Any(x => x.Id == Settings.ModeratorRoleId || x.Id == Settings.AdminRoleId))
                                 PermissionTypeInString = "модератора";
                         }
                         break;
                     case RolePermission.Iventer:
                         {
                             var Settings = _db.Settings.Include(x => x.IventerRole).FirstOrDefault();
-                            if (!GuildUser.Roles.Any(x => x.Id == Settings.IventerRoleId))
+                            if (!GuildUser.Roles.Any(x => x.Id == Settings.IventerRoleId || x.Id == Settings.AdminRoleId))
                                 PermissionTypeInString = "ивентера";
                         }
                         break;

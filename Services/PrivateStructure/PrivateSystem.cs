@@ -65,7 +65,8 @@ namespace XBOT.Services.PrivateStructure
                 RestVoiceChannel voicechannel = null;
                 try
                 {
-                    var voicePermissions = new List<Overwrite> { new Overwrite(user.Id, PermissionTarget.User, PermissionCreatorChannel) };
+                    var everyoneRole = new OverwritePermissions(connect: PermValue.Deny);
+                    var voicePermissions = new List<Overwrite> { new Overwrite(user.Id, PermissionTarget.User, PermissionCreatorChannel), new Overwrite(user.Guild.EveryoneRole.Id, PermissionTarget.Role, everyoneRole) };
                     voicechannel = await user.Guild.CreateVoiceChannelAsync($"{user}` VOICE", x => { x.CategoryId = PrivateChannel.CategoryId; x.PermissionOverwrites = voicePermissions; });
                     await user.ModifyAsync(x => x.Channel = voicechannel);
 

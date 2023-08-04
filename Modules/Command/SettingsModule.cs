@@ -4,11 +4,12 @@ using XBOT.Services.Configuration;
 using XBOT.Services;
 using Microsoft.EntityFrameworkCore;
 using static XBOT.DataBase.Guild_Warn;
-using System.Threading.Channels;
+using Discord.Rest;
 
 namespace XBOT.Modules.Command
 {
     [RequireOwner]
+    [Name("Settings"), Summary("Настройки бота")]
     public class SettingsModule : ModuleBase<SocketCommandContext>
     {
         [Aliases, Commands, Usage, Descriptions]
@@ -346,7 +347,10 @@ namespace XBOT.Modules.Command
         {
             using (db _db = new())
             {
-                var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor).WithAuthor("⚜️ WarnSystem - Добавить варн");
+                var emb = new EmbedBuilder()
+                    .WithColor(BotSettings.DiscordColor)
+                    .WithAuthor("⚜️ WarnSystem - Добавить варн");
+
                 const string error = "Варн должен содержать время, возможно вы ввели большое число?\nПример: 01:00:00 [ч:м:с]\nПример 2: 07:00:00:00 [д:ч:м:с]";
                 bool Success = TimeSpan.TryParse(Time, out TimeSpan result);
                 if ((report == ReportTypeEnum.TimeBan || report == ReportTypeEnum.TimeOut) && !Success)
@@ -357,24 +361,28 @@ namespace XBOT.Modules.Command
                 {
                     if (CountWarn >= 1 && CountWarn <= 15)
                     {
-                        var ThisWarn = _db.Guild_Warn.FirstOrDefault(x => x.CountWarn == CountWarn);
-                        if (ThisWarn != null)
-                        {
-                            emb.WithDescription($"Варн {CountWarn} был перезаписан с `{ThisWarn.ReportTypes}` на `{report}`.");
-                            ThisWarn.ReportTypes = report;
-                            ThisWarn.Time = result;
-                            _db.Guild_Warn.Update(ThisWarn);
-                        }
+                        if (_db.Guild_Warn.Any(x => x.ReportTypes == ReportTypeEnum.Ban && x.CountWarn < CountWarn))
+                            emb.WithDescription("Вы не можете добавлять другие нарушения выше нарушения с баном.");
                         else
                         {
-                            emb.WithDescription($"Варн {CountWarn} был успешно добавлен.");
-                            var newwarn = new Guild_Warn() { CountWarn = CountWarn, ReportTypes = report, Time = result };
-                            _db.Guild_Warn.Add(newwarn);
+                            var ThisWarn = _db.Guild_Warn.FirstOrDefault(x => x.CountWarn == CountWarn);
+                            if (ThisWarn != null)
+                            {
+                                emb.WithDescription($"Варн {CountWarn} был перезаписан с `{ThisWarn.ReportTypes}` на `{report}`.");
+                                ThisWarn.ReportTypes = report;
+                                ThisWarn.Time = result;
+                                _db.Guild_Warn.Update(ThisWarn);
+                            }
+                            else
+                            {
+                                emb.WithDescription($"Варн {CountWarn} был успешно добавлен.");
+                                var newwarn = new Guild_Warn() { CountWarn = CountWarn, ReportTypes = report, Time = result };
+                                _db.Guild_Warn.Add(newwarn);
+                            }
+                            var Prefix = _db.Settings.FirstOrDefault().Prefix;
+                            emb.WithFooter($"Посмотреть все варны {Prefix}ws");
+                            await _db.SaveChangesAsync();
                         }
-                        var Prefix = _db.Settings.FirstOrDefault().Prefix;
-                        emb.WithFooter($"Посмотреть все варны {Prefix}ws");
-                        await _db.SaveChangesAsync();
-
                     }
                     else emb.WithDescription($"Количество варнов может быть больше 1 и меньше 15");
                 }
@@ -403,6 +411,92 @@ namespace XBOT.Modules.Command
             }
         }
 
+
+        [Aliases, Commands, Usage, Descriptions]
+        public async Task AdminRoleSet(SocketRole role) => await PrivilegeRoleSet(UserPermission.RolePermission.Admin, role);
+
+        [Aliases, Commands, Usage, Descriptions]
+        public async Task ModeratorRoleSet(SocketRole role) => await PrivilegeRoleSet(UserPermission.RolePermission.Moder, role);
+
+        [Aliases, Commands, Usage, Descriptions]
+        public async Task IventerRoleSet(SocketRole role) => await PrivilegeRoleSet(UserPermission.RolePermission.Iventer, role);
+
+        private async Task PrivilegeRoleSet(UserPermission.RolePermission permission, SocketRole role)
+        {
+            using (var _db = new db())
+            {
+                string text = "";
+                var newrole = await _db.GetRole(role.Id);
+                ulong oldroleId = 0;
+                if (permission == UserPermission.RolePermission.Admin)
+                {
+                    text = "админа";
+                    var Settings = _db.Settings.Include(x => x.AdminRole).FirstOrDefault();
+                    oldroleId = Convert.ToUInt64(Settings.AdminRoleId);
+                    Settings.AdminRoleId = newrole.Id;
+                }
+                else if(permission == UserPermission.RolePermission.Moder)
+                {
+                    var Settings = _db.Settings.Include(x => x.ModeratorRole).FirstOrDefault();
+                    oldroleId = Convert.ToUInt64(Settings.ModeratorRoleId);
+                    Settings.ModeratorRoleId = newrole.Id;
+                    text = "модератора";
+                }
+                else
+                {
+                    var Settings = _db.Settings.Include(x => x.IventerRole).FirstOrDefault();
+                    oldroleId = Convert.ToUInt64(Settings.IventerRoleId);
+                    Settings.IventerRoleId = newrole.Id;
+                    text = "ивентера";
+                }
+
+                await _db.SaveChangesAsync();
+
+                var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor).WithAuthor($"Роль {text}");
+                
+                if (oldroleId == 0) 
+                    emb.WithDescription($"Вы успешно выставили роль {text} {role.Mention}");
+                else
+                {
+                    emb.WithDescription($"Вы успешно заменили роль {text} с <@{oldroleId}> на {role.Mention}");
+                    foreach (var user in Context.Guild.Users.Where(x => x.Roles.Any(x => x.Id == oldroleId)))
+                    {
+                        await user.RemoveRoleAsync(oldroleId);
+                        await user.AddRoleAsync(role.Id);
+                    }
+                }
+                await Context.Channel.SendMessageAsync("", false, emb.Build());
+            }
+        }
+
+
+        [Aliases, Commands, Usage, Descriptions]
+        public async Task botblock(ulong userId, [Remainder] string reason)
+        {
+            using (var _db = new db())
+            {
+                var user = await _db.GetUser(userId);
+                var emb = new EmbedBuilder()
+                    .WithColor(BotSettings.DiscordColor);
+
+                if (!string.IsNullOrWhiteSpace(user.BlockReason))
+                {
+                    emb.WithAuthor("Снятие блокировки")
+                       .WithDescription($"Вы успешно сняли блокировку бота для <@{userId}>");
+                    user.BlockReason = "";
+                }
+                else
+                {
+                    emb.WithAuthor("Выдача блокировки")
+                       .WithDescription($"Вы успешно заблокировали бота для <@{userId}>");
+                    user.BlockReason = reason;
+                }
+                _db.User.Update(user);
+                await _db.SaveChangesAsync();
+                await Context.Channel.SendMessageAsync("", false, emb.Build());
+            }
+        }
+
         [Aliases, Commands, Usage, Descriptions]
         public async Task prefix(string prefix = null)
         {
@@ -424,6 +518,59 @@ namespace XBOT.Modules.Command
                 await Context.Channel.SendMessageAsync("", false, emb.Build());
             }
         }
+
+
+        [Aliases, Commands, Usage, Descriptions]
+        public async Task RoleToMessage(ulong messageId, SocketTextChannel channel, SocketRole role)
+        {
+            using (var _db = new db())
+            {
+                var Settings = _db.Settings.FirstOrDefault();
+                var emb = new EmbedBuilder()
+                    .WithColor(BotSettings.DiscordColor);
+
+                var message = await channel.GetMessageAsync(messageId);
+                if (message != null)
+                {
+                    var Menu = message.Components.FirstOrDefault(x=>x.Type == ComponentType.SelectMenu) as SelectMenuBuilder;
+                    if (Menu == null)
+                    {
+                        Menu = new SelectMenuBuilder()
+                        .WithPlaceholder("Выберите роль")
+                        .WithCustomId($"{new Guid()}")
+                        .WithMinValues(1)
+                        .WithMaxValues(1);
+                        Menu.AddOption($"{role.Mention}", $"{role.Id}");
+                        emb.WithDescription($"Вы успешно выставили роль {role.Mention} в список!");
+                    }
+                    else
+                    {
+                        var Option = Menu.Options.FirstOrDefault(x=>x.Value == $"{role.Id}");
+                        if(Option != null)
+                        {
+                            Menu.Options.Remove(Option);
+                            emb.WithDescription($"Вы успешно удалили роль {role.Mention} из списока!");
+                        }
+                        else
+                        {
+                            emb.WithDescription($"Вы успешно выставили роль {role.Mention} в список!");
+                            Menu.AddOption($"{role.Mention}", $"{role.Id}");
+                        }
+
+                    }
+                    var builder = new ComponentBuilder()
+                        .WithSelectMenu(Menu);
+
+                    
+                    await channel.ModifyMessageAsync(messageId, x => x.Components = builder.Build());
+                }
+                else
+                    emb.WithDescription("Сообщение с таким Id не найдено!");
+                
+                await Context.Channel.SendMessageAsync("", false, emb.Build());
+            }
+        }
+
 
         [Aliases, Commands, Usage, Descriptions]
         public async Task channelsettings(SocketTextChannel channel = null, float number = 0)

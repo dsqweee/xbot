@@ -6,28 +6,19 @@ using static XBOT.DataBase.Guild_Warn;
 
 namespace XBOT.Modules.Command
 {
-    [Summary("Модерирование\nсервером"), Name("Moderator")]
+    [Name("Moderator"), Summary("Модерирование\nсервером")]
     [UserPermission(UserPermission.RolePermission.Moder)]
     public class ModeratorModule : ModuleBase<SocketCommandContext>
     {
-        private readonly CommandService _service;
-        private readonly IServiceProvider _provider;
+        private readonly TaskTimer _timer;
 
-        public ModeratorModule(CommandService service, IServiceProvider provider)
+        public ModeratorModule(TaskTimer timer)
         {
-            _service = service;
-            _provider = provider;
-
+            _timer = timer;
         }
 
+
         [Aliases, Commands, Usage, Descriptions]
-        [RequireUserPermission(GuildPermission.KickMembers)]
-        [RequireUserPermission(GuildPermission.BanMembers)]
-        [RequireUserPermission(GuildPermission.MuteMembers)]
-        [RequireBotPermission(GuildPermission.BanMembers)]
-        [RequireBotPermission(GuildPermission.ManageRoles)]
-        [RequireBotPermission(GuildPermission.KickMembers)]
-        [RequireBotPermission(ChannelPermission.EmbedLinks)]
         public async Task warn(SocketGuildUser User, string Reason)
         {
             using (db _db = new())
@@ -49,6 +40,14 @@ namespace XBOT.Modules.Command
                 if (warn == null)
                 {
                     emb.WithDescription("У пользователя максимальное кол-во нарушений.");
+                    await Context.Channel.SendMessageAsync("", false, emb.Build());
+                    return;
+                }
+
+                var ActiveWarn = _db.User_Warn.Any(x => x.UserId == User.Id && x.ToTimeWarn > DateTime.Now);
+                if (ActiveWarn)
+                {
+                    emb.WithDescription("У пользователя уже есть активное нарушение!");
                     await Context.Channel.SendMessageAsync("", false, emb.Build());
                     return;
                 }
@@ -79,7 +78,7 @@ namespace XBOT.Modules.Command
                         if (warn.ReportTypes == ReportTypeEnum.TimeBan)
                         {
                             ThisWarn.ToTimeWarn = DateTimes;
-                            await TaskTimer.StartWarnTimer(ThisWarn);
+                            await _timer.StartWarnTimer(ThisWarn);
                         }
                         await User.BanAsync();
                         break;
@@ -87,7 +86,7 @@ namespace XBOT.Modules.Command
                         var TimeSpan = new TimeSpan(28, 0, 0, 0);
                         ThisWarn.ToTimeWarn = DateTime.Now.Add(TimeSpan);
                         await User.SetTimeOutAsync(TimeSpan);
-                        await TaskTimer.StartWarnTimer(ThisWarn);
+                        await _timer.StartWarnTimer(ThisWarn);
                         break;
                     case ReportTypeEnum.Kick:
                         await User.KickAsync();
@@ -103,19 +102,5 @@ namespace XBOT.Modules.Command
                 await Context.Channel.SendMessageAsync("", false, emb.Build());
             }
         }
-
-        //[Aliases, Commands, Usage, Descriptions]
-        //public async Task Kick(SocketGuildUser user)
-        //{
-        //    using (var _db = new db())
-        //    {
-        //        var User = _db.User.FirstOrDefault(x=>x.Id == Context.User.Id);
-        //        var UserGetter = await _db.GetUser(user.Id);
-
-        //        //var Married = new User_Married { User = User, Spouse = UserGetter};
-        //        //_db.User_Married.Add(Married);
-        //        await _db.SaveChangesAsync();
-        //    }
-        //}
     }
 }

@@ -11,7 +11,7 @@ namespace XBOT.Services.Configuration
             _componentEventService = componentEventService;
         }
 
-        public async Task<(ulong, int)> ListButtonSliderBuilder(IEnumerable<object> item, EmbedBuilder emb, string CommandName, SocketCommandContext Context, int countslots = 10, bool Selected = false)
+        public async Task<(ulong MessageId, int SelectedIndex)> ListButtonSliderBuilder(IEnumerable<object> item, EmbedBuilder emb, string CommandName, SocketCommandContext Context, int countslots = 10, bool Selected = false)
         {
             ulong MessageId = 0;
             if (Selected)
@@ -147,6 +147,16 @@ namespace XBOT.Services.Configuration
                 {
                     i++;
                     emb.Description += $"{i}.<@&{Item.RoleId}> - {Item.Price} coins\n";
+                }
+            }
+            else if (CommandName == "emojigiftshop")
+            {
+                emb.WithDescription("");
+                int i = 0;
+                foreach (var Item in items.OfType<EmojiGift>())
+                {
+                    i++;
+                    emb.Description += $"{Item.Name} - {Item.PriceTrade} price [{Item.Emoji.Factor}]\n";
                 }
             }
         }

@@ -1,4 +1,5 @@
 ﻿using XBOT.Services.Attribute;
+using XBOT.Services.Attribute.CommandList;
 using XBOT.Services.Configuration;
 
 namespace XBOT.Modules.Command
@@ -31,12 +32,29 @@ namespace XBOT.Modules.Command
 
                 var mdls = _service.Modules;
 
+                var emojis = new Dictionary<string, IEmote> 
+                { 
+                    { "Admin", new Emoji("⚠️") },
+                    { "Moderator", new Emoji("⚜️") },
+                    { "Help", new Emoji("📓") },
+                    { "NsfwGif", new Emoji("🎀") },
+                    { "SfwGif", new Emoji("🎎") },
+                    { "User", new Emoji("🎃") },
+                    { "Settings", new Emoji("⛓") },
+                    { "Iventer", new Emoji("🎉") },
+                };
+
                 foreach (var mdl in mdls)
                 {
+                    emojis.TryGetValue(mdl.Name, out IEmote emoji);
                     var Permission = await mdl.GetExecutableCommandsAsync(Context, _provider);
                     if (Permission.Count > 0)
                     {
-                        emb.AddField(mdl.Name, mdl?.Summary, true);
+                        string name = mdl.Name;
+                        if(emoji != null)
+                            name = emoji.Name + " " + name;
+
+                        emb.AddField(name, mdl.Summary, true);
                     }
                 }
                 if (emb.Fields.Count == 0) 
@@ -58,17 +76,72 @@ namespace XBOT.Modules.Command
                     .WithAuthor($"📜 {modules} - Команды [префикс - {settings.Prefix}]");
 
                 var mdls = _service.Modules.FirstOrDefault(x => x.Name.ToLower() == modules.ToLower());
-                if (mdls != null)
-                {
-                    var SuccessCommands = await mdls.GetExecutableCommandsAsync(Context, _provider);
-                    foreach (var Command in SuccessCommands)
-                        emb.Description += $"• {Command.Aliases[1]} [{Command.Aliases[0]}]\n";
+                //if (mdls != null)
+                //{
+                //    var SuccessCommands = await mdls.GetExecutableCommandsAsync(Context, _provider);
+                //    foreach (var Command in SuccessCommands)
+                //        emb.Description += $"• {Command.Aliases.Last()} [{Command.Aliases[0]}]\n";
                     
+                //    emb.WithFooter($"Подробная информация о команде - {settings.Prefix}info [Имя команды]");
+                //}
+                //else 
+                //    emb.WithDescription($"Модуль {modules} не найден!")
+                //       .WithAuthor($"📜{modules} - ошибка");
+
+
+
+
+
+                if (mdls != null && mdls.GetExecutableCommandsAsync(Context, _provider).Result.Count > 0)
+                {
+                    var CommandList = new List<Initiliaze.Commands>();
+                    foreach (var lcomm in Initiliaze.ListCommand)
+                    {
+                        foreach (var mcomm in mdls.Commands)
+                        {
+                            if (lcomm.Usage[1] == mcomm.Aliases[0])
+                            {
+                                var CommandAvialable = await mcomm.CheckPreconditionsAsync(Context, _provider);
+                                if(CommandAvialable.IsSuccess)
+                                {
+                                    CommandList.Add(lcomm);
+                                }
+                            }
+                        }
+                    }
+                    CommandList = CommandList.OrderBy(x => x.Category).ToList();
+    
+                    string TextCommand = string.Empty;
+                    foreach (var Command in CommandList)
+                    {
+                        if (!string.IsNullOrWhiteSpace(Command.Category) && CommandList.Count(x => x.Category == Command.Category) > 1)
+                        {
+                            if (TextCommand == string.Empty || TextCommand != Command.Category)
+                            {
+                                TextCommand = Command.Category;
+                                emb.AddField($"**{TextCommand}**\n", "⠀", true);
+                            }
+                            if (emb.Fields.Last().Value.ToString().Length == 1)
+                                emb.Fields.Last().Value = $"• {Command.Usage[1]}\n";
+                            else
+                                emb.Fields.Last().Value += $"• {Command.Usage[1]}\n";
+                        }
+                        else
+                        {
+                            TextCommand = string.Empty;
+                            emb.Description += $"• {Command.Usage[1]}\n";
+                        }
+                    }
+                    if (emb.Description.Length > 0 && emb.Fields.Count > 0)
+                    {
+                        emb.Description = emb.Description.Insert(0, "📚**Остальные команды**\n");
+                    }
                     emb.WithFooter($"Подробная информация о команде - {settings.Prefix}info [Имя команды]");
                 }
                 else 
                     emb.WithDescription($"Модуль {modules} не найден!")
                        .WithAuthor($"📜{modules} - ошибка");
+
 
                 await Context.Channel.SendMessageAsync("",false, emb.Build());
             }

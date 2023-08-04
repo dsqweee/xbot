@@ -37,6 +37,7 @@ namespace XBOT.DataBase.Models
 
         public virtual ICollection<User_Warn> User_Warn { get; set; } = new List<User_Warn>();
 
+        public virtual ICollection<EmojiGift> EmojiGift { get; set; } = new List<EmojiGift>();
 
         public List<Roles_User> Roles_User { get; set; }
         public ulong XP { get; set; }
@@ -71,6 +72,7 @@ namespace XBOT.DataBase.Models
 
 
         public DateOnly BirthDate { get; set; }
+        public int BirthDateComplete { get; set; }
 
 
         //public enum Role

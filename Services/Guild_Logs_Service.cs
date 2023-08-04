@@ -7,7 +7,13 @@ namespace XBOT.Services
 {
     public class Guild_Logs_Service
     {
-        public static async Task InVoicelogs(SocketUser User, SocketVoiceState ActionBefore, SocketVoiceState ActionAfter)
+        private readonly Invite_Service _invite;
+
+        public Guild_Logs_Service(Invite_Service invite)
+        {
+            _invite = invite;
+        }
+        public async Task InVoicelogs(SocketUser User, SocketVoiceState ActionBefore, SocketVoiceState ActionAfter)
         {
             using (var db = new db())
             {
@@ -103,12 +109,12 @@ namespace XBOT.Services
             }
         }
 
-        public static async Task InJoinedUser(SocketGuildUser user)
+        public async Task InJoinedUser(SocketGuildUser user)
         {
             using (var db = new db())
             {
                 var AllInvites = await user.Guild.GetInvitesAsync();
-                var InUserJoinedInvite = await Invite_Service.JoinedUserInviteAttach(AllInvites, user);
+                var InUserJoinedInvite = await _invite.JoinedUserInviteAttach(user);
 
                 var Guild_Log = db.Guild_Logs.FirstOrDefault(x => x.Type == ChannelsTypeEnum.Join);
                 if (Guild_Log == null)
@@ -132,7 +138,7 @@ namespace XBOT.Services
             }
         }
 
-        public static async Task InLeftedAndKickedUser(SocketGuild Guild, SocketUser user)
+        public async Task InLeftedAndKickedUser(SocketGuild Guild, SocketUser user)
         {
             using (var db = new db())
             {
@@ -180,11 +186,11 @@ namespace XBOT.Services
             }
         }
 
-        public static async Task InUserUnBanned(SocketUser user, SocketGuild guild)
+        public async Task InUserUnBanned(SocketUser user, SocketGuild guild)
             => await BanOrUnBan(user, guild, false);
-        public static async Task InUserBanned(SocketUser user, SocketGuild guild)
+        public async Task InUserBanned(SocketUser user, SocketGuild guild)
             => await BanOrUnBan(user, guild, true);
-        private static async Task BanOrUnBan(SocketUser user, SocketGuild Guild, bool Ban)
+        private async Task BanOrUnBan(SocketUser user, SocketGuild Guild, bool Ban)
         {
             using (db _db = new())
             {
@@ -214,13 +220,13 @@ namespace XBOT.Services
             }
         }
 
-        public static async Task DeleteMessage(Cacheable<IMessage, ulong> CachedMessage, Cacheable<IMessageChannel, ulong> arg2)
+        public async Task DeleteMessage(Cacheable<IMessage, ulong> CachedMessage, Cacheable<IMessageChannel, ulong> arg2)
             => await DeletedAndEditedMessage(CachedMessage, null);
 
-        public static async Task EditedMessage(Cacheable<IMessage, ulong> CachedMessage, SocketMessage MessageNow, ISocketMessageChannel Channel)
+        public async Task EditedMessage(Cacheable<IMessage, ulong> CachedMessage, SocketMessage MessageNow, ISocketMessageChannel Channel)
             => await DeletedAndEditedMessage(CachedMessage, MessageNow);
 
-        public static async Task DeletedAndEditedMessage(Cacheable<IMessage, ulong> CachedMessage, SocketMessage MessageNow)
+        public async Task DeletedAndEditedMessage(Cacheable<IMessage, ulong> CachedMessage, SocketMessage MessageNow)
         {
             using (db _db = new())
             {
@@ -263,7 +269,7 @@ namespace XBOT.Services
             }
         }
 
-        public static async Task Birthday(SocketGuildUser user)
+        public async Task Birthday(SocketGuildUser user)
         {
             using (var db = new db())
             {
@@ -281,7 +287,12 @@ namespace XBOT.Services
 
                 var Prefix = db.Settings.FirstOrDefault().Prefix;
 
-                emb.WithDescription($"У пользователя 🎊{user.Mention}🎊 сегодня день рождения\nдавайте вместе поздравим его🎊")
+                var userDb = db.User.FirstOrDefault(x=>x.Id == user.Id);
+                bool daynow = false;
+                if (userDb.BirthDate.Month == DateTime.Now.Month && userDb.BirthDate.Day == DateTime.Now.Day)
+                    daynow = true;
+
+                emb.WithDescription($"У пользователя 🎊{user.Mention}🎊 {(daynow ? "сегодня": "недавно")} день рождения\nдавайте вместе поздравим его🎊")
                    .WithFooter($"Укажи день рождения чтобы получать уведомления - {Prefix}birthdayset");
                 await Channel.SendMessageAsync(user.Mention, false, emb.Build());
             }

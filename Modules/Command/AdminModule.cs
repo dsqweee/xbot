@@ -1,4 +1,5 @@
-﻿using XBOT.DataBase.Models.Roles_data;
+﻿using Microsoft.EntityFrameworkCore;
+using XBOT.DataBase.Models.Roles_data;
 using XBOT.Services;
 using XBOT.Services.Attribute;
 using XBOT.Services.Configuration;
@@ -20,7 +21,219 @@ namespace XBOT.Modules.Command
             Level,
             Reputation,
             Buy,
+            Refferal
         }
+
+
+
+        [Aliases, Commands, Usage, Descriptions]
+        public async Task moderatoradd(SocketGuildUser user)
+            => await PermissionAdd(UserPermission.RolePermission.Moder, user, false);
+
+        [Aliases, Commands, Usage, Descriptions]
+        public async Task moderatordel(SocketGuildUser user)
+    => await PermissionDel(UserPermission.RolePermission.Moder, user);
+
+        [Aliases, Commands, Usage, Descriptions]
+        public async Task iventeradd(SocketGuildUser user)
+            => await PermissionAdd(UserPermission.RolePermission.Iventer, user, false);
+
+        [Aliases, Commands, Usage, Descriptions]
+        public async Task iventerdel(SocketGuildUser user)
+            => await PermissionDel(UserPermission.RolePermission.Iventer, user);
+
+        [Aliases, Commands, Usage, Descriptions]
+        [RequireOwner]
+        public async Task adminadd(SocketGuildUser user)
+            => await PermissionAdd(UserPermission.RolePermission.Admin, user, false);
+
+        [Aliases, Commands, Usage, Descriptions]
+        [RequireOwner]
+        public async Task admindel(SocketGuildUser user)
+            => await PermissionDel(UserPermission.RolePermission.Admin, user);
+
+        public async Task PermissionAdd(UserPermission.RolePermission permission, SocketGuildUser user, bool unlimited)
+        {
+            using (db _db = new())
+            {
+                string role = "";
+                ulong RoleId = 0;
+
+                if (permission == UserPermission.RolePermission.Admin)
+                {
+                    var Settings = _db.Settings.Include(x => x.AdminRole).FirstOrDefault();
+                    RoleId = Convert.ToUInt64(Settings.AdminRole.Id);
+                    role = "админа";
+                    
+                }  
+                else if (permission == UserPermission.RolePermission.Iventer)
+                {
+                    var Settings = _db.Settings.Include(x => x.IventerRole).FirstOrDefault();
+                    RoleId = Convert.ToUInt64(Settings.IventerRole.Id);
+                    role = "ивентера";
+                }
+                else
+                {
+                    var Settings = _db.Settings.Include(x => x.ModeratorRole).FirstOrDefault();
+                    RoleId = Convert.ToUInt64(Settings.ModeratorRole.Id);
+                    role = "модератора";
+                }
+
+                var emb = new EmbedBuilder()
+                    .WithColor(BotSettings.DiscordColor)
+                    .WithAuthor($"🔨 Добавить {role}");
+
+
+                if (RoleId != 0)
+                {
+                    var userDb = await _db.GetUser(user.Id);
+                    var userGuild = Context.User as SocketGuildUser;
+                    if(permission != UserPermission.RolePermission.Iventer)
+                    {
+                        var userPermission = new User_Permission { User_Id = userDb.Id, Unlimited = unlimited, Active = true };
+                        _db.User_Permission.Add(userPermission);
+                    }
+                    
+                    await userGuild.AddRoleAsync(RoleId);
+                    await _db.SaveChangesAsync();
+                }
+                else
+                    emb.WithDescription($"Роль {role} не назначена в системе!").WithColor(BotSettings.DiscordColorError);
+
+                await Context.Channel.SendMessageAsync("", false, emb.Build());
+            }
+        }
+
+        public async Task PermissionDel(UserPermission.RolePermission permission, SocketGuildUser user)
+        {
+            using (var _db = new db())
+            {
+                var emb = new EmbedBuilder()
+                    .WithColor(BotSettings.DiscordColor)
+                    .WithAuthor($"🔨 удалить привилигированного пользователя");
+                var UserDb = await _db.GetUser(user.Id);
+                
+
+                if (permission == UserPermission.RolePermission.Admin)
+                {
+                    var Settings = _db.Settings.Include(x => x.AdminRole).FirstOrDefault();
+                    if (user.Roles.Any(x => x.Id == Settings.AdminRole.Id))
+                    {
+                        await user.RemoveRoleAsync(Settings.AdminRole.Id);
+                        emb.WithDescription($"Вы успешно удалили администратора {user.Mention}");
+                    }
+                    else
+                        emb.WithDescription("Права администратора не найдены!");
+                }
+                else if (permission == UserPermission.RolePermission.Moder)
+                {
+                    var Settings = _db.Settings.Include(x => x.ModeratorRole).FirstOrDefault();
+                    if (user.Roles.Any(x => x.Id == Settings.ModeratorRole.Id))
+                    {
+                        await user.RemoveRoleAsync(Settings.ModeratorRole.Id);
+                        emb.WithDescription($"Вы успешно удалили модератора {user.Mention}");
+                    }
+                    else
+                        emb.WithDescription("Права модератора не найдены!");
+                }
+                else
+                {
+                    var Settings = _db.Settings.Include(x => x.IventerRole).FirstOrDefault();
+                    if (user.Roles.Any(x => x.Id == Settings.IventerRole.Id))
+                    {
+                        emb.WithDescription($"Вы успешно удалили модератора {user.Mention}");
+                        await user.RemoveRoleAsync(Settings.IventerRole.Id);
+                    }
+                    else
+                        emb.WithDescription("Права ивентера не найдены!");
+                }
+
+                var userPermission = _db.User_Permission.FirstOrDefault(x => x.User_Id == user.Id);
+                if (userPermission != null)
+                {
+                    userPermission.Active = false;
+                    _db.Update(userPermission);
+                    await _db.SaveChangesAsync();
+                }
+                    
+
+                await Context.Channel.SendMessageAsync("",false, emb.Build());
+            }
+        }
+
+
+        [Aliases, Commands, Usage, Descriptions]
+        public async Task refferalroleadd(SocketRole role, uint Invite,uint WriteInWeek, uint Get5Level)
+        {
+            using (db _db = new())
+            {
+                var emb = new EmbedBuilder()
+                    .WithColor(BotSettings.DiscordColor)
+                    .WithAuthor($"🔨 Добавить реферальную роль");
+
+                if (role.IsManaged)
+                {
+                    SendMessage("Данную роль нельзя выставить.");
+                }
+
+                var refrole = _db.ReferralRole.FirstOrDefault(x => x.RoleId == role.Id);
+                if (refrole != null)
+                {
+                    SendMessage($"Роль {role.Mention} уже выдается");
+                }
+
+                async void SendMessage(string description, string text = "")
+                {
+                    await Context.Channel.SendMessageAsync(text, false, emb.Build());
+                    return;
+                }
+
+                var rolepos = role.Guild.CurrentUser.Roles.FirstOrDefault(x => x.Position > role.Position);
+                if (rolepos == null)
+                {
+                    SendMessage($"Позиция роли {role.Mention} находится выше, роли бота.\nПопросите икс поднять эту роль выше моей", Context.Guild.Owner.Mention);
+                }
+
+                var Settings = _db.Settings.FirstOrDefault();
+                emb.WithDescription($"Роль {role.Mention} выставлена за {Invite} приглашений, {WriteInWeek} активных пользователей за неделю и {Get5Level} пользователей получивших 5 уровень")
+                   .WithFooter($"Посмотреть ваши рефферальные роли {Settings.Prefix}rf");
+
+                if (!_db.Roles.Any(x => x.Id == role.Id))
+                    _db.Roles.Add(new Roles { Id = role.Id });
+
+                _db.ReferralRole.Add(new DataBase.Models.Invites.DiscordInvite_ReferralRole() { RoleId = role.Id, UserJoinedValue = Invite,UserWriteInWeekValue = WriteInWeek,UserUp5LevelValue = Get5Level });
+
+                await _db.SaveChangesAsync();
+                await Context.Channel.SendMessageAsync("", false, emb.Build());
+            }
+        }
+
+        [Aliases, Commands, Usage, Descriptions]
+        public async Task refferalroledel(SocketRole role)
+        {
+            using (db _db = new())
+            {
+                var refrole = _db.ReferralRole.FirstOrDefault(x => x.RoleId == role.Id);
+
+
+                var emb = new EmbedBuilder()
+                    .WithColor(BotSettings.DiscordColor)
+                    .WithAuthor($"🔨 Удалить рефферальную роль");
+
+                emb.WithDescription($"Рефферальная роль {role.Mention} ");
+                if (refrole != null)
+                {
+                    emb.Description += "удалена.";
+                    _db.Remove(refrole);
+                    await _db.SaveChangesAsync();
+                }
+                else
+                    emb.Description += $"не является рефферальной.";
+
+                await Context.Channel.SendMessageAsync("", false, emb.Build());
+            }
+        }
+
 
         [Aliases, Commands, Usage, Descriptions]
         public async Task levelroleadd(SocketRole role, uint level) => await roleadd(role, level, RoleTypeEnum.Level);
@@ -49,6 +262,15 @@ namespace XBOT.Modules.Command
                 string YourRole = "";
                 string Command = "";
 
+                var emb = new EmbedBuilder()
+                    .WithColor(BotSettings.DiscordColor)
+                    .WithAuthor($"🔨 Добавить {AuthorText} роль");
+
+                if (role.IsManaged)
+                {
+                    SendMessage("Данную роль нельзя выставить.");
+                }
+
                 switch (Type)
                 {
                     case RoleTypeEnum.Level:
@@ -56,24 +278,39 @@ namespace XBOT.Modules.Command
                         DescriptionText = "уровень";
                         YourRole = "уровневые";
                         Command = "lr";
+
+                        var lvlrole = _db.Roles_Level.FirstOrDefault(x => x.RoleId == role.Id);
+                        if (lvlrole != null)
+                        {
+                            SendMessage($"Роль {role.Mention} уже выдается за {lvlrole.Level} {DescriptionText}");
+                        }
                         break;
                     case RoleTypeEnum.Reputation:
                         AuthorText = "репутационную";
                         DescriptionText = "репутации";
                         YourRole = "репутационные";
                         Command = "rr";
+
+                        var reprole = _db.Roles_Reputation.FirstOrDefault(x => x.RoleId == role.Id);
+                        if (reprole != null)
+                        {
+                            SendMessage($"Роль {role.Mention} уже выдается за {reprole.Reputation} {DescriptionText}");
+                        }
                         break;
                     case RoleTypeEnum.Buy:
                         AuthorText = "магазинную";
                         DescriptionText = "coins";
                         YourRole = "магазинные";
                         Command = "br";
+
+                        var buyrole = _db.Roles_Buy.FirstOrDefault(x => x.RoleId == role.Id);
+                        if (buyrole != null)
+                        {
+                            SendMessage($"Роль {role.Mention} уже выдается за {buyrole.Price} {DescriptionText}");
+                        }
                         break;
                 }
 
-                var emb = new EmbedBuilder()
-                    .WithColor(BotSettings.DiscordColor)
-                    .WithAuthor($"🔨 Добавить {AuthorText} роль");
 
                 async void SendMessage(string description, string text = "")
                 {
@@ -81,21 +318,10 @@ namespace XBOT.Modules.Command
                     return;
                 }
 
-                var lvlrole = _db.Roles_Level.FirstOrDefault(x => x.RoleId == role.Id);
-                if (lvlrole != null)
-                {
-                    SendMessage($"Роль {role.Mention} уже выдается за {lvlrole.Level} {DescriptionText}");
-                }
-
                 var rolepos = role.Guild.CurrentUser.Roles.FirstOrDefault(x => x.Position > role.Position);
                 if (rolepos == null)
                 {
                     SendMessage($"Позиция роли {role.Mention} находится выше, роли бота.\nПопросите икс поднять эту роль выше моей", Context.Guild.Owner.Mention);
-                }
-
-                if (role.IsManaged)
-                {
-                    SendMessage("Данную роль нельзя выставить.");
                 }
 
                 var Settings = _db.Settings.FirstOrDefault();
@@ -179,7 +405,10 @@ namespace XBOT.Modules.Command
         {
             using (var _db = new db())
             {
-                var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor).WithAuthor($"unwarn {user.Mention}");
+                var emb = new EmbedBuilder()
+                    .WithColor(BotSettings.DiscordColor)
+                    .WithAuthor($"unwarn {user.Mention}");
+
                 var userwarned = await _db.GetUser(user.Id);
                 if(userwarned.CountWarns == 0)
                 {
@@ -293,6 +522,45 @@ namespace XBOT.Modules.Command
 
                     await mes.ModifyAsync(x => { x.Components = new ComponentBuilder().Build(); x.Embed = emb.Build(); });
                 }
+            }
+        }
+
+
+        
+
+        [Aliases, Commands, Usage, Descriptions]
+        public async Task mute(SocketGuildUser user, string time)
+        {
+            using (var _db = new db())
+            {
+                var emb = new EmbedBuilder()
+                    .WithColor(BotSettings.DiscordColor)
+                    .WithAuthor($"Mute {user.Mention}");
+
+                bool Success = TimeSpan.TryParse(time, out TimeSpan result);
+                if (!Success)
+                    emb.WithDescription("Время введено неверно, возможно вы ввели слишком больше число?\nФормат: 01:00:00 [ч:м:с]\nФормат 2: 07:00:00:00 [д:ч:с:м]");
+                else if (result.TotalSeconds < 30)
+                    emb.WithDescription("Время розыгрыша не может быть меньше 30 секунд!");
+                else
+                {
+                    if (result.TotalDays > 28)
+                        result = new TimeSpan(28,0,0,0);
+
+                    var text = $"Вы успешно выдали нарушение на ";
+                    if (result.TotalSeconds > 86400)
+                        text += $"{result.Days} дней и {result.Hours} часов";
+                    else if (result.TotalSeconds > 3600)
+                        text += $"{result.Hours} часов и {result.Minutes} минут";
+                    if (result.TotalSeconds > 60)
+                        text += $"{result.Minutes} минут и {result.Seconds} секунд";
+                    else
+                        text += $"{result.Seconds} секунд";
+
+                    emb.WithDescription(text);
+                    await user.SetTimeOutAsync(result);
+                }
+                await Context.Channel.SendMessageAsync("",false,emb.Build());
             }
         }
 

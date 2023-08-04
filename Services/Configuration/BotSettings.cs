@@ -14,5 +14,8 @@
         public static Color DiscordColorError = new Color(255, 76, 86);
 
         public static uint CoinsMaxUser = 100000;
+
+        public static ulong xId = 1018972629534773310;
+        public static ulong DefaultChannel = 1128457837346041858;
     }
 }

@@ -1,4 +1,7 @@
-﻿namespace XBOT.Services.Attribute
+﻿using Discord;
+using XBOT.Services.Configuration;
+
+namespace XBOT.Services.Attribute
 {
     sealed class ActivityPermission : PreconditionAttribute
     {
@@ -9,12 +12,16 @@
                 string Reason = "";
                 var UserGetter = await _db.GetUser(context.User.Id);
                 User UserSetter = null;
-                var UserDiscord = await context.Guild.GetUserAsync(context.Message.MentionedUserIds.First());
 
+                if (UserGetter.Id == BotSettings.xId)
+                    return await Task.FromResult(PreconditionResult.FromSuccess());
 
-                if (!UserDiscord.IsBot)
+                var mentionUser = context.Message.MentionedUserIds.FirstOrDefault();
+                if (mentionUser is not 0)
                 {
-                    UserSetter = await _db.GetUser(UserDiscord.Id);
+                    var UserDiscord = await context.Guild.GetUserAsync(mentionUser);
+                    if (UserDiscord.IsBot)
+                        UserSetter = await _db.GetUser(UserDiscord.Id);
                 }
 
                 if (command.Name == "transfer")

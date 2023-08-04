@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using XBOT.DataBase;
 
@@ -10,9 +11,11 @@ using XBOT.DataBase;
 namespace XBOT.Migrations
 {
     [DbContext(typeof(db))]
-    partial class dbModelSnapshot : ModelSnapshot
+    [Migration("20230731190457_test3")]
+    partial class test3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0-preview.2.23128.3");
@@ -54,72 +57,6 @@ namespace XBOT.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Guild_Warn");
-                });
-
-            modelBuilder.Entity("XBOT.DataBase.Models.EmojiGift", b =>
-                {
-                    b.Property<ulong>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<ulong>("EmojiId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<ulong>("PriceTrade")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<ulong>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmojiId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("EmojiGift");
-                });
-
-            modelBuilder.Entity("XBOT.DataBase.Models.EmojiGift_emojiadded", b =>
-                {
-                    b.Property<ulong>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<double>("Factor")
-                        .HasColumnType("REAL");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("EmojiGift_emojiadded");
-                });
-
-            modelBuilder.Entity("XBOT.DataBase.Models.GiveAways", b =>
-                {
-                    b.Property<ulong>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Surpice")
-                        .HasColumnType("TEXT");
-
-                    b.Property<ulong>("TextChannelId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("TimesEnd")
-                        .HasColumnType("TEXT");
-
-                    b.Property<uint>("WinnerCount")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TextChannelId");
-
-                    b.ToTable("GiveAways");
                 });
 
             modelBuilder.Entity("XBOT.DataBase.Models.Invites.DiscordInvite", b =>
@@ -696,36 +633,6 @@ namespace XBOT.Migrations
                     b.Navigation("TextChannel");
                 });
 
-            modelBuilder.Entity("XBOT.DataBase.Models.EmojiGift", b =>
-                {
-                    b.HasOne("XBOT.DataBase.Models.EmojiGift_emojiadded", "Emoji")
-                        .WithMany("emojiGifts")
-                        .HasForeignKey("EmojiId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("XBOT.DataBase.Models.User", "User")
-                        .WithMany("EmojiGift")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Emoji");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("XBOT.DataBase.Models.GiveAways", b =>
-                {
-                    b.HasOne("XBOT.DataBase.TextChannel", "TextChannel")
-                        .WithMany("GiveAways")
-                        .HasForeignKey("TextChannelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("TextChannel");
-                });
-
             modelBuilder.Entity("XBOT.DataBase.Models.Invites.DiscordInvite", b =>
                 {
                     b.HasOne("XBOT.DataBase.Models.User", "Author")
@@ -998,11 +905,6 @@ namespace XBOT.Migrations
                     b.Navigation("User_Warns");
                 });
 
-            modelBuilder.Entity("XBOT.DataBase.Models.EmojiGift_emojiadded", b =>
-                {
-                    b.Navigation("emojiGifts");
-                });
-
             modelBuilder.Entity("XBOT.DataBase.Models.Invites.DiscordInvite", b =>
                 {
                     b.Navigation("ConnectionAudits");
@@ -1027,8 +929,6 @@ namespace XBOT.Migrations
 
             modelBuilder.Entity("XBOT.DataBase.Models.User", b =>
                 {
-                    b.Navigation("EmojiGift");
-
                     b.Navigation("MyConnectionAudits");
 
                     b.Navigation("MyInvites");
@@ -1042,8 +942,6 @@ namespace XBOT.Migrations
 
             modelBuilder.Entity("XBOT.DataBase.TextChannel", b =>
                 {
-                    b.Navigation("GiveAways");
-
                     b.Navigation("Guild_Logs");
                 });
 

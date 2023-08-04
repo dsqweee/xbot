@@ -96,14 +96,5 @@ C:\Users\xXx\source\repos\XBOT\XBOT\obj\Debug\net7.0\refint\XBOT.dll
 C:\Users\xXx\source\repos\XBOT\XBOT\obj\Debug\net7.0\XBOT.pdb
 C:\Users\xXx\source\repos\XBOT\XBOT\obj\Debug\net7.0\XBOT.genruntimeconfig.cache
 C:\Users\xXx\source\repos\XBOT\XBOT\obj\Debug\net7.0\ref\XBOT.dll
-C:\Users\xXx\source\repos\XBOT\XBOT\bin\Debug\net7.0\BingChat.dll
-C:\Users\xXx\source\repos\XBOT\XBOT\bin\Debug\net7.0\Microsoft.AspNetCore.Connections.Abstractions.dll
-C:\Users\xXx\source\repos\XBOT\XBOT\bin\Debug\net7.0\Microsoft.AspNetCore.Http.Connections.Client.dll
-C:\Users\xXx\source\repos\XBOT\XBOT\bin\Debug\net7.0\Microsoft.AspNetCore.Http.Connections.Common.dll
-C:\Users\xXx\source\repos\XBOT\XBOT\bin\Debug\net7.0\Microsoft.AspNetCore.SignalR.Client.dll
-C:\Users\xXx\source\repos\XBOT\XBOT\bin\Debug\net7.0\Microsoft.AspNetCore.SignalR.Client.Core.dll
-C:\Users\xXx\source\repos\XBOT\XBOT\bin\Debug\net7.0\Microsoft.AspNetCore.SignalR.Common.dll
-C:\Users\xXx\source\repos\XBOT\XBOT\bin\Debug\net7.0\Microsoft.AspNetCore.SignalR.Protocols.Json.dll
-C:\Users\xXx\source\repos\XBOT\XBOT\bin\Debug\net7.0\Microsoft.Bcl.AsyncInterfaces.dll
-C:\Users\xXx\source\repos\XBOT\XBOT\bin\Debug\net7.0\Microsoft.Extensions.Features.dll
-C:\Users\xXx\source\repos\XBOT\XBOT\bin\Debug\net7.0\System.IO.Pipelines.dll
+C:\Users\xXx\source\repos\XBOT\XBOT\bin\Debug\net7.0\Nekos.Net.dll
+C:\Users\xXx\source\repos\XBOT\XBOT\bin\Debug\net7.0\GEmojiSharp.dll

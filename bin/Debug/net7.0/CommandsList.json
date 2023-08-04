@@ -14,9 +14,276 @@
   "info": {
     "Category": "",
     "MinDesc": "",
-    "Desc": "Команда позволяет узнать подробную информацию о написанной команде",
+    "Desc": "Команда позволяет узнать подробную информацию о написанной команде. Если вы не знаете как написать команду, вы можете узнать через эту команду. Пример: x.info modules",
     "Usage": [ "i", "info" ]
   },
+
+  "botblock": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "Выдать/убрать блокировку к боту у пользователя",
+    "Usage": [ "bb", "botblock" ]
+  },
+
+  "moderatoradd": {
+    "Category": "Permission",
+    "MinDesc": "",
+    "Desc": "Позволяет выдать права модератора на сервере",
+    "Usage": [ "ma", "moderatoradd" ]
+  },
+
+  "iventeradd": {
+    "Category": "Permission",
+    "MinDesc": "",
+    "Desc": "Позволяет выдать права ивентера на сервере",
+    "Usage": [ "ia", "iventeradd" ]
+  },
+
+  "iventerdel": {
+    "Category": "Permission",
+    "MinDesc": "",
+    "Desc": "Позволяет удалить права ивентера на сервере",
+    "Usage": [ "id", "iventerdel" ]
+  },
+  "moderatordel": {
+    "Category": "Permission",
+    "MinDesc": "",
+    "Desc": "Позволяет удалить права модератора на сервере",
+    "Usage": [ "md", "moderatordel" ]
+  },
+
+  "adminadd": {
+    "Category": "Permission",
+    "MinDesc": "",
+    "Desc": "Позволяет выдать права админа на сервере",
+    "Usage": [ "aa", "adminadd" ]
+  },
+
+  "admindel": {
+    "Category": "Permission",
+    "MinDesc": "",
+    "Desc": "Позволяет удалить права админа на сервере",
+    "Usage": [ "ad", "admindel" ]
+  },
+
+  "refferalroleadd": {
+    "Category": "Roles",
+    "MinDesc": "",
+    "Desc": "Выставляет реферальную роль на сервере",
+    "Usage": [ "refra", "refferalroleadd" ]
+  },
+
+  "refferalroledel": {
+    "Category": "Roles",
+    "MinDesc": "",
+    "Desc": "Удаляет реферальную роль на сервере",
+    "Usage": [ "refrd", "refferalroleadd" ]
+  },
+
+  "levelroledel": {
+    "Category": "Roles",
+    "MinDesc": "",
+    "Desc": "Удаляет уровневую роль на сервере",
+    "Usage": [ "lrd", "levelroledel" ]
+  },
+
+  "levelroleadd": {
+    "Category": "Roles",
+    "MinDesc": "",
+    "Desc": "Добавляет уровневую роль на сервере",
+    "Usage": [ "lra", "levelroleadd" ]
+  },
+  "reproledel": {
+    "Category": "Roles",
+    "MinDesc": "",
+    "Desc": "Удаляет репутационную роль на сервере",
+    "Usage": [ "rrd", "reproledel" ]
+  },
+
+  "reproleadd": {
+    "Category": "Roles",
+    "MinDesc": "",
+    "Desc": "Добавляет репутационную роль на сервере",
+    "Usage": [ "rra", "reproleadd" ]
+  },
+
+  "buyroledel": {
+    "Category": "Roles",
+    "MinDesc": "",
+    "Desc": "Удаляет покупную роль на сервере",
+    "Usage": [ "brd", "buyroledel" ]
+  },
+
+  "buyroleadd": {
+    "Category": "Roles",
+    "MinDesc": "",
+    "Desc": "Добавляет покупную роль на сервере",
+    "Usage": [ "bra", "buyroleadd" ]
+  },
+
+  "unwarn": {
+    "Category": "Warns",
+    "MinDesc": "",
+    "Desc": "Убрать нарушение пользователю.",
+    "Usage": [ "uw", "unwarn" ]
+  },
+
+  "mute": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "Выдать мут пользователю.",
+    "Usage": [ "mt", "mute" ]
+  },
+
+  "embedsay": {
+    "Category": "Сообщения",
+    "MinDesc": "",
+    "Desc": "Написать эмбед сообщение в чат. Вставьте json из этого сайта - https://embed.discord-bot.net/",
+    "Usage": [ "es", "embedsay" ]
+  },
+  "say": {
+    "Category": "Сообщения",
+    "MinDesc": "",
+    "Desc": "Написать сообщение в чат.",
+    "Usage": [ "s", "say" ]
+  },
+
+  "giveawaystart": {
+    "Category": "Розыгрыш",
+    "MinDesc": "",
+    "Desc": "Создать розыгрыш. Time - Формат: 01:00:00 [ч:м:с], WinnersCount - количество победителей, Given - приз который выдается",
+    "Usage": [ "gastart", "giveawaystart" ]
+  },
+
+  "giveawaystop": {
+    "Category": "Розыгрыш",
+    "MinDesc": "",
+    "Desc": "Принудительно завершить розыгрыш. MessageId - Id сообщения. Нужно включить режим разработчика в настройках, и после кликнуть на 3 точки сообщения, и там будет скопировать Id.",
+    "Usage": [ "gastop", "giveawaystop" ]
+  },
+
+  "warn": {
+    "Category": "Warns",
+    "MinDesc": "",
+    "Desc": "Выдать нарушение пользователю. user - пинг пользователя. Reason - причина",
+    "Usage": [ "w", "warn" ]
+  },
+
+  "cuddle": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "прижаться к пользователю",
+    "Usage": [ "cuddle", "cuddle" ]
+  },
+
+  "feed": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "Покормить пользователя",
+    "Usage": [ "feed", "feed" ]
+  },
+
+  "hug": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "Обнять пользователя",
+    "Usage": [ "hug", "hug" ]
+  },
+
+  "kiss": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "Поцеловать пользователя",
+    "Usage": [ "kiss", "kiss" ]
+  },
+
+  "pat": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "Погладить пользователя",
+    "Usage": [ "pat", "pat" ]
+  },
+
+  "poke": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "Ткнуть пользователя",
+    "Usage": [ "poke", "poke" ]
+  },
+
+  "slap": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "Шлепнуть пользователя",
+    "Usage": [ "slap", "slap" ]
+  },
+
+  "tickle": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "Щекотать пользователя",
+    "Usage": [ "tickle", "tickle" ]
+  },
+
+  "baka": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "Бака пользователь",
+    "Usage": [ "baka", "baka" ]
+  },
+
+  "nekos": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "Дать кошечку",
+    "Usage": [ "nekos", "nekos" ]
+  },
+
+  "smug": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "Самодовольничать",
+    "Usage": [ "smug", "smug" ]
+  },
+
+
+  "usertop": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "Топ пользователей по 3 критериям",
+    "Usage": [ "ut", "usertop" ]
+  },
+
+  "sex": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "Хубабубнуть пользователя",
+    "Usage": [ "sex", "sex" ]
+  },
+
+  "burthdateset": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "Выставить дату рождения. Формат - 01.01.2001",
+    "Usage": [ "bds", "burthdateset" ]
+  },
+
+  "userinfo": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "Открыть профиль. user - возможность упомянуть пользователя, чтобы открыть его профиль.",
+    "Usage": [ "ui", "userinfo" ]
+  },
+
+  "refferal": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "Открыть реферальную систему. Система отображает достижения в реферальной системе",
+    "Usage": [ "ref", "refferal" ]
+  },
+
+
+
 
   "daily": {
     "Category": "Экономика",
@@ -37,11 +304,44 @@
     "Usage": [ "rep", "reputation" ]
   },
 
-
-  "kick": {
+  "marry": {
     "Category": "",
-    "MinDesc": "kick",
-    "Desc": "kick",
-    "Usage": [ "k", "kick" ]
+    "MinDesc": "",
+    "Desc": "Пожениться на пользователе",
+    "Usage": [ "mr", "marry" ]
+  },
+
+  "divorce": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "Расстаться с человеком с которым вы поженились",
+    "Usage": [ "divorce", "divorce" ]
+  },
+
+
+
+  "reprole": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "Просмотреть репутационные роли на сервере",
+    "Usage": [ "rr", "reprole" ]
+  },
+  "levelrole": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "Просмотреть уровневые роли на сервере",
+    "Usage": [ "lr", "levelrole" ]
+  },
+  "buyrole": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "Просмотреть/купить роли на продаже на сервере",
+    "Usage": [ "br", "buyrole" ]
+  },
+  "refferalrole": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "Просмотреть рефферальные роли на сервере",
+    "Usage": [ "refr", "refferalrole" ]
   }
 }

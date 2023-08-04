@@ -1,21 +1,24 @@
-﻿using System.Text.RegularExpressions;
+﻿using Discord;
+using System.Text.RegularExpressions;
+using XBOT.DataBase.Models;
+using XBOT.Services.Configuration;
 
 namespace XBOT.Services
 {
     public class MessageScanning
     {
-        public async void ChatSystem(SocketCommandContext Context, TextChannel Channel, string Prefix)
+        public static async Task<bool> ChatSystem(SocketCommandContext Context, TextChannel Channel, string Prefix)
         {
             using (var _db = new db())
             {
                 string message = Context.Message.Content;
-
+                bool retorn = false;
                 var Settings = _db.Settings.FirstOrDefault();
                 var UserRoles = Context.Guild.CurrentUser.Roles;
                 if (!UserRoles.Any(x => x.Id == Settings.AdminRoleId) &&
                     !UserRoles.Any(x => x.Id == Settings.ModeratorRoleId))
                 {
-                    return;
+                    return false;
                 }
 
                 if(Channel.delUrl)
@@ -30,7 +33,7 @@ namespace XBOT.Services
                         if (isImage && Channel.delUrlImage || !isImage)
                         {
                             await Context.Message.DeleteAsync();
-                            return;
+                            return true;
                         }
                     }
                 }
@@ -49,13 +52,12 @@ namespace XBOT.Services
                         if (invitex == null)
                         {
                             await Context.Message.DeleteAsync();
-                            return;
+                            return true;
                         }
                     }
                 } // ИНВАЙТЫ
-
-
             }
+            return false;
         }
 
     }

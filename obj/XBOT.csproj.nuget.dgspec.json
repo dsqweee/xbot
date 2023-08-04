@@ -41,10 +41,6 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
-            "BingChat": {
-              "target": "Package",
-              "version": "[0.8.0, )"
-            },
             "Discord.Net.Commands": {
               "target": "Package",
               "version": "[3.11.0, )"
@@ -52,6 +48,14 @@
             "Discord.Net.Interactions": {
               "target": "Package",
               "version": "[3.11.0, )"
+            },
+            "Discord.Net.WebSocket": {
+              "target": "Package",
+              "version": "[3.11.0, )"
+            },
+            "GEmojiSharp": {
+              "target": "Package",
+              "version": "[3.0.0, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
@@ -74,6 +78,10 @@
             "Microsoft.Extensions.Hosting": {
               "target": "Package",
               "version": "[7.0.1, )"
+            },
+            "Nekos.Net": {
+              "target": "Package",
+              "version": "[3.2.0, )"
             },
             "NetEscapades.Configuration.Yaml": {
               "target": "Package",
