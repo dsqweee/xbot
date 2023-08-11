@@ -5,8 +5,10 @@ using XBOT.Services.Configuration;
 
 namespace XBOT.DataBase
 {
-    public class db : DbContext
+    public class Db : DbContext
     {
+        public DbSet<User_MinecraftAccount> User_MinecraftAccount { get; set; }
+        public DbSet<QiwiTransactions> QiwiTransactions { get; set; }
         public DbSet<PrivateChannel> PrivateChannel { get; set; }
         public DbSet<TextChannel> TextChannel { get; set; }
         public DbSet<Guild_Logs> Guild_Logs { get; set; }
@@ -115,6 +117,11 @@ namespace XBOT.DataBase
                 .HasOne(s => s.Warn)
                 .WithOne(x => x.UnWarn)
                 .HasForeignKey<User_Warn>(s => s.UnWarn_Id);
+
+            modelBuilder.Entity<User>()
+                .HasOne(s => s.MinecraftAccount)
+                .WithOne(x => x.User)
+                .HasForeignKey<User_MinecraftAccount>(s => s.UserId);
         }
     }
 }

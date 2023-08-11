@@ -10,7 +10,7 @@ using XBOT.DataBase;
 
 namespace XBOT.Migrations
 {
-    [DbContext(typeof(db))]
+    [DbContext(typeof(Db))]
     [Migration("20230729091910_Test1")]
     partial class Test1
     {

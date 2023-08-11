@@ -28,9 +28,9 @@
 //        [SlashCommand("modules", "открыть модули бота")]
 //        public async Task modules()
 //        {
-//            using (db _db = new())
+//            using (Db _db = new ())
 //            {
-//                var Prefix = _db.Settings.FirstOrDefault().Prefix;
+//                var Prefix = db.Settings.FirstOrDefault().Prefix;
 
 //                var emb = new EmbedBuilder()
 //                    .WithColor(BotSettings.DiscordColor)
@@ -55,7 +55,7 @@
 
 //                var Module = selectedOption.Data.Values.First();
 //                emb.WithAuthor($"📜 Команды модуля {Module}");
-//                var Guild = _db.Settings.FirstOrDefault();
+//                var Guild = db.Settings.FirstOrDefault();
 //                emb.Footer.Text += $"\nВы можете написать команду вручную - {Guild.Prefix}userinfo";
 //                MenuGuidId = Guid.NewGuid().ToString();
 //                menuBuilder.WithCustomId(MenuGuidId).WithPlaceholder("Выберите команду");
@@ -111,7 +111,7 @@
 
 //        private void CommandsList(string modules,ref SelectMenuBuilder menuBuilder, ref EmbedBuilder emb)
 //        {
-//            using (db _db = new())
+//            using (Db _db = new ())
 //            {
                 
 //                var mdls = _service.Modules.FirstOrDefault(x => x.Name.ToLower() == modules.ToLower());
@@ -146,7 +146,7 @@
 //                    {
 //                        emb.Description = emb.Description.Insert(0, "📚**Остальные команды**\n");
 //                    }
-//                    var Guild = _db.Settings.FirstOrDefault();
+//                    var Guild = db.Settings.FirstOrDefault();
 //                    emb.WithFooter($"Подробная информация о команде - {Guild.Prefix}i [Имя команды]");
 //                }
 //                else
@@ -176,9 +176,9 @@
 //        //[SlashCommand("commands", "открыть команды модуля")]
 //        //public async Task commands(string modules)
 //        //{
-//        //    using (db _db = new())
+//        //    using (Db _db = new ())
 //        //    {
-//        //        var Guild = _db.Settings.FirstOrDefault();
+//        //        var Guild = db.Settings.FirstOrDefault();
 //        //        var emb = new EmbedBuilder().WithColor(255, 0, 94).WithDescription("").WithAuthor($"📜 {modules} - Команды [префикс - {Guild.Prefix}]");
 
 //        //        var mdls = _service.Modules.FirstOrDefault(x => x.Name.ToLower() == modules.ToLower());
@@ -220,7 +220,7 @@
 //        [SlashCommand("info", "открыть информацию о команде")]
 //        public async Task info(string command)
 //        {
-//            using (db _db = new())
+//            using (Db _db = new ())
 //            {
 //                command = command.ToLower();
 //                var Command = _service.Commands.FirstOrDefault(x => x.Aliases[0].ToLower() == command || x.Aliases.Last().ToLower() == command);
@@ -234,7 +234,7 @@
 //                        {
 //                            text += $"[{Parameter}{(Parameter.IsOptional ? "/можно не указывать" : "")}] ";
 //                        }
-//                    var prefix = _db.Settings.FirstOrDefault().Prefix;
+//                    var prefix = db.Settings.FirstOrDefault().Prefix;
 //                    emb.AddField($"Сокращение: {Command.Remarks.Replace('"', ' ')}",
 //                                 $"Описание: {Command.Summary}\n" +
 //                                 $"Пример: {prefix}{Command.Name} {text}");

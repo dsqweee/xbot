@@ -18,10 +18,10 @@
           }
         }
       },
-      "Discord.Net.Commands/3.11.0": {
+      "Discord.Net.Commands/3.12.0": {
         "type": "package",
         "dependencies": {
-          "Discord.Net.Core": "3.11.0"
+          "Discord.Net.Core": "3.12.0"
         },
         "compile": {
           "lib/net6.0/Discord.Net.Commands.dll": {
@@ -34,7 +34,7 @@
           }
         }
       },
-      "Discord.Net.Core/3.11.0": {
+      "Discord.Net.Core/3.12.0": {
         "type": "package",
         "dependencies": {
           "Newtonsoft.Json": "13.0.2",
@@ -53,12 +53,12 @@
           }
         }
       },
-      "Discord.Net.Interactions/3.11.0": {
+      "Discord.Net.Interactions/3.12.0": {
         "type": "package",
         "dependencies": {
-          "Discord.Net.Core": "3.11.0",
-          "Discord.Net.Rest": "3.11.0",
-          "Discord.Net.WebSocket": "3.11.0",
+          "Discord.Net.Core": "3.12.0",
+          "Discord.Net.Rest": "3.12.0",
+          "Discord.Net.WebSocket": "3.12.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "5.0.0",
           "System.Collections.Immutable": "5.0.0",
           "System.Reactive": "5.0.0"
@@ -74,10 +74,10 @@
           }
         }
       },
-      "Discord.Net.Rest/3.11.0": {
+      "Discord.Net.Rest/3.12.0": {
         "type": "package",
         "dependencies": {
-          "Discord.Net.Core": "3.11.0"
+          "Discord.Net.Core": "3.12.0"
         },
         "compile": {
           "lib/net6.0/Discord.Net.Rest.dll": {
@@ -90,11 +90,11 @@
           }
         }
       },
-      "Discord.Net.WebSocket/3.11.0": {
+      "Discord.Net.WebSocket/3.12.0": {
         "type": "package",
         "dependencies": {
-          "Discord.Net.Core": "3.11.0",
-          "Discord.Net.Rest": "3.11.0"
+          "Discord.Net.Core": "3.12.0",
+          "Discord.Net.Rest": "3.12.0"
         },
         "compile": {
           "lib/net6.0/Discord.Net.WebSocket.dll": {
@@ -103,6 +103,22 @@
         },
         "runtime": {
           "lib/net6.0/Discord.Net.WebSocket.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Fergun.Interactive/1.7.3": {
+        "type": "package",
+        "dependencies": {
+          "Discord.Net.WebSocket": "3.7.2"
+        },
+        "compile": {
+          "lib/netstandard2.1/Fergun.Interactive.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.1/Fergun.Interactive.dll": {
             "related": ".xml"
           }
         }
@@ -949,6 +965,18 @@
           }
         }
       },
+      "RconSharp/2.0.1": {
+        "type": "package",
+        "dependencies": {
+          "System.IO.Pipelines": "4.7.2"
+        },
+        "compile": {
+          "lib/netstandard2.1/RconSharp.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.1/RconSharp.dll": {}
+        }
+      },
       "SQLitePCLRaw.bundle_e_sqlite3/2.1.4": {
         "type": "package",
         "dependencies": {
@@ -1174,6 +1202,19 @@
           }
         }
       },
+      "System.IO.Pipelines/4.7.2": {
+        "type": "package",
+        "compile": {
+          "ref/netcoreapp2.0/System.IO.Pipelines.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netcoreapp3.0/System.IO.Pipelines.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "System.Linq.Async/5.0.0": {
         "type": "package",
         "compile": {
@@ -1302,15 +1343,15 @@
         "readme.txt"
       ]
     },
-    "Discord.Net.Commands/3.11.0": {
-      "sha512": "G++xp6rVOphx6jX8m8TCVfiwQi6AsXlWW+lNXfKE3j5VhSKYbytRXOs0faUCrTa+tsfOGI6OCoe8XHMjEDwPoA==",
+    "Discord.Net.Commands/3.12.0": {
+      "sha512": "xsX/cL3jDJKBDQjSk3lk1mT6nWAPOJFQHYYmoCExGvKBKsAYc7YxxPIY1zlXCEkJ0OiU62swuuEZdGevTNK01Q==",
       "type": "package",
-      "path": "discord.net.commands/3.11.0",
+      "path": "discord.net.commands/3.12.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "PackageLogo.png",
-        "discord.net.commands.3.11.0.nupkg.sha512",
+        "discord.net.commands.3.12.0.nupkg.sha512",
         "discord.net.commands.nuspec",
         "lib/net461/Discord.Net.Commands.dll",
         "lib/net461/Discord.Net.Commands.xml",
@@ -1324,15 +1365,15 @@
         "lib/netstandard2.1/Discord.Net.Commands.xml"
       ]
     },
-    "Discord.Net.Core/3.11.0": {
-      "sha512": "jVwzXlIs/tHFufukhych0/GGOntXOYr2hDJyJTYprvJBMGtGZG2N8GZDt923wW/08M96DX7SesDwOdItvT7VzQ==",
+    "Discord.Net.Core/3.12.0": {
+      "sha512": "9MU124jnJYqfOt5nIGtpUZhQCFR6Ag2pB5KNDZRqZNMsKE2L3OkHuzDeD+iLSbOYYRPrbk+dfKOdnJZl+K1itA==",
       "type": "package",
-      "path": "discord.net.core/3.11.0",
+      "path": "discord.net.core/3.12.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "PackageLogo.png",
-        "discord.net.core.3.11.0.nupkg.sha512",
+        "discord.net.core.3.12.0.nupkg.sha512",
         "discord.net.core.nuspec",
         "lib/net461/Discord.Net.Core.dll",
         "lib/net461/Discord.Net.Core.xml",
@@ -1346,15 +1387,15 @@
         "lib/netstandard2.1/Discord.Net.Core.xml"
       ]
     },
-    "Discord.Net.Interactions/3.11.0": {
-      "sha512": "JyxnIKhcR7KfYAOiNC720mq5qjgU8VjU++AgvJJDChq1/8qP/pgimDOvQi/Vvx9gsCRAI1avOGzy94DH8GsS7Q==",
+    "Discord.Net.Interactions/3.12.0": {
+      "sha512": "FlfWqw3O56AAXbR5sc67E1vuRT0WScFlwE7+BdIAW5m/ziiQVTFuZLmUPnE5rnWSf4lcqeLx7UXFJknBGMr6uw==",
       "type": "package",
-      "path": "discord.net.interactions/3.11.0",
+      "path": "discord.net.interactions/3.12.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "PackageLogo.png",
-        "discord.net.interactions.3.11.0.nupkg.sha512",
+        "discord.net.interactions.3.12.0.nupkg.sha512",
         "discord.net.interactions.nuspec",
         "lib/net461/Discord.Net.Interactions.dll",
         "lib/net461/Discord.Net.Interactions.xml",
@@ -1368,14 +1409,15 @@
         "lib/netstandard2.1/Discord.Net.Interactions.xml"
       ]
     },
-    "Discord.Net.Rest/3.11.0": {
-      "sha512": "yRQemNrt9wX4EsAP7QSJ6SebFm2A9RrPGGW3r9/vjhEqS7reGFi0f5bFWk+rgk/xzSmpsJZwqec7ky7jBbU+4g==",
+    "Discord.Net.Rest/3.12.0": {
+      "sha512": "lyp+1bVd4RnOmEMgM//yJ3zD7PZmT9tr6ljl/SPH66/kzlxex6kvlV7TyH7K93S0joKHzvGWm+lL0rEbkiFXPQ==",
       "type": "package",
-      "path": "discord.net.rest/3.11.0",
+      "path": "discord.net.rest/3.12.0",
       "files": [
         ".nupkg.metadata",
+        ".signature.p7s",
         "PackageLogo.png",
-        "discord.net.rest.3.11.0.nupkg.sha512",
+        "discord.net.rest.3.12.0.nupkg.sha512",
         "discord.net.rest.nuspec",
         "lib/net461/Discord.Net.Rest.dll",
         "lib/net461/Discord.Net.Rest.xml",
@@ -1389,15 +1431,15 @@
         "lib/netstandard2.1/Discord.Net.Rest.xml"
       ]
     },
-    "Discord.Net.WebSocket/3.11.0": {
-      "sha512": "85vyo2bMThjgQgu1Fr4NCi7TNXrWEn3MlRF9zt1qcAFlMNy8UE6qpa1KmERD0Z05G8UB+l8/UQ4TmH1mWN/cqQ==",
+    "Discord.Net.WebSocket/3.12.0": {
+      "sha512": "bipottjJzE/yEc4CZmCURRboROuMqHQRGma7L+qYfv3VwNgb0+j2rxvawcY7Tr77EuX0EjnnNBGoKcdJClGYEQ==",
       "type": "package",
-      "path": "discord.net.websocket/3.11.0",
+      "path": "discord.net.websocket/3.12.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "PackageLogo.png",
-        "discord.net.websocket.3.11.0.nupkg.sha512",
+        "discord.net.websocket.3.12.0.nupkg.sha512",
         "discord.net.websocket.nuspec",
         "lib/net461/Discord.Net.WebSocket.dll",
         "lib/net461/Discord.Net.WebSocket.xml",
@@ -1409,6 +1451,21 @@
         "lib/netstandard2.0/Discord.Net.WebSocket.xml",
         "lib/netstandard2.1/Discord.Net.WebSocket.dll",
         "lib/netstandard2.1/Discord.Net.WebSocket.xml"
+      ]
+    },
+    "Fergun.Interactive/1.7.3": {
+      "sha512": "VMNj5OfnPrpcj99g8JsO4jgdLkyUc2qcce6tgXrkFfXzB7UM7eU8z/0bsEjRD44ZTkGtQ1vOW3lCDOQ2dC0Hlg==",
+      "type": "package",
+      "path": "fergun.interactive/1.7.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "fergun.interactive.1.7.3.nupkg.sha512",
+        "fergun.interactive.nuspec",
+        "lib/netstandard2.0/Fergun.Interactive.dll",
+        "lib/netstandard2.0/Fergun.Interactive.xml",
+        "lib/netstandard2.1/Fergun.Interactive.dll",
+        "lib/netstandard2.1/Fergun.Interactive.xml"
       ]
     },
     "GEmojiSharp/3.0.0": {
@@ -2514,6 +2571,20 @@
         "packageIcon.png"
       ]
     },
+    "RconSharp/2.0.1": {
+      "sha512": "TKyP6Sc35Gcnw1AEBd9XTfdxNBZnnRHexJkIdplmmHuyFW0+2Qk+j2B+/042DkPyhw1hNQYuVHza0ksWsXx+3g==",
+      "type": "package",
+      "path": "rconsharp/2.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.txt",
+        "lib/netstandard2.1/RconSharp.dll",
+        "logo.png",
+        "rconsharp.2.0.1.nupkg.sha512",
+        "rconsharp.nuspec"
+      ]
+    },
     "SQLitePCLRaw.bundle_e_sqlite3/2.1.4": {
       "sha512": "EWI1olKDjFEBMJu0+3wuxwziIAdWDVMYLhuZ3Qs84rrz+DHwD00RzWPZCa+bLnHCf3oJwuFZIRsHT5p236QXww==",
       "type": "package",
@@ -2728,6 +2799,34 @@
         "lib/netstandard2.1/System.Interactive.Async.xml",
         "system.interactive.async.5.0.0.nupkg.sha512",
         "system.interactive.async.nuspec"
+      ]
+    },
+    "System.IO.Pipelines/4.7.2": {
+      "sha512": "rGIIhoY3lUdn9rWeuGdgeZZ0P+SpJ1wZI5g8TnXqgvuhFgUP7iP9Nt5FZebYInQZQxqnwjPxdYYBE5l/8PJmqQ==",
+      "type": "package",
+      "path": "system.io.pipelines/4.7.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net461/System.IO.Pipelines.dll",
+        "lib/net461/System.IO.Pipelines.xml",
+        "lib/netcoreapp3.0/System.IO.Pipelines.dll",
+        "lib/netcoreapp3.0/System.IO.Pipelines.xml",
+        "lib/netstandard1.3/System.IO.Pipelines.dll",
+        "lib/netstandard1.3/System.IO.Pipelines.xml",
+        "lib/netstandard2.0/System.IO.Pipelines.dll",
+        "lib/netstandard2.0/System.IO.Pipelines.xml",
+        "ref/net461/System.IO.Pipelines.dll",
+        "ref/net461/System.IO.Pipelines.xml",
+        "ref/netcoreapp2.0/System.IO.Pipelines.dll",
+        "ref/netcoreapp2.0/System.IO.Pipelines.xml",
+        "system.io.pipelines.4.7.2.nupkg.sha512",
+        "system.io.pipelines.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
       ]
     },
     "System.Linq.Async/5.0.0": {
@@ -2989,9 +3088,10 @@
   },
   "projectFileDependencyGroups": {
     "net7.0": [
-      "Discord.Net.Commands >= 3.11.0",
-      "Discord.Net.Interactions >= 3.11.0",
-      "Discord.Net.WebSocket >= 3.11.0",
+      "Discord.Net.Commands >= 3.12.0",
+      "Discord.Net.Interactions >= 3.12.0",
+      "Discord.Net.WebSocket >= 3.12.0",
+      "Fergun.Interactive >= 1.7.3",
       "GEmojiSharp >= 3.0.0",
       "Microsoft.EntityFrameworkCore >= 8.0.0-preview.2.23128.3",
       "Microsoft.EntityFrameworkCore.Proxies >= 8.0.0-preview.2.23128.3",
@@ -2999,7 +3099,8 @@
       "Microsoft.EntityFrameworkCore.Tools >= 8.0.0-preview.2.23128.3",
       "Microsoft.Extensions.Hosting >= 7.0.1",
       "Nekos.Net >= 3.2.0",
-      "NetEscapades.Configuration.Yaml >= 3.1.0"
+      "NetEscapades.Configuration.Yaml >= 3.1.0",
+      "RconSharp >= 2.0.1"
     ]
   },
   "packageFolders": {
@@ -3044,15 +3145,19 @@
         "dependencies": {
           "Discord.Net.Commands": {
             "target": "Package",
-            "version": "[3.11.0, )"
+            "version": "[3.12.0, )"
           },
           "Discord.Net.Interactions": {
             "target": "Package",
-            "version": "[3.11.0, )"
+            "version": "[3.12.0, )"
           },
           "Discord.Net.WebSocket": {
             "target": "Package",
-            "version": "[3.11.0, )"
+            "version": "[3.12.0, )"
+          },
+          "Fergun.Interactive": {
+            "target": "Package",
+            "version": "[1.7.3, )"
           },
           "GEmojiSharp": {
             "target": "Package",
@@ -3087,6 +3192,10 @@
           "NetEscapades.Configuration.Yaml": {
             "target": "Package",
             "version": "[3.1.0, )"
+          },
+          "RconSharp": {
+            "target": "Package",
+            "version": "[2.0.1, )"
           }
         },
         "imports": [

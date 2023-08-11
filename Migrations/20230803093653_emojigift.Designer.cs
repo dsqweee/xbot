@@ -10,7 +10,7 @@ using XBOT.DataBase;
 
 namespace XBOT.Migrations
 {
-    [DbContext(typeof(db))]
+    [DbContext(typeof(Db))]
     [Migration("20230803093653_emojigift")]
     partial class emojigift
     {

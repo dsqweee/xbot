@@ -98,3 +98,6 @@ C:\Users\xXx\source\repos\XBOT\XBOT\obj\Debug\net7.0\XBOT.genruntimeconfig.cache
 C:\Users\xXx\source\repos\XBOT\XBOT\obj\Debug\net7.0\ref\XBOT.dll
 C:\Users\xXx\source\repos\XBOT\XBOT\bin\Debug\net7.0\Nekos.Net.dll
 C:\Users\xXx\source\repos\XBOT\XBOT\bin\Debug\net7.0\GEmojiSharp.dll
+C:\Users\xXx\source\repos\XBOT\XBOT\bin\Debug\net7.0\Fergun.Interactive.dll
+C:\Users\xXx\source\repos\XBOT\XBOT\bin\Debug\net7.0\System.IO.Pipelines.dll
+C:\Users\xXx\source\repos\XBOT\XBOT\bin\Debug\net7.0\RconSharp.dll

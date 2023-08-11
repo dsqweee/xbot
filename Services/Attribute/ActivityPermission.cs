@@ -1,67 +1,119 @@
-﻿using Discord;
+﻿using Microsoft.Extensions.DependencyInjection;
 using XBOT.Services.Configuration;
 
-namespace XBOT.Services.Attribute
+namespace XBOT.Services.Attribute;
+
+sealed class ActivityPermission : PreconditionAttribute
 {
-    sealed class ActivityPermission : PreconditionAttribute
+    public override async Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context, CommandInfo command, IServiceProvider services)
     {
-        public override async Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context, CommandInfo command, IServiceProvider services)
+        ulong userId = context.User.Id;
+        if (userId == BotSettings.xId)
+            return PreconditionResult.FromSuccess();
+
+        var db = services.GetRequiredService<Db>();
+
+        var userGetter = await db.GetUser(userId);
+        var userSetter = await GetUserSetter(context, db);
+
+
+        bool isUserGetterActive = CheckUserActivity(userGetter);
+        bool isUserSetterActive = CheckUserActivity(userSetter);
+
+        bool CheckUserActivity(User user)
         {
-            using (db _db = new())
+            var isActive = user.Level >= 5 && (user.messageCounterForDaily >= 30 || (user.daily_Time - DateTime.Now).TotalHours <= 8);
+            if (command.Name == "reputation")
             {
-                string Reason = "";
-                var UserGetter = await _db.GetUser(context.User.Id);
-                User UserSetter = null;
+                isActive &= user.streak < 5;
+            }
+            return isActive;
+        }
 
-                if (UserGetter.Id == BotSettings.xId)
-                    return await Task.FromResult(PreconditionResult.FromSuccess());
+        string reason = null;
+        if (!isUserGetterActive)
+            reason = "Ваш уровень активности не соответствует требованиям.";
+        else if (!isUserSetterActive)
+            reason = $"Уровень активности <@{userSetter.Id}> не соответствует требованиям.";
 
-                var mentionUser = context.Message.MentionedUserIds.FirstOrDefault();
-                if (mentionUser is not 0)
-                {
-                    var UserDiscord = await context.Guild.GetUserAsync(mentionUser);
-                    if (UserDiscord.IsBot)
-                        UserSetter = await _db.GetUser(UserDiscord.Id);
-                }
+        if (reason == null)
+            return PreconditionResult.FromSuccess();
 
-                if (command.Name == "transfer")
-                {
-                    bool isUserGetterActive = CheckUserActivity(UserGetter);
-                    bool isUserSetterActive = CheckUserActivity(UserSetter);
-
-                    bool CheckUserActivity(User user)
-                    {
-                        return user.Level >= 5 && (user.messageCounterForDaily >= 30 || (user.daily_Time - DateTime.Now).TotalHours <= 8);
-                    }
-
-                    if (!isUserGetterActive)
-                        Reason = "Ваш уровень активности не соответствует требованиям для перевода денег.";
-                    else if (!isUserSetterActive)
-                        Reason = $"Уровень активности <@{UserSetter}> не соответствует требованиям для перевода денег.";
-                }
-                else if (command.Name == "reputation")
-                {
-                    bool isUserGetterActive = CheckUserActivity(UserGetter);
-                    bool isUserSetterActive = CheckUserActivity(UserSetter);
-
-                    bool CheckUserActivity(User user)
-                    {
-                        return user.Level >= 5 && (user.messageCounterForDaily >= 30 || (user.daily_Time - DateTime.Now).TotalHours <= 8) && user.streak < 5;
-                    }
-                    if (!isUserGetterActive)
-                        Reason = "Ваш уровень активности не соответствует требованиям для выдачи репутации.";
-                    else if (!isUserSetterActive)
-                        Reason = $"Уровень активности <@{UserSetter}> не соответствует требованиям для выдачи репутации.";
-                }
+        return PreconditionResult.FromError(reason);
 
 
 
 
-                if (Reason == null)
-                    return await Task.FromResult(PreconditionResult.FromSuccess());
 
-                return await Task.FromResult(PreconditionResult.FromError(Reason));
+
+
+
+
+
+
+        //string Reason = "";
+        //var UserGetter = await db.GetUser(context.User.Id);
+        //User UserSetter = null;
+
+        //if (UserGetter.Id == BotSettings.xId)
+        //    return await Task.FromResult(PreconditionResult.FromSuccess());
+
+        //var mentionUser = context.Message.MentionedUserIds.FirstOrDefault();
+        //if (mentionUser is not 0)
+        //{
+        //    var UserDiscord = await context.Guild.GetUserAsync(mentionUser);
+        //    if (UserDiscord.IsBot)
+        //        UserSetter = await db.GetUser(UserDiscord.Id);
+        //}
+
+        //if (command.Name == "transfer")
+        //{
+        //    bool isUserGetterActive = CheckUserActivity(UserGetter);
+        //    bool isUserSetterActive = CheckUserActivity(UserSetter);
+
+        //    bool CheckUserActivity(User user)
+        //    {
+        //        return user.Level >= 5 && (user.messageCounterForDaily >= 30 || (user.daily_Time - DateTime.Now).TotalHours <= 8);
+        //    }
+
+        //    if (!isUserGetterActive)
+        //        Reason = "Ваш уровень активности не соответствует требованиям для перевода денег.";
+        //    else if (!isUserSetterActive)
+        //        Reason = $"Уровень активности <@{UserSetter}> не соответствует требованиям для перевода денег.";
+        //}
+        //else if (command.Name == "reputation")
+        //{
+        //    bool isUserGetterActive = CheckUserActivity(UserGetter);
+        //    bool isUserSetterActive = CheckUserActivity(UserSetter);
+
+        //    bool CheckUserActivity(User user)
+        //    {
+        //        return user.Level >= 5 && (user.messageCounterForDaily >= 30 || (user.daily_Time - DateTime.Now).TotalHours <= 8) && user.streak < 5;
+        //    }
+        //    if (!isUserGetterActive)
+        //        Reason = "Ваш уровень активности не соответствует требованиям для выдачи репутации.";
+        //    else if (!isUserSetterActive)
+        //        Reason = $"Уровень активности <@{UserSetter}> не соответствует требованиям для выдачи репутации.";
+        //}
+
+        //if (Reason == null)
+        //    return await Task.FromResult(PreconditionResult.FromSuccess());
+
+        //return await Task.FromResult(PreconditionResult.FromError(Reason));
+
+    }
+
+    private async Task<User> GetUserSetter(ICommandContext context, Db db)
+    {
+        var mentionUser = context.Message.MentionedUserIds.FirstOrDefault();
+        if (mentionUser != 0)
+        {
+            var userDiscord = await context.Guild.GetUserAsync(mentionUser);
+            if (!userDiscord.IsBot)
+            {
+                return await db.GetUser(userDiscord.Id);
             }
         }
+        return null;
     }
 }

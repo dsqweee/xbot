@@ -8,9 +8,10 @@
     ".NETCoreApp,Version=v7.0": {
       "XBOT/1.0.0": {
         "dependencies": {
-          "Discord.Net.Commands": "3.11.0",
-          "Discord.Net.Interactions": "3.11.0",
-          "Discord.Net.WebSocket": "3.11.0",
+          "Discord.Net.Commands": "3.12.0",
+          "Discord.Net.Interactions": "3.12.0",
+          "Discord.Net.WebSocket": "3.12.0",
+          "Fergun.Interactive": "1.7.3",
           "GEmojiSharp": "3.0.0",
           "Microsoft.EntityFrameworkCore": "8.0.0-preview.2.23128.3",
           "Microsoft.EntityFrameworkCore.Proxies": "8.0.0-preview.2.23128.3",
@@ -18,7 +19,8 @@
           "Microsoft.EntityFrameworkCore.Tools": "8.0.0-preview.2.23128.3",
           "Microsoft.Extensions.Hosting": "7.0.1",
           "Nekos.Net": "3.2.0",
-          "NetEscapades.Configuration.Yaml": "3.1.0"
+          "NetEscapades.Configuration.Yaml": "3.1.0",
+          "RconSharp": "2.0.1"
         },
         "runtime": {
           "XBOT.dll": {}
@@ -35,18 +37,18 @@
           }
         }
       },
-      "Discord.Net.Commands/3.11.0": {
+      "Discord.Net.Commands/3.12.0": {
         "dependencies": {
-          "Discord.Net.Core": "3.11.0"
+          "Discord.Net.Core": "3.12.0"
         },
         "runtime": {
           "lib/net6.0/Discord.Net.Commands.dll": {
-            "assemblyVersion": "3.11.0.0",
-            "fileVersion": "3.11.0.0"
+            "assemblyVersion": "3.12.0.0",
+            "fileVersion": "3.12.0.0"
           }
         }
       },
-      "Discord.Net.Core/3.11.0": {
+      "Discord.Net.Core/3.12.0": {
         "dependencies": {
           "Newtonsoft.Json": "13.0.2",
           "System.Collections.Immutable": "5.0.0",
@@ -55,47 +57,58 @@
         },
         "runtime": {
           "lib/net6.0/Discord.Net.Core.dll": {
-            "assemblyVersion": "3.11.0.0",
-            "fileVersion": "3.11.0.0"
+            "assemblyVersion": "3.12.0.0",
+            "fileVersion": "3.12.0.0"
           }
         }
       },
-      "Discord.Net.Interactions/3.11.0": {
+      "Discord.Net.Interactions/3.12.0": {
         "dependencies": {
-          "Discord.Net.Core": "3.11.0",
-          "Discord.Net.Rest": "3.11.0",
-          "Discord.Net.WebSocket": "3.11.0",
+          "Discord.Net.Core": "3.12.0",
+          "Discord.Net.Rest": "3.12.0",
+          "Discord.Net.WebSocket": "3.12.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0-preview.2.23128.3",
           "System.Collections.Immutable": "5.0.0",
           "System.Reactive": "5.0.0"
         },
         "runtime": {
           "lib/net6.0/Discord.Net.Interactions.dll": {
-            "assemblyVersion": "3.11.0.0",
-            "fileVersion": "3.11.0.0"
+            "assemblyVersion": "3.12.0.0",
+            "fileVersion": "3.12.0.0"
           }
         }
       },
-      "Discord.Net.Rest/3.11.0": {
+      "Discord.Net.Rest/3.12.0": {
         "dependencies": {
-          "Discord.Net.Core": "3.11.0"
+          "Discord.Net.Core": "3.12.0"
         },
         "runtime": {
           "lib/net6.0/Discord.Net.Rest.dll": {
-            "assemblyVersion": "3.11.0.0",
-            "fileVersion": "3.11.0.0"
+            "assemblyVersion": "3.12.0.0",
+            "fileVersion": "3.12.0.0"
           }
         }
       },
-      "Discord.Net.WebSocket/3.11.0": {
+      "Discord.Net.WebSocket/3.12.0": {
         "dependencies": {
-          "Discord.Net.Core": "3.11.0",
-          "Discord.Net.Rest": "3.11.0"
+          "Discord.Net.Core": "3.12.0",
+          "Discord.Net.Rest": "3.12.0"
         },
         "runtime": {
           "lib/net6.0/Discord.Net.WebSocket.dll": {
-            "assemblyVersion": "3.11.0.0",
-            "fileVersion": "3.11.0.0"
+            "assemblyVersion": "3.12.0.0",
+            "fileVersion": "3.12.0.0"
+          }
+        }
+      },
+      "Fergun.Interactive/1.7.3": {
+        "dependencies": {
+          "Discord.Net.WebSocket": "3.12.0"
+        },
+        "runtime": {
+          "lib/netstandard2.1/Fergun.Interactive.dll": {
+            "assemblyVersion": "1.7.3.0",
+            "fileVersion": "1.7.3.0"
           }
         }
       },
@@ -627,6 +640,17 @@
           }
         }
       },
+      "RconSharp/2.0.1": {
+        "dependencies": {
+          "System.IO.Pipelines": "4.7.2"
+        },
+        "runtime": {
+          "lib/netstandard2.1/RconSharp.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.0.0"
+          }
+        }
+      },
       "SQLitePCLRaw.bundle_e_sqlite3/2.1.4": {
         "dependencies": {
           "SQLitePCLRaw.lib.e_sqlite3": "2.1.4",
@@ -823,6 +847,14 @@
           }
         }
       },
+      "System.IO.Pipelines/4.7.2": {
+        "runtime": {
+          "lib/netcoreapp3.0/System.IO.Pipelines.dll": {
+            "assemblyVersion": "4.0.2.1",
+            "fileVersion": "4.700.20.21406"
+          }
+        }
+      },
       "System.Linq.Async/5.0.0": {
         "runtime": {
           "lib/netcoreapp3.1/System.Linq.Async.dll": {
@@ -891,40 +923,47 @@
       "path": "castle.core/5.1.1",
       "hashPath": "castle.core.5.1.1.nupkg.sha512"
     },
-    "Discord.Net.Commands/3.11.0": {
+    "Discord.Net.Commands/3.12.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-G++xp6rVOphx6jX8m8TCVfiwQi6AsXlWW+lNXfKE3j5VhSKYbytRXOs0faUCrTa+tsfOGI6OCoe8XHMjEDwPoA==",
-      "path": "discord.net.commands/3.11.0",
-      "hashPath": "discord.net.commands.3.11.0.nupkg.sha512"
+      "sha512": "sha512-xsX/cL3jDJKBDQjSk3lk1mT6nWAPOJFQHYYmoCExGvKBKsAYc7YxxPIY1zlXCEkJ0OiU62swuuEZdGevTNK01Q==",
+      "path": "discord.net.commands/3.12.0",
+      "hashPath": "discord.net.commands.3.12.0.nupkg.sha512"
     },
-    "Discord.Net.Core/3.11.0": {
+    "Discord.Net.Core/3.12.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-jVwzXlIs/tHFufukhych0/GGOntXOYr2hDJyJTYprvJBMGtGZG2N8GZDt923wW/08M96DX7SesDwOdItvT7VzQ==",
-      "path": "discord.net.core/3.11.0",
-      "hashPath": "discord.net.core.3.11.0.nupkg.sha512"
+      "sha512": "sha512-9MU124jnJYqfOt5nIGtpUZhQCFR6Ag2pB5KNDZRqZNMsKE2L3OkHuzDeD+iLSbOYYRPrbk+dfKOdnJZl+K1itA==",
+      "path": "discord.net.core/3.12.0",
+      "hashPath": "discord.net.core.3.12.0.nupkg.sha512"
     },
-    "Discord.Net.Interactions/3.11.0": {
+    "Discord.Net.Interactions/3.12.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-JyxnIKhcR7KfYAOiNC720mq5qjgU8VjU++AgvJJDChq1/8qP/pgimDOvQi/Vvx9gsCRAI1avOGzy94DH8GsS7Q==",
-      "path": "discord.net.interactions/3.11.0",
-      "hashPath": "discord.net.interactions.3.11.0.nupkg.sha512"
+      "sha512": "sha512-FlfWqw3O56AAXbR5sc67E1vuRT0WScFlwE7+BdIAW5m/ziiQVTFuZLmUPnE5rnWSf4lcqeLx7UXFJknBGMr6uw==",
+      "path": "discord.net.interactions/3.12.0",
+      "hashPath": "discord.net.interactions.3.12.0.nupkg.sha512"
     },
-    "Discord.Net.Rest/3.11.0": {
+    "Discord.Net.Rest/3.12.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-yRQemNrt9wX4EsAP7QSJ6SebFm2A9RrPGGW3r9/vjhEqS7reGFi0f5bFWk+rgk/xzSmpsJZwqec7ky7jBbU+4g==",
-      "path": "discord.net.rest/3.11.0",
-      "hashPath": "discord.net.rest.3.11.0.nupkg.sha512"
+      "sha512": "sha512-lyp+1bVd4RnOmEMgM//yJ3zD7PZmT9tr6ljl/SPH66/kzlxex6kvlV7TyH7K93S0joKHzvGWm+lL0rEbkiFXPQ==",
+      "path": "discord.net.rest/3.12.0",
+      "hashPath": "discord.net.rest.3.12.0.nupkg.sha512"
     },
-    "Discord.Net.WebSocket/3.11.0": {
+    "Discord.Net.WebSocket/3.12.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-85vyo2bMThjgQgu1Fr4NCi7TNXrWEn3MlRF9zt1qcAFlMNy8UE6qpa1KmERD0Z05G8UB+l8/UQ4TmH1mWN/cqQ==",
-      "path": "discord.net.websocket/3.11.0",
-      "hashPath": "discord.net.websocket.3.11.0.nupkg.sha512"
+      "sha512": "sha512-bipottjJzE/yEc4CZmCURRboROuMqHQRGma7L+qYfv3VwNgb0+j2rxvawcY7Tr77EuX0EjnnNBGoKcdJClGYEQ==",
+      "path": "discord.net.websocket/3.12.0",
+      "hashPath": "discord.net.websocket.3.12.0.nupkg.sha512"
+    },
+    "Fergun.Interactive/1.7.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-VMNj5OfnPrpcj99g8JsO4jgdLkyUc2qcce6tgXrkFfXzB7UM7eU8z/0bsEjRD44ZTkGtQ1vOW3lCDOQ2dC0Hlg==",
+      "path": "fergun.interactive/1.7.3",
+      "hashPath": "fergun.interactive.1.7.3.nupkg.sha512"
     },
     "GEmojiSharp/3.0.0": {
       "type": "package",
@@ -1234,6 +1273,13 @@
       "path": "newtonsoft.json/13.0.2",
       "hashPath": "newtonsoft.json.13.0.2.nupkg.sha512"
     },
+    "RconSharp/2.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-TKyP6Sc35Gcnw1AEBd9XTfdxNBZnnRHexJkIdplmmHuyFW0+2Qk+j2B+/042DkPyhw1hNQYuVHza0ksWsXx+3g==",
+      "path": "rconsharp/2.0.1",
+      "hashPath": "rconsharp.2.0.1.nupkg.sha512"
+    },
     "SQLitePCLRaw.bundle_e_sqlite3/2.1.4": {
       "type": "package",
       "serviceable": true,
@@ -1296,6 +1342,13 @@
       "sha512": "sha512-QaqhQVDiULcu4vm6o89+iP329HcK44cETHOYgy/jfEjtzeFy0ZxmuM7nel9ocjnKxEM4yh1mli7hgh8Q9o+/Iw==",
       "path": "system.interactive.async/5.0.0",
       "hashPath": "system.interactive.async.5.0.0.nupkg.sha512"
+    },
+    "System.IO.Pipelines/4.7.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rGIIhoY3lUdn9rWeuGdgeZZ0P+SpJ1wZI5g8TnXqgvuhFgUP7iP9Nt5FZebYInQZQxqnwjPxdYYBE5l/8PJmqQ==",
+      "path": "system.io.pipelines/4.7.2",
+      "hashPath": "system.io.pipelines.4.7.2.nupkg.sha512"
     },
     "System.Linq.Async/5.0.0": {
       "type": "package",

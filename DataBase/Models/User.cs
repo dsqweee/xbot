@@ -66,14 +66,16 @@ namespace XBOT.DataBase.Models
         public TimeSpan voiceActive_public { get; set; }
 
         public ulong? MarriageId { get; set; }
-        public User Marriage { get; set; }
+        public virtual User Marriage { get; set; }
         public DateTime MarriageTime { get; set; }
         public ulong CountSex { get; set; }
 
 
+        public ulong? MinecraftAccountId { get; set; }
+        public User_MinecraftAccount MinecraftAccount { get; set; }
+
         public DateOnly BirthDate { get; set; }
         public int BirthDateComplete { get; set; }
-
 
         //public enum Role
         //{

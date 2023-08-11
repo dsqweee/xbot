@@ -15,6 +15,9 @@ namespace XBOT.DataBase.Models
         public ulong? IventerRoleId { get; set; }
         public Roles IventerRole { get; set; }
 
+        //public ulong? MediaRoleId { get; set; }
+        //public Roles MediaRole { get; set; }
+
 
         public ulong PrivateVoiceChannelId { get; set; }
         public ulong? PrivateTextChannelId { get; set; }
@@ -32,5 +35,9 @@ namespace XBOT.DataBase.Models
         public TextChannel WelcomeTextChannel { get; set; }
         public ulong? WelcomeRoleId { get; set; }
         public Roles WelcomeRole { get; set; }
+
+        public ushort minecraft_port { get; set; }
+        public string minecraft_IP { get; set; }
+        public string minecraft_Key { get; set; }
     }
 }

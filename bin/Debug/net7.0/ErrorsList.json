@@ -1,0 +1,191 @@
+﻿{
+  "Unknown command.": {
+    "Rus": "Введенная команда не найдена!",
+    "HelpCommand": "false"
+  },
+  "User not found.": {
+    "Rus": "Введенный пользователь не найден!",
+    "HelpCommand": "false"
+  },
+  "Channel not found.": {
+    "Rus": "Введенный текстовый канал не найден!",
+    "HelpCommand": "false"
+  },
+  "Role not found.": {
+    "Rus": "Введенная роль не найден!",
+    "HelpCommand": "false"
+  },
+  "This command may only be invoked in an NSFW channel.": {
+    "Rus": "Введенная команда может использоваться только в каналах с пометкой NSFW",
+    "HelpCommand": "false"
+  },
+  "The input text has too many parameters.": {
+    "Rus": "Введенная команда имеет **много** параметров.\n (параметры, значения которые вы пишете после самой команды)",
+    "HelpCommand": "true"
+  },
+  "The input text has too few parameters.": {
+    "Rus": "Введенная команда имеет **мало** параметров.\n (параметры, значения которые вы пишете после самой команды)",
+    "HelpCommand": "true"
+  },
+  "Command can only be run by the owner of the bot.": {
+    "Rus": "Введенная команда не найдена!",
+    "HelpCommand": "false"
+  },
+  "Failed to parse Int.": {
+    "Rus": "Введенный параметр, должен иметь число, возможно вы ввели слишком длинное или маленькое число.",
+    "HelpCommand": "true"
+  },
+  "Failed to parse long.": {
+    "Rus": "Введенный параметр, должен иметь число, возможно вы ввели слишком длинное или маленькое число.",
+    "HelpCommand": "true"
+  },
+  "Failed to parse UInt.": {
+    "Rus": "Введенный параметр, должен иметь число, возможно вы ввели слишком длинное число или меньше 0.",
+    "HelpCommand": "true"
+  },
+  "Failed to parse ulong.": {
+    "Rus": "Введенный параметр, должен иметь число, возможно вы ввели слишком длинное число или меньше 0.",
+    "HelpCommand": "true"
+  },
+
+  "Failed to parse Int16.": {
+    "Rus": "Введенный параметр, должен иметь число, возможно вы ввели слишком длинное или маленькое число.",
+    "HelpCommand": "true"
+  },
+  "Failed to parse long16.": {
+    "Rus": "Введенный параметр, должен иметь число, возможно вы ввели слишком длинное число или меньше 0.",
+    "HelpCommand": "true"
+  },
+
+  "Failed to parse UInt16.": {
+    "Rus": "Введенный параметр, должен иметь число, возможно вы ввели слишком длинное число или меньше 0.",
+    "HelpCommand": "true"
+  },
+  "Failed to parse ulong16.": {
+    "Rus": "Введенный параметр, должен иметь число, возможно вы ввели слишком длинное число или меньше 0.",
+    "HelpCommand": "true"
+  },
+
+  "Failed to parse UInt64.": {
+    "Rus": "Введенный параметр, должен иметь число, возможно вы ввели слишком длинное число или меньше 0.",
+    "HelpCommand": "true"
+  },
+  "Failed to parse ulong64.": {
+    "Rus": "Введенный параметр, должен иметь число, возможно вы ввели слишком длинное число или меньше 0.",
+    "HelpCommand": "true"
+  },
+
+  "Failed to parse Int64.": {
+    "Rus": "Введенный параметр, должен иметь число, возможно вы ввели слишком длинное или маленькое число.",
+    "HelpCommand": "true"
+  },
+  "Failed to parse long64.": {
+    "Rus": "Введенный параметр, должен иметь число, возможно вы ввели слишком длинное или маленькое число.",
+    "HelpCommand": "true"
+  },
+
+  "Failed to parse Boolean.": {
+    "Rus": "Введенный параметр должен иметь типо True(да) или False(нет)",
+    "HelpCommand": "true"
+  },
+
+  "Failed to parse Byte.": {
+    "Rus": "Введенный параметр должен иметь число от 0 до 102",
+    "HelpCommand": "true"
+  },
+
+  "Failed to parse sbyte.": {
+    "Rus": "Введенный параметр должен иметь число от -128 до 127",
+    "HelpCommand": "true"
+  },
+
+  "Failed to parse short.": {
+    "Rus": "Введенный параметр должен иметь число от -32768 до 32767",
+    "HelpCommand": "true"
+  },
+
+  "Failed to parse ushort.": {
+    "Rus": "Введенный параметр должен иметь число от 0 до 65535",
+    "HelpCommand": "true"
+  },
+
+  "Value is not a StatusTicketEnum.": {
+    "Rus": "Используйте определенные параметры:\n - Отправлен\n - Рассмотрение\n - Исправлен\n - Отклонен\n - Удалена",
+    "HelpCommand": "true"
+  },
+
+  "User requires guild permission MuteMembers.": {
+    "Rus": "У вас нет прав мутить пользователей!",
+    "HelpCommand": "false"
+  },
+
+  "User requires guild permission KickMembers.": {
+    "Rus": "У вас нет прав кикать пользователей!",
+    "HelpCommand": "false"
+  },
+
+  "User requires guild permission BanMembers.": {
+    "Rus": "У вас нет прав банить пользователей!",
+    "HelpCommand": "false"
+  },
+
+  "User requires guild permission Administrator.": {
+    "Rus": "У вас нет прав Администратора!",
+    "HelpCommand": "false"
+  },
+
+  "User requires guild permission ManageChannels.": {
+    "Rus": "У вас нет прав управлять текстовыми каналами!",
+    "HelpCommand": "false"
+  },
+
+  "User requires guild permission ManageRoles.": {
+    "Rus": "У вас нет прав управлять ролями!",
+    "HelpCommand": "false"
+  },
+
+  "User requires guild permission ManageGuild.": {
+    "Rus": "У вас нет прав управлять сервером!",
+    "HelpCommand": "false"
+  },
+
+  "Bot requires guild permission MuteMembers.": {
+    "Rus": "У бота нет прав мутить пользователей!",
+    "HelpCommand": "false"
+  },
+
+  "Bot requires guild permission KickMembers.": {
+    "Rus": "У бота нет прав кикать пользователей!",
+    "HelpCommand": "false"
+  },
+
+  "Bot requires guild permission BanMembers.": {
+    "Rus": "У бота нет прав банить пользователей!",
+    "HelpCommand": "false"
+  },
+
+  "Bot requires guild permission Administrator.": {
+    "Rus": "У бота нет прав Администратора!",
+    "HelpCommand": "false"
+  },
+
+  "Bot requires guild permission ManageChannels.": {
+    "Rus": "У бота нет прав управлять каналами!",
+    "HelpCommand": "false"
+  },
+
+  "Bot requires guild permission ManageRoles.": {
+    "Rus": "У бота нет прав управлять ролями!",
+    "HelpCommand": "false"
+  },
+
+  "Bot requires guild permission ManageGuild.": {
+    "Rus": "У бота нет прав управлять сервером!",
+    "HelpCommand": "false"
+  },
+
+  "Bot requires guild permission SendMessage.": {
+    "Rus": "У бота нет прав отправлять сообщения!",
+    "HelpCommand": "false"
+  }
+}

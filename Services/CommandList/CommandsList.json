@@ -148,6 +148,19 @@
     "Usage": [ "s", "say" ]
   },
 
+  "clear": {
+    "Category": "Сообщения",
+    "MinDesc": "",
+    "Desc": "Удалить определенное количество сообщений в чате",
+    "Usage": [ "cl", "clear" ]
+  },
+  "userclear": {
+    "Category": "Сообщения",
+    "MinDesc": "",
+    "Desc": "Удалить определенное количество сообщений в чате от определенного пользователя",
+    "Usage": [ "ucl", "userclear" ]
+  },
+
   "giveawaystart": {
     "Category": "Розыгрыш",
     "MinDesc": "",
@@ -261,7 +274,7 @@
     "Usage": [ "sex", "sex" ]
   },
 
-  "burthdateset": {
+  "birthdateset": {
     "Category": "",
     "MinDesc": "",
     "Desc": "Выставить дату рождения. Формат - 01.01.2001",
@@ -282,7 +295,19 @@
     "Usage": [ "ref", "refferal" ]
   },
 
+  "loves": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "Узнать совместимость с человеком. user - пользователь с которым вы хотите узнать совместимость.",
+    "Usage": [ "loves", "loves" ]
+  },
 
+  "warns": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "Узнать варны на сервере.",
+    "Usage": [ "ws", "warns" ]
+  },
 
 
   "daily": {

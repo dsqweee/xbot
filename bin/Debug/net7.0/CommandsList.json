@@ -148,6 +148,19 @@
     "Usage": [ "s", "say" ]
   },
 
+  "clear": {
+    "Category": "Сообщения",
+    "MinDesc": "",
+    "Desc": "Удалить определенное количество сообщений в чате",
+    "Usage": [ "cl", "clear" ]
+  },
+  "userclear": {
+    "Category": "Сообщения",
+    "MinDesc": "",
+    "Desc": "Удалить определенное количество сообщений в чате от определенного пользователя",
+    "Usage": [ "ucl", "userclear" ]
+  },
+
   "giveawaystart": {
     "Category": "Розыгрыш",
     "MinDesc": "",
@@ -321,25 +334,25 @@
 
 
   "reprole": {
-    "Category": "",
+    "Category": "Roles",
     "MinDesc": "",
     "Desc": "Просмотреть репутационные роли на сервере",
     "Usage": [ "rr", "reprole" ]
   },
   "levelrole": {
-    "Category": "",
+    "Category": "Roles",
     "MinDesc": "",
     "Desc": "Просмотреть уровневые роли на сервере",
     "Usage": [ "lr", "levelrole" ]
   },
   "buyrole": {
-    "Category": "",
+    "Category": "Roles",
     "MinDesc": "",
     "Desc": "Просмотреть/купить роли на продаже на сервере",
     "Usage": [ "br", "buyrole" ]
   },
   "refferalrole": {
-    "Category": "",
+    "Category": "Roles",
     "MinDesc": "",
     "Desc": "Просмотреть рефферальные роли на сервере",
     "Usage": [ "refr", "refferalrole" ]

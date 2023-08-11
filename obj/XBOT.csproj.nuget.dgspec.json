@@ -43,15 +43,19 @@
           "dependencies": {
             "Discord.Net.Commands": {
               "target": "Package",
-              "version": "[3.11.0, )"
+              "version": "[3.12.0, )"
             },
             "Discord.Net.Interactions": {
               "target": "Package",
-              "version": "[3.11.0, )"
+              "version": "[3.12.0, )"
             },
             "Discord.Net.WebSocket": {
               "target": "Package",
-              "version": "[3.11.0, )"
+              "version": "[3.12.0, )"
+            },
+            "Fergun.Interactive": {
+              "target": "Package",
+              "version": "[1.7.3, )"
             },
             "GEmojiSharp": {
               "target": "Package",
@@ -86,6 +90,10 @@
             "NetEscapades.Configuration.Yaml": {
               "target": "Package",
               "version": "[3.1.0, )"
+            },
+            "RconSharp": {
+              "target": "Package",
+              "version": "[2.0.1, )"
             }
           },
           "imports": [
