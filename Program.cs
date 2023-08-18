@@ -27,7 +27,6 @@ using IHost host = Host.CreateDefaultBuilder(args)
         services.AddSingleton<UserMessagesSolution>();
         services.AddSingleton<PrivateSystem>();
         services.AddSingleton<Meeting_Logs_Service>();
-        services.AddSingleton<Minecraft_Service>();
         services.AddSingleton<GiftQuestion_Service>();
         services.AddSingleton<Guild_Logs_Service>();
         services.AddSingleton<Invite_Service>();

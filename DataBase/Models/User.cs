@@ -71,9 +71,6 @@ namespace XBOT.DataBase.Models
         public ulong CountSex { get; set; }
 
 
-        public ulong? MinecraftAccountId { get; set; }
-        public User_MinecraftAccount MinecraftAccount { get; set; }
-
         public DateOnly BirthDate { get; set; }
         public int BirthDateComplete { get; set; }
 

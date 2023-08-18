@@ -7,7 +7,7 @@ public static class GOC
 {
     public static async Task<User> GetUser(this Db ctx, ulong userId)
     {
-        var user = ctx.User.Include(x=>x.RefferalInvite).Include(x=>x.User_Warn).Include(x=>x.MinecraftAccount).FirstOrDefault(u => u.Id == userId);
+        var user = ctx.User.Include(x=>x.RefferalInvite).Include(x=>x.User_Warn).FirstOrDefault(u => u.Id == userId);
         if (user == null)
         {
             user = new User { Id = userId, money = User.DefaultMoney };
