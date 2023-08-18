@@ -11,14 +11,14 @@ public class EmojiGiftService
 
     public (string name, double factory) GenerateEmoji()
     {
-            var emojiAllowed = _db.EmojiGift_emojiadded.ToList();
+        var emojiAllowed = _db.EmojiGift_emojiadded.ToList();
 
-            var Random = new Random();
-            var ElementIndex = Random.Next(emojiAllowed.Count());
-            double factory = Random.NextDouble();
+        var Random = new Random();
+        var ElementIndex = Random.Next(emojiAllowed.Count());
+        double factory = Random.NextDouble();
 
-            var emojigift = emojiAllowed.ElementAt(ElementIndex);
-            return (emojigift.Name, factory);
+        var emojigift = emojiAllowed.ElementAt(ElementIndex);
+        return (emojigift.Name, factory);
     }
 
     public void UserSetEmoji(ulong userId)

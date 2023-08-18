@@ -9,7 +9,7 @@ using Fergun.Interactive;
 using Fergun.Interactive.Pagination;
 using System.Data;
 using static XBOT.DataBase.Guild_Warn;
-using System.Reflection.PortableExecutable;
+using Pcg;
 
 namespace XBOT.Modules.Command
 {
@@ -23,7 +23,6 @@ namespace XBOT.Modules.Command
             _interactive = interactive;
             _db = db;
         }
-
 
         [Aliases, Commands, Usage, Descriptions]
         public async Task usertop()
@@ -66,7 +65,6 @@ namespace XBOT.Modules.Command
 
             await Context.Channel.SendMessageAsync($"", embed: emb.Build());
         }
-
 
         [Aliases, Commands, Usage, Descriptions]
         public async Task loves(SocketGuildUser user)
@@ -155,6 +153,7 @@ namespace XBOT.Modules.Command
         }
 
         [Aliases, Commands, Usage, Descriptions]
+        [BirthDatePermission]
         public async Task BirthDateSet(string date)
         {
 
@@ -218,47 +217,54 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task warns()
         {
-            var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor).WithAuthor("⚜️ Варны сервера");
+            var emb = new EmbedBuilder()
+                .WithColor(BotSettings.DiscordColor)
+                .WithAuthor("⚜️ Варны сервера")
+                .WithDescription("На сервере еще нет варнов!");
             var Warns = _db.Guild_Warn.OrderBy(x => x.CountWarn);
 
-            if (!Warns.Any())
+            
+            if (Warns.Any())
             {
-                emb.WithDescription("На сервере еще нет варнов!");
-                await Context.Channel.SendMessageAsync("", false, emb.Build());
-                return;
+                emb.WithDescription("");
+                foreach (var warn in Warns)
+                {
+                    string text = string.Empty;
+                    switch (warn.ReportTypes)
+                    {
+                        case ReportTypeEnum.TimeBan:
+                            text = $"Бан на {warn.Time}";
+                            break;
+                        case ReportTypeEnum.Mute:
+                            text = $"Мут";
+                            break;
+                        case ReportTypeEnum.TimeOut:
+                            text = $"Мут на ";
+                            if(warn.Time.Days > 0)
+                                text += $"{warn.Time.Days} дней ";
+                            if (warn.Time.Hours > 0)
+                                text += $"{warn.Time.Hours} часов ";
+                            if (warn.Time.Minutes > 0)
+                                text += $"{warn.Time.Minutes} минут ";
+                            break;
+                        case ReportTypeEnum.Kick:
+                            text = $"Кик";
+                            break;
+                        case ReportTypeEnum.Ban:
+                            text = $"Бан";
+                            break;
+                    }
+
+                    emb.Description += $"{warn.CountWarn}.{text}\n";
+                }
             }
                 
-            foreach (var warn in Warns)
-            {
-                string text = string.Empty;
-                switch (warn.ReportTypes)
-                {
-                    case ReportTypeEnum.TimeBan:
-                        text = $"Бан на {warn.Time}";
-                        break;
-                    case ReportTypeEnum.Mute:
-                        text = $"Мут";
-                        break;
-                    case ReportTypeEnum.TimeOut:
-                        text = $"Мут на {warn.Time}";
-                        break;
-                    case ReportTypeEnum.Kick:
-                        text = $"Кик";
-                        break;
-                    case ReportTypeEnum.Ban:
-                        text = $"Бан";
-                        break;
-                }
-
-                emb.Description += $"{warn.CountWarn}.{text}\n";
-            }
             await Context.Channel.SendMessageAsync("", false, emb.Build());
         }
 
         [Aliases, Commands, Usage, Descriptions]
         public async Task userinfo(SocketGuildUser user = null)
         {
-
             if (user == null)
                 user = Context.User as SocketGuildUser;
 
@@ -316,7 +322,15 @@ namespace XBOT.Modules.Command
             emb.AddField("Coins", $"Количество: {UserDataBase.money}\nКомбо: {UserDataBase.streak}\n{DailyCoin}", true);
 
             var Settings = _db.Settings.FirstOrDefault();
-            emb.AddField("Реферальная система", $"{Settings.Prefix}refferal", true);
+            string birthday = "";
+            if (UserDataBase.BirthDate.Year != 1)
+                birthday = $"{UserDataBase.BirthDate}";
+            else
+                birthday = $"{Settings.Prefix}birthdateset 01.01.2005";
+
+            var WarnsCount = _db.Guild_Warn.Count();
+            
+            emb.AddField("Другое", $"Реферальная система: {Settings.Prefix}refferal\nНарушений: {UserDataBase.CountWarns}/{WarnsCount}\nДень рождения: {birthday}", true);
 
             var TimePublic = ConvertTime(UserDataBase.voiceActive_public);
             var TimePrivate = ConvertTime(UserDataBase.voiceActive_private);
@@ -330,13 +344,12 @@ namespace XBOT.Modules.Command
             emb.AddField("Опыт", $"Уровень: {UserDataBase.Level}\nОпыт: {UserDataBase.XP - count}/{countNext - count}\nАктивность в голосовых чатах: {TimePublic}\nАктивность в приватных чатах: {TimePrivate}", false);
 
 
-            if (UserDataBase.BirthDate.Year != 1)
-                emb.AddField("День рождения", UserDataBase.BirthDate, true);
+            
 
-            if (UserDataBase.MinecraftAccountId != 0)
-            {
-                emb.AddField("Minecraft профиль", "Напиши боту: `GetMinecraft`");
-            }
+            //if (UserDataBase.MinecraftAccountId != 0)
+            //{
+            //    emb.AddField("Minecraft профиль", "Напиши боту: `GetMinecraft`");
+            //}
 
             await Context.Channel.SendMessageAsync("", false, emb.Build());
 
@@ -345,7 +358,6 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task refferal()
         {
-
             var emb = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor)
                 .WithAuthor($"Реферальная система");
@@ -373,10 +385,10 @@ namespace XBOT.Modules.Command
                     thisroletext = "Отсутствует";
 
                 string nextroletext = "";
-                if (indexThisRole != -1)
+                if (indexThisRole == -1)
                 {
                     NextRole = RefferalRoles?.ElementAt(indexThisRole + 1);
-                    nextroletext = $"<@&{NextRole?.Id}>";
+                    nextroletext = $"<@&{NextRole?.RoleId}>";
                 }
                 else
                     nextroletext = "Максимум";
@@ -384,9 +396,9 @@ namespace XBOT.Modules.Command
                 emb.WithDescription("Это реферальная система друзей. Приглашая на сервер друга, вы получаете за него ачько и дополнительные плюшки.\n" +
                                     "Чем больше вы пригласите активных друзей, тем лучше. Мы надеемся что вы не будете тревожить незнакомых людей, ведь это не круто!\n\n" +
                                     $"Ваша текущая роль: {thisroletext} -> {nextroletext}\n" +
-                                    $"Приведенных клиентов: {UserValue.CountRef}/{NextRole.UserJoinedValue}\n" +
-                                    $"Писали в течении недели: {UserValue.WriteInWeek}/{NextRole.UserWriteInWeekValue}\n" +
-                                    $"Достигли 5 уровня: {UserValue.Level5up}/{NextRole.UserUp5LevelValue}")
+                                    $"Приведенных клиентов: `{UserValue.CountRef}/{(NextRole is not null ? NextRole.UserJoinedValue : "max")}`\n" +
+                                    $"Писали в течении недели: `{UserValue.WriteInWeek}/{(NextRole is not null ? NextRole.UserWriteInWeekValue : "max")}`\n" +
+                                    $"Достигли 5 уровня: `{UserValue.Level5up}/{(NextRole is not null ? NextRole.UserUp5LevelValue : "max")}`")
                     .WithFooter("Роль может выдаваться в течении часа.");
 
             }
@@ -494,17 +506,29 @@ namespace XBOT.Modules.Command
             var transfUser = await _db.GetUser(User.Id);
             var TransferLog = new TransactionUsers_Logs { SenderId = currentUser.Id, RecipientId = transfUser.Id, Amount = coin, TimeTransaction = DateTime.Now, Type = TransactionUsers_Logs.TypeTransation.Transfer };
             _db.TransactionUsers_Logs.Add(TransferLog);
-            currentUser.money -= coin;
-            transfUser.money += coin;
+            
+            if (transfUser.money + coin >= BotSettings.CoinsMaxUser)
+            {
+                var MinimalMoneyTransfer = (currentUser.money + coin) - BotSettings.CoinsMaxUser;
+                currentUser.money -= MinimalMoneyTransfer;
+                transfUser.money = BotSettings.CoinsMaxUser;
+                SendMessage($"Перевод в размере {MinimalMoneyTransfer} StarCoin успешно прошел.");
+            }
+            else
+            {
+                currentUser.money -= coin;
+                transfUser.money = coin;
+                SendMessage($"Перевод в размере {coin} StarCoin успешно прошел.");
+            }
 
             _db.User.UpdateRange(new User[] { currentUser, transfUser });
             await _db.SaveChangesAsync();
-            SendMessage($"Перевод в размере {coin} StarCoin успешно прошел.");
+            
 
             async void SendMessage(string description)
             {
                 emb.WithDescription(description);
-                await ReplyAsync("", embed: emb.Build());
+                await ReplyAsync(embed: emb.Build());
             }
 
         }
@@ -1116,6 +1140,70 @@ namespace XBOT.Modules.Command
             emb.AddField("Добавить", $"{prefix}{commandtype} [ROLE] [{valuetype}]");
             emb.AddField("Удалить", $"{prefix}{commandtype} [ROLE]");
         }
+
+
+
+
+        public enum KazinoChipEnum : byte
+        {
+            Red,
+            Black
+        }
+
+
+        [Aliases, Commands, Usage, Descriptions]
+        [ActivityPermission]
+        public async Task kazino(KazinoChipEnum Fishka, ushort money)
+        {
+            var emb = new EmbedBuilder()
+                .WithColor(BotSettings.DiscordColor)
+                .WithAuthor(" - Казино", Context.User.GetAvatarUrl());
+
+            var account = await _db.GetUser(Context.User.Id);
+
+            bool returnmessage = false;
+
+            if (!(money >= 100 && money <= 30000))
+            {
+                returnmessage = true;
+                emb.WithDescription($"Ставка может быть не меньше 100 и не больше 30000");
+            }
+                
+            if (account.money < money)
+            {
+                emb.WithDescription($"Недостаточно средств для ставки.\nВаш баланс: {account.money} coins");
+                returnmessage = true;
+            }
+
+            if (returnmessage)
+            {
+                await Context.Channel.SendMessageAsync("", embed: emb.Build());
+                return;
+            }
+                
+
+            var RandomNumber = new PcgRandom().Next(0,100);
+            string WinnerText = Fishka.ToString();
+            if(RandomNumber > 50)
+            {
+                emb.Author.Name += "✔️ Выигрыш";
+                account.money += money;
+            }
+            else
+            {
+                WinnerText = $"{(Fishka == 0 ? KazinoChipEnum.Black : KazinoChipEnum.Red)}";
+                account.money -= money;
+                emb.Author.Name += "❌ Проигрыш";
+            }
+            emb.WithDescription($"Выпало: {WinnerText}\nZeroCoin: {account.money}");
+            _db.User.Update(account);
+            await _db.SaveChangesAsync();
+
+            await Context.Channel.SendMessageAsync("", false, emb.Build());
+        }
+
+
+
 
 
 

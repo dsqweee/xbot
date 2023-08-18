@@ -965,6 +965,19 @@
           }
         }
       },
+      "PcgRandom/1.2.0": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/PcgRandom.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/PcgRandom.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "RconSharp/2.0.1": {
         "type": "package",
         "dependencies": {
@@ -2571,6 +2584,24 @@
         "packageIcon.png"
       ]
     },
+    "PcgRandom/1.2.0": {
+      "sha512": "j3NR8m5GN14us+8NG2hZprqfKiJKBdm/zL/o9cuUvL2XvRGWUIunsTu4Wx6ehMRC4lvahvKMKuHOh0LULApGUA==",
+      "type": "package",
+      "path": "pcgrandom/1.2.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "lib/net6.0/PcgRandom.dll",
+        "lib/net6.0/PcgRandom.xml",
+        "lib/netstandard1.0/PcgRandom.dll",
+        "lib/netstandard1.0/PcgRandom.xml",
+        "lib/netstandard2.0/PcgRandom.dll",
+        "lib/netstandard2.0/PcgRandom.xml",
+        "pcgrandom.1.2.0.nupkg.sha512",
+        "pcgrandom.nuspec"
+      ]
+    },
     "RconSharp/2.0.1": {
       "sha512": "TKyP6Sc35Gcnw1AEBd9XTfdxNBZnnRHexJkIdplmmHuyFW0+2Qk+j2B+/042DkPyhw1hNQYuVHza0ksWsXx+3g==",
       "type": "package",
@@ -3100,6 +3131,7 @@
       "Microsoft.Extensions.Hosting >= 7.0.1",
       "Nekos.Net >= 3.2.0",
       "NetEscapades.Configuration.Yaml >= 3.1.0",
+      "PcgRandom >= 1.2.0",
       "RconSharp >= 2.0.1"
     ]
   },
@@ -3192,6 +3224,10 @@
           "NetEscapades.Configuration.Yaml": {
             "target": "Package",
             "version": "[3.1.0, )"
+          },
+          "PcgRandom": {
+            "target": "Package",
+            "version": "[1.2.0, )"
           },
           "RconSharp": {
             "target": "Package",

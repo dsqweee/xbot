@@ -1,4 +1,5 @@
 ﻿using Fergun.Interactive;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,7 +11,7 @@ using XBOT.Services.PrivateStructure;
 using IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration(config =>
     {
-        config.AddYamlFile(BotSettings.TokenPath, false);
+        config.AddYamlFile(BotSettings.tokenPath, false);
     })
     .ConfigureServices(services =>
     {
@@ -18,7 +19,7 @@ using IHost host = Host.CreateDefaultBuilder(args)
         services.AddSingleton(new DiscordSocketClient(XBOT.Services.Configuration.DiscordConfig.discordSocketConfig));
         services.AddSingleton(new CommandService(XBOT.Services.Configuration.DiscordConfig.configService));
 
-        //services.AddSingleton<ComponentEventService>();
+
         services.AddDbContext<Db>();
         services.AddSingleton<TaskTimer>();
         services.AddSingleton<Refferal_Service>();

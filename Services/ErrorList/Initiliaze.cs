@@ -8,7 +8,7 @@ public class Initiliaze
 {
     private static readonly Lazy<ConcurrentDictionary<string, Errors>> _commandData = new Lazy<ConcurrentDictionary<string, Errors>>(() =>
     {
-        var jsonData = File.ReadAllText(BotSettings.ErrorConfig);
+        var jsonData = File.ReadAllText(BotSettings.errorListPath);
         return JsonConvert.DeserializeObject<ConcurrentDictionary<string, Errors>>(jsonData);
     });
 

@@ -113,7 +113,7 @@ public class TaskTimer
     private async void MuteTimer(User_Warn Warn) // Обновление бесконечного мута
     {
         Warn = _db.User_Warn.Include(x => x.UnWarn).FirstOrDefault(x => x.Id == Warn.Id);
-        if (Warn.UnWarn_Id == null ||
+        if (Warn.UnWarnId == null ||
            (Warn.UnWarn != null && Warn.UnWarn.Status != User_UnWarn.WarnStatus.review && Warn.UnWarn.Status != User_UnWarn.WarnStatus.Rejected))
         {
             var Guild = _client.Guilds.FirstOrDefault();

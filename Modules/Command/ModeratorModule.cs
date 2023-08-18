@@ -70,7 +70,7 @@ namespace XBOT.Modules.Command
             }
 
 
-            var ThisWarn = new User_Warn { Admin_Id = Context.User.Id, UserId = User.Id, Guild_Warns_Id = warn.Id, Reason = Reason, TimeSetWarn = DateTime.Now };
+            var ThisWarn = new User_Warn { AdminId = Context.User.Id, UserId = User.Id, Guild_WarnsId = warn.Id, Reason = Reason, TimeSetWarn = DateTime.Now };
             switch (warn.ReportTypes)
             {
                 case ReportTypeEnum.Ban:

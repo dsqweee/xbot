@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using XBOT.DataBase;
 
@@ -10,9 +11,11 @@ using XBOT.DataBase;
 namespace XBOT.Migrations
 {
     [DbContext(typeof(Db))]
-    partial class dbModelSnapshot : ModelSnapshot
+    [Migration("20230815145407_UpdateConnectEf")]
+    partial class UpdateConnectEf
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0-preview.2.23128.3");
@@ -183,11 +186,16 @@ namespace XBOT.Migrations
                     b.Property<ulong>("UserId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<ulong?>("UserId1")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("InviteId");
 
-                    b.HasIndex("UserId")
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1")
                         .IsUnique();
 
                     b.ToTable("ReferralLinks");
@@ -809,10 +817,14 @@ namespace XBOT.Migrations
                         .IsRequired();
 
                     b.HasOne("XBOT.DataBase.Models.User", "User")
-                        .WithOne("RefferalInvite")
-                        .HasForeignKey("XBOT.DataBase.Models.Invites.DiscordInvite_ReferralLink", "UserId")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("XBOT.DataBase.Models.User", null)
+                        .WithOne("RefferalInvite")
+                        .HasForeignKey("XBOT.DataBase.Models.Invites.DiscordInvite_ReferralLink", "UserId1");
 
                     b.Navigation("Invite");
 

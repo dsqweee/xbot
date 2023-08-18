@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using XBOT.DataBase;
 
@@ -10,9 +11,11 @@ using XBOT.DataBase;
 namespace XBOT.Migrations
 {
     [DbContext(typeof(Db))]
-    partial class dbModelSnapshot : ModelSnapshot
+    [Migration("20230812171634_12.08up")]
+    partial class _1208up
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0-preview.2.23128.3");
@@ -187,8 +190,7 @@ namespace XBOT.Migrations
 
                     b.HasIndex("InviteId");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("ReferralLinks");
                 });
@@ -199,7 +201,13 @@ namespace XBOT.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<byte>("Level")
+                        .HasColumnType("INTEGER");
+
                     b.Property<ulong>("RoleId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong?>("RolesId")
                         .HasColumnType("INTEGER");
 
                     b.Property<uint>("UserJoinedValue")
@@ -213,7 +221,7 @@ namespace XBOT.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex("RolesId");
 
                     b.ToTable("ReferralRole");
                 });
@@ -522,7 +530,10 @@ namespace XBOT.Migrations
                     b.Property<DateTime>("ReferalActivate")
                         .HasColumnType("TEXT");
 
-                    b.Property<ulong?>("RefferalInvite_Id")
+                    b.Property<ulong?>("RefferalInviteId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong?>("RefferalInviteId1")
                         .HasColumnType("INTEGER");
 
                     b.Property<ulong?>("User_Permission_Id")
@@ -561,6 +572,8 @@ namespace XBOT.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("MarriageId");
+
+                    b.HasIndex("RefferalInviteId1");
 
                     b.ToTable("User");
                 });
@@ -663,6 +676,9 @@ namespace XBOT.Migrations
                     b.Property<ulong?>("AdminId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<ulong?>("Admin_Id")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("EndStatusSet")
                         .HasColumnType("TEXT");
 
@@ -688,10 +704,16 @@ namespace XBOT.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<ulong>("AdminId")
+                    b.Property<ulong?>("AdminId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<ulong>("Guild_WarnsId")
+                    b.Property<ulong>("Admin_Id")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong?>("Guild_WarnsId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong>("Guild_Warns_Id")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Reason")
@@ -703,7 +725,7 @@ namespace XBOT.Migrations
                     b.Property<DateTime>("ToTimeWarn")
                         .HasColumnType("TEXT");
 
-                    b.Property<ulong?>("UnWarnId")
+                    b.Property<ulong?>("UnWarn_Id")
                         .HasColumnType("INTEGER");
 
                     b.Property<ulong>("UserId")
@@ -721,7 +743,7 @@ namespace XBOT.Migrations
 
                     b.HasIndex("Guild_WarnsId");
 
-                    b.HasIndex("UnWarnId")
+                    b.HasIndex("UnWarn_Id")
                         .IsUnique();
 
                     b.HasIndex("UserId");
@@ -809,8 +831,8 @@ namespace XBOT.Migrations
                         .IsRequired();
 
                     b.HasOne("XBOT.DataBase.Models.User", "User")
-                        .WithOne("RefferalInvite")
-                        .HasForeignKey("XBOT.DataBase.Models.Invites.DiscordInvite_ReferralLink", "UserId")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -821,13 +843,11 @@ namespace XBOT.Migrations
 
             modelBuilder.Entity("XBOT.DataBase.Models.Invites.DiscordInvite_ReferralRole", b =>
                 {
-                    b.HasOne("XBOT.DataBase.Models.Roles_data.Roles", "Role")
+                    b.HasOne("XBOT.DataBase.Models.Roles_data.Roles", "Roles")
                         .WithMany("DiscordInvite_ReferralRole")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RolesId");
 
-                    b.Navigation("Role");
+                    b.Navigation("Roles");
                 });
 
             modelBuilder.Entity("XBOT.DataBase.Models.PrivateChannel", b =>
@@ -972,7 +992,13 @@ namespace XBOT.Migrations
                         .WithMany()
                         .HasForeignKey("MarriageId");
 
+                    b.HasOne("XBOT.DataBase.Models.Invites.DiscordInvite_ReferralLink", "RefferalInvite")
+                        .WithMany()
+                        .HasForeignKey("RefferalInviteId1");
+
                     b.Navigation("Marriage");
+
+                    b.Navigation("RefferalInvite");
                 });
 
             modelBuilder.Entity("XBOT.DataBase.Models.User_MinecraftAccount", b =>
@@ -1019,19 +1045,15 @@ namespace XBOT.Migrations
                 {
                     b.HasOne("XBOT.DataBase.User_Permission", "Admin")
                         .WithMany("warnlist")
-                        .HasForeignKey("AdminId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AdminId");
 
                     b.HasOne("XBOT.DataBase.Guild_Warn", "Guild_Warns")
                         .WithMany("User_Warns")
-                        .HasForeignKey("Guild_WarnsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Guild_WarnsId");
 
                     b.HasOne("XBOT.DataBase.User_UnWarn", "UnWarn")
                         .WithOne("Warn")
-                        .HasForeignKey("XBOT.DataBase.User_Warn", "UnWarnId");
+                        .HasForeignKey("XBOT.DataBase.User_Warn", "UnWarn_Id");
 
                     b.HasOne("XBOT.DataBase.Models.User", "User")
                         .WithMany("User_Warn")
@@ -1089,8 +1111,6 @@ namespace XBOT.Migrations
                     b.Navigation("MyConnectionAudits");
 
                     b.Navigation("MyInvites");
-
-                    b.Navigation("RefferalInvite");
 
                     b.Navigation("Roles_User");
 

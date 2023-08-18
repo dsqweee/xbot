@@ -109,8 +109,13 @@
     "HelpCommand": "true"
   },
 
-  "Value is not a StatusTicketEnum.": {
-    "Rus": "Используйте определенные параметры:\n - Отправлен\n - Рассмотрение\n - Исправлен\n - Отклонен\n - Удалена",
+  "Value is not a KazinoChipEnum.": {
+    "Rus": "Первый параметр должен содержать фишку\n・Black\n・Red",
+    "HelpCommand": "true"
+  },
+
+  "Value is not a ReportTypeEnum.": {
+    "Rus": "Параметр Report должен содержать значение\n・TimeBan\n・Mute\n・TimeOut\n・Kick\n・Ban",
     "HelpCommand": "true"
   },
 

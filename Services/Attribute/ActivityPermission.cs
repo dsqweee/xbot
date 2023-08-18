@@ -22,10 +22,13 @@ sealed class ActivityPermission : PreconditionAttribute
 
         bool CheckUserActivity(User user)
         {
-            var isActive = user.Level >= 5 && (user.messageCounterForDaily >= 30 || (user.daily_Time - DateTime.Now).TotalHours <= 8);
-            if (command.Name == "reputation")
+            bool isActive = user.Level >= 5;
+            if (user.messageCounterForDaily >= 30 || (user.daily_Time - DateTime.Now).TotalHours <= 8)
             {
-                isActive &= user.streak < 5;
+                if (command.Name == "reputation")
+                {
+                    isActive &= user.streak < 5;
+                }
             }
             return isActive;
         }
@@ -38,6 +41,8 @@ sealed class ActivityPermission : PreconditionAttribute
 
         if (reason == null)
             return PreconditionResult.FromSuccess();
+
+        reason = "\nТребования:\n • 5 уровень\n • Daily Streak 5\n • Просто общаться в чате :)";
 
         return PreconditionResult.FromError(reason);
 

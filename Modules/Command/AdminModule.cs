@@ -1,4 +1,5 @@
 ﻿using Fergun.Interactive;
+using XBOT.DataBase.Models;
 using XBOT.DataBase.Models.Roles_data;
 using XBOT.Services;
 using XBOT.Services.Attribute;
@@ -11,7 +12,6 @@ namespace XBOT.Modules.Command
     [UserPermission(UserPermission.RolePermission.Admin)]
     public class AdminModule : ModuleBase<SocketCommandContext>
     {
-        //private ComponentEventService _componentEventService;
         private readonly InteractiveService _interactive;
         private readonly Db _db;
         public AdminModule(InteractiveService interactive, Db db)
@@ -19,10 +19,7 @@ namespace XBOT.Modules.Command
             _interactive = interactive;
             _db = db;
         }
-        //public AdminModule(ComponentEventService componentEventService)
-        //{
-        //    _componentEventService = componentEventService;
-        //}
+
         public enum RoleTypeEnum : byte
         {
             Level,
@@ -390,10 +387,10 @@ namespace XBOT.Modules.Command
         }
 
 
+
         [Aliases, Commands, Usage, Descriptions]
         public async Task unwarn(SocketGuildUser user)
         {
-
             var emb = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor)
                 .WithAuthor($"unwarn {user}");
@@ -427,20 +424,20 @@ namespace XBOT.Modules.Command
                 var TimeoutMessage = new TimeSpan(0, 1, 0);
                 var options = new List<ButtonOption<string>>();
 
-                if (ThisWarn.UnWarn_Id == null || ThisWarn.UnWarn_Id == 0)
+                if (ThisWarn.UnWarnId == null || ThisWarn.UnWarnId == 0)
                 {
-                    UnWarnInfo = new User_UnWarn { Warn_Id = ThisWarn.Id, Admin_Id = Context.User.Id, Status = User_UnWarn.WarnStatus.error, ReviewAdd = DateTime.Now, EndStatusSet = DateTime.Now };
+                    UnWarnInfo = new User_UnWarn { Warn_Id = ThisWarn.Id, Warn = ThisWarn, AdminId = Context.User.Id, Status = User_UnWarn.WarnStatus.error, ReviewAdd = DateTime.Now, EndStatusSet = DateTime.Now };
 
                     options.Add(new("Везкая причина", ButtonStyle.Success));
-                    options.Add(new("Ошибка", ButtonStyle.Danger));
+                    options.Add(new("Ошибка выдачи", ButtonStyle.Danger));
                 }
                 else
                 {
                     var AdminPermissionInfo = await _db.GetUser(Context.User.Id);
 
-                    UnWarnInfo = _db.User_UnWarn.FirstOrDefault(x => x.Id == ThisWarn.UnWarn_Id);
+                    UnWarnInfo = _db.User_UnWarn.FirstOrDefault(x => x.Id == ThisWarn.UnWarnId);
                     UnWarnInfo.EndStatusSet = DateTime.Now;
-                    UnWarnInfo.Admin_Id = AdminPermissionInfo.User_Permission_Id;
+                    UnWarnInfo.AdminId = AdminPermissionInfo.User_Permission_Id;
 
                     options.Add(new("Варн верный", ButtonStyle.Success));
                     options.Add(new("Варн неверный", ButtonStyle.Danger));
@@ -449,7 +446,7 @@ namespace XBOT.Modules.Command
 
                 var pageBuilder = new PageBuilder()
                            .WithAuthor($"Нарушение {user}")
-                           .WithDescription($"Нарушение выдал: <@{ThisWarn.Admin_Id}>\nПричина: {ThisWarn.Reason}\nВыдано: {ThisWarn.TimeSetWarn}")
+                           .WithDescription($"Нарушение выдал: <@{ThisWarn.AdminId}>\nПричина: {ThisWarn.Reason}\nВыдано: {ThisWarn.TimeSetWarn}")
                            .WithFooter($"Заявка активна {TimeoutMessage.TotalMinutes} минуту.")
                            .WithThumbnailUrl(user.GetAvatarUrl());
 
@@ -459,7 +456,7 @@ namespace XBOT.Modules.Command
                     .WithOptions(options)
                     .WithStringConverter(x => x.Option)
                     .WithSelectionPage(pageBuilder)
-                    .AddUser(user)
+                    .AddUser(Context.User)
                     .Build();
 
                 var result = await _interactive.SendSelectionAsync(buttonSelection, Context.Channel, TimeoutMessage);
@@ -472,7 +469,7 @@ namespace XBOT.Modules.Command
                         case "Везкая причина":
                             UnWarnInfo.Status = User_UnWarn.WarnStatus.restart;
                             break;
-                        case "Ошибка":
+                        case "Ошибка выдачи":
                             UnWarnInfo.Status = User_UnWarn.WarnStatus.error;
                             break;
                         case "Варн верный":
@@ -485,7 +482,7 @@ namespace XBOT.Modules.Command
 
                     if (UnWarnInfo.Status != User_UnWarn.WarnStatus.Rejected)
                     {
-                        var WarnInfo = _db.Guild_Warn.FirstOrDefault(x => x.Id == ThisWarn.Guild_Warns_Id);
+                        var WarnInfo = _db.Guild_Warn.FirstOrDefault(x => x.Id == ThisWarn.Guild_WarnsId);
                         switch (WarnInfo.ReportTypes)
                         {
                             case Guild_Warn.ReportTypeEnum.TimeBan:
@@ -500,7 +497,9 @@ namespace XBOT.Modules.Command
                     }
 
                     if (UnWarnInfo.Id == 0)
-                        _db.Add(UnWarnInfo);
+                        _db.User_UnWarn.Add(UnWarnInfo);
+                    else
+                        _db.User_UnWarn.Update(UnWarnInfo);
 
                     await _db.SaveChangesAsync();
                     emb.WithDescription($"Статус нарушения {ThisWarn.Id} изменен!");

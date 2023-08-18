@@ -4,8 +4,7 @@ using XBOT.Services.Configuration;
 using XBOT.Services;
 using Microsoft.EntityFrameworkCore;
 using static XBOT.DataBase.Guild_Warn;
-using Discord;
-using XBOT.DataBase;
+using System.Diagnostics;
 
 namespace XBOT.Modules.Command
 {
@@ -359,7 +358,7 @@ namespace XBOT.Modules.Command
             bool Success = TimeSpan.TryParse(Time, out TimeSpan result);
             if ((report == ReportTypeEnum.TimeBan || report == ReportTypeEnum.TimeOut) && !Success)
                 emb.WithDescription(error);
-            else if (result.TotalSeconds > 604800)
+            else if (result.TotalDays > 7)
                 emb.WithDescription("Время нарушения не может превышать 7 дней!");
             else
             {
@@ -499,9 +498,30 @@ namespace XBOT.Modules.Command
         }
 
         [Aliases, Commands, Usage, Descriptions]
+        public async Task test(string prefix = null)
+        {
+            var stopwatch1 = new Stopwatch();
+            var RoleId = BotSettings.IventerLoverId;
+            stopwatch1.Start();
+            SocketRole role = Context.Guild.GetRole(RoleId);
+            stopwatch1.Stop();
+
+
+            var stopwatch2 = new Stopwatch();
+            var RoleId1 = BotSettings.IventerLoverId;
+            stopwatch2.Start();
+            SocketRole role1;
+            if(RoleId1 != 0)
+                role1 = Context.Guild.GetRole(RoleId1);
+            stopwatch2.Stop();
+
+            await Context.Channel.SendMessageAsync($"{stopwatch1.Elapsed} - {stopwatch2.Elapsed} ");
+
+        }
+
+        [Aliases, Commands, Usage, Descriptions]
         public async Task prefix(string prefix = null)
         {
-
             var Settings = _db.Settings.FirstOrDefault();
             var emb = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor)

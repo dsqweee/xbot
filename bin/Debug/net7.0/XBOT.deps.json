@@ -20,6 +20,7 @@
           "Microsoft.Extensions.Hosting": "7.0.1",
           "Nekos.Net": "3.2.0",
           "NetEscapades.Configuration.Yaml": "3.1.0",
+          "PcgRandom": "1.2.0",
           "RconSharp": "2.0.1"
         },
         "runtime": {
@@ -637,6 +638,14 @@
           "lib/net6.0/Newtonsoft.Json.dll": {
             "assemblyVersion": "13.0.0.0",
             "fileVersion": "13.0.2.27524"
+          }
+        }
+      },
+      "PcgRandom/1.2.0": {
+        "runtime": {
+          "lib/net6.0/PcgRandom.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.2.0.0"
           }
         }
       },
@@ -1272,6 +1281,13 @@
       "sha512": "sha512-R2pZ3B0UjeyHShm9vG+Tu0EBb2lC8b0dFzV9gVn50ofHXh9Smjk6kTn7A/FdAsC8B5cKib1OnGYOXxRBz5XQDg==",
       "path": "newtonsoft.json/13.0.2",
       "hashPath": "newtonsoft.json.13.0.2.nupkg.sha512"
+    },
+    "PcgRandom/1.2.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-j3NR8m5GN14us+8NG2hZprqfKiJKBdm/zL/o9cuUvL2XvRGWUIunsTu4Wx6ehMRC4lvahvKMKuHOh0LULApGUA==",
+      "path": "pcgrandom/1.2.0",
+      "hashPath": "pcgrandom.1.2.0.nupkg.sha512"
     },
     "RconSharp/2.0.1": {
       "type": "package",

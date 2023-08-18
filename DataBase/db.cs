@@ -7,6 +7,8 @@ namespace XBOT.DataBase
 {
     public class Db : DbContext
     {
+
+
         public DbSet<User_MinecraftAccount> User_MinecraftAccount { get; set; }
         public DbSet<QiwiTransactions> QiwiTransactions { get; set; }
         public DbSet<PrivateChannel> PrivateChannel { get; set; }
@@ -34,8 +36,10 @@ namespace XBOT.DataBase
         public DbSet<Roles_Reputation> Roles_Reputation { get; set; }
         public DbSet<Roles_User> Roles_User { get; set; }
         public DbSet<TransactionUsers_Logs> TransactionUsers_Logs { get; set; }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) 
-            => optionsBuilder.UseSqlite(BotSettings.connectionStringDb);
+
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder.UseSqlite(BotSettings.connectionStringDbPath);
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -71,10 +75,10 @@ namespace XBOT.DataBase
                     .HasForeignKey(a => a.InviteId)
                     .IsRequired();
 
-            modelBuilder.Entity<DiscordInvite_ReferralLink>()
-                .HasOne(r => r.User)
-                .WithMany()
-                .HasForeignKey(r => r.UserId);
+            //modelBuilder.Entity<DiscordInvite_ReferralLink>()
+            //    .HasOne(r => r.User)
+            //    .WithMany()
+            //    .HasForeignKey(r => r.UserId);
 
             modelBuilder.Entity<DiscordInvite_ReferralLink>()
                 .HasOne(r => r.Invite)
@@ -116,7 +120,7 @@ namespace XBOT.DataBase
             modelBuilder.Entity<User_UnWarn>()
                 .HasOne(s => s.Warn)
                 .WithOne(x => x.UnWarn)
-                .HasForeignKey<User_Warn>(s => s.UnWarn_Id);
+                .HasForeignKey<User_Warn>(s => s.UnWarnId);
 
             modelBuilder.Entity<User>()
                 .HasOne(s => s.MinecraftAccount)

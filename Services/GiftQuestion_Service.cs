@@ -11,7 +11,7 @@ public class GiftQuestion_Service
     private readonly InteractiveService _interactive;
     private readonly Db _db;
     private string question { get; set; }
-    public long QuestionResult { get; set; }
+    private long QuestionResult { get; set; }
     public GiftQuestion_Service(DiscordSocketClient client, Db db, InteractiveService interactive)
     {
         _client = client;
@@ -29,7 +29,7 @@ public class GiftQuestion_Service
     }
 
 
-    public async void GiftQuestionActivate(object sender, ElapsedEventArgs e)
+    private async void GiftQuestionActivate(object sender, ElapsedEventArgs e)
     {
         var channel = _client.GetChannel(BotSettings.DefaultChannel) as SocketTextChannel;
 

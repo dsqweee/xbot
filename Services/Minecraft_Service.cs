@@ -18,7 +18,6 @@ public class Minecraft_Service
     }
     public async Task<string> SendRconQuery(string query)
     {
-
         var Settings = _db.Settings.FirstOrDefault();
 
         var client = RconClient.Create(Settings.minecraft_IP, Settings.minecraft_port);
@@ -33,12 +32,11 @@ public class Minecraft_Service
         }
         else
             return null;
-
     }
 
     public async Task SubscribePaymentChecker()
     {
-
+        //Привязать 2 метода, один еще снизу, без ссылки
         while (true)
         {
             using (WebClient wc = new())

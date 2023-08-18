@@ -8,7 +8,7 @@ namespace XBOT.DataBase.Models
     {
         public ulong Id { get; set; }
 
-        public ulong? RefferalInviteId { get; set; }
+        public ulong? RefferalInvite_Id { get; set; } // add _ 15.08
         public DiscordInvite_ReferralLink RefferalInvite { get; set; }
 
         public ulong? User_Permission_Id { get; set; }
@@ -28,7 +28,7 @@ namespace XBOT.DataBase.Models
                 int count = 0;
                 foreach (var warn in User_Warn)
                 {
-                    if (warn.UnWarn != null && !warn.WarnSkippedAfterUnban)
+                    if (warn.UnWarnId == null || warn.WarnSkippedAfterUnban || (warn.UnWarnId != null && warn.UnWarn.Status == User_UnWarn.WarnStatus.Rejected))
                         count++;
                 }
                 return count;

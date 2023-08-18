@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "p+ye2zW9LzS2ieh6pXSjo0jFxiq3Xm3SLbeohNMVtEep7c6SFNtdB0+XN+oZz3f7cL3LhlgsoX7pScqY4bwNLQ==",
+  "dgSpecHash": "nAaZUSVR5ibiE/S64eAkzHTJ7ddd+XOLXAgHlNpUMa72xFxwO5DjWVs1XpxtN2+BfOZaevkctulyU39anHTA+w==",
   "success": true,
   "projectFilePath": "C:\\Users\\xXx\\source\\repos\\XBOT\\XBOT\\XBOT.csproj",
   "expectedPackageFiles": [
@@ -55,6 +55,7 @@
     "C:\\Users\\xXx\\.nuget\\packages\\nekos.net\\3.2.0\\nekos.net.3.2.0.nupkg.sha512",
     "C:\\Users\\xXx\\.nuget\\packages\\netescapades.configuration.yaml\\3.1.0\\netescapades.configuration.yaml.3.1.0.nupkg.sha512",
     "C:\\Users\\xXx\\.nuget\\packages\\newtonsoft.json\\13.0.2\\newtonsoft.json.13.0.2.nupkg.sha512",
+    "C:\\Users\\xXx\\.nuget\\packages\\pcgrandom\\1.2.0\\pcgrandom.1.2.0.nupkg.sha512",
     "C:\\Users\\xXx\\.nuget\\packages\\rconsharp\\2.0.1\\rconsharp.2.0.1.nupkg.sha512",
     "C:\\Users\\xXx\\.nuget\\packages\\sqlitepclraw.bundle_e_sqlite3\\2.1.4\\sqlitepclraw.bundle_e_sqlite3.2.1.4.nupkg.sha512",
     "C:\\Users\\xXx\\.nuget\\packages\\sqlitepclraw.core\\2.1.4\\sqlitepclraw.core.2.1.4.nupkg.sha512",

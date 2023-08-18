@@ -4,9 +4,9 @@
     {
         public ulong Id { get; set; }
         public ulong Warn_Id { get; set; }
-        public User_Warn Warn { get; set; }
+        public virtual User_Warn Warn { get; set; }
         public WarnStatus Status { get; set; }
-        public ulong? Admin_Id { get; set; }
+        public ulong? AdminId { get; set; }
         public virtual User_Permission Admin { get; set; }
         public DateTime ReviewAdd { get; set; }
         public DateTime EndStatusSet { get; set; }
@@ -18,7 +18,7 @@
         ///<para>restart - Если варн нужно снять по везкой причине</para>
         ///<para>error - варн по ошибке</para>
         /// </summary>
-        public enum WarnStatus
+        public enum WarnStatus : byte
         {
             review, // Рассматривается - варн на рассмотрении
             UnWarned, // Незаслуженный - варн был на рассмотрении и оказался незаслуженным

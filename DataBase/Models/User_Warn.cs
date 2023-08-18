@@ -3,16 +3,16 @@
     public class User_Warn
     {
         public ulong Id { get; set; }
-        public ulong Guild_Warns_Id { get; set; }
+        public ulong Guild_WarnsId { get; set; } // delete _ 15.08
         public virtual Guild_Warn Guild_Warns { get; set; }
 
-        public ulong? UnWarn_Id { get; set; }
+        public ulong? UnWarnId { get; set; }// delete _ 15.08
         public virtual User_UnWarn UnWarn { get; set; }
 
         public ulong UserId { get; set; }
         public virtual User User { get; set; }
 
-        public ulong Admin_Id { get; set; }
+        public ulong AdminId { get; set; }// delete _ 15.08
         public virtual User_Permission Admin { get; set; }
         public string Reason { get; set; }
 

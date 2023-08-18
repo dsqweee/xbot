@@ -18,6 +18,7 @@ namespace XBOT.DataBase.Models
         //public ulong? MediaRoleId { get; set; }
         //public Roles MediaRole { get; set; }
 
+        public DateTime MinecraftOpen { get; set; }
 
         public ulong PrivateVoiceChannelId { get; set; }
         public ulong? PrivateTextChannelId { get; set; }

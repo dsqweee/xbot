@@ -5,7 +5,7 @@ namespace XBOT.Services.Attribute.CommandList;
 
 public class Initiliaze
 {
-    private static readonly Dictionary<string, Commands> _commandData = JsonConvert.DeserializeObject<Dictionary<string, Commands>>(File.ReadAllText(BotSettings.CommandConfig));
+    private static readonly Dictionary<string, Commands> _commandData = JsonConvert.DeserializeObject<Dictionary<string, Commands>>(File.ReadAllText(BotSettings.commandListPath));
     public static Commands Load(string key)
     {
         if (!_commandData.TryGetValue(key, out var toReturn))

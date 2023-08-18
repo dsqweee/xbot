@@ -7,6 +7,7 @@ using XBOT.Services.Configuration;
 namespace XBOT.Modules.Command
 {
     [RequireContext(ContextType.DM)]
+    [RequireOwner]
     public class Minecraft : ModuleBase<SocketCommandContext>
     {
         private readonly InteractiveService _interactive;
@@ -63,6 +64,7 @@ namespace XBOT.Modules.Command
 
 
         [Command("GetMinecraft")]
+        [MinecraftPermission]
         public async Task GetMinecraft()
         {
             var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor);

@@ -6,6 +6,7 @@ using XBOT.Services.Configuration;
 using XBOT.Services.PrivateStructure;
 using System.Text.RegularExpressions;
 using XBOT.Services.Attribute.ErrorList;
+using Discord;
 
 namespace XBOT.Services.Handling;
 
@@ -147,6 +148,7 @@ public class CommandHandlingService : IHostedService
         {
             string Prefix = _db.Settings.FirstOrDefault().Prefix;
             var emb = ErrorMessage.GetError(Result.ErrorReason, Prefix, CommandInfo.IsSpecified ? CommandInfo.Value : null);
+            emb.WithFooter($"Build: {BotSettings.GetBuild()}");
             await Context.Channel.SendMessageAsync("", false, emb.Build());
         }
     }
@@ -257,7 +259,6 @@ public class CommandHandlingService : IHostedService
 
             if (Before.VoiceChannel != After.VoiceChannel)
                 await _timer.StartVoiceActivity(userDiscord);
-
         }
 
         if (After.VoiceChannel != null)
@@ -287,11 +288,9 @@ public class CommandHandlingService : IHostedService
 
         if (message.Channel is IDMChannel DMChannel)
         {
+            return;
             int argPoz = 0;
             await _commands.ExecuteAsync(context, argPoz, _services);
-
-
-            return;
         }
 
         var TextChannel = await _db.GetTextChannel(userMessage.Channel.Id);
@@ -342,15 +341,14 @@ public class CommandHandlingService : IHostedService
             if (string.IsNullOrWhiteSpace(user.BlockReason))
             {
                 await _commands.ExecuteAsync(context, argPos, _services);
+                return;
             }
-            else
-            {
-                var emb = new EmbedBuilder()
+
+            var emb = new EmbedBuilder()
                     .WithColor(BotSettings.DiscordColor)
                     .WithAuthor("Вы заблокированы!")
                     .WithDescription($"Вы были заблокированы за препядствие работы бота.\nПричина:{user.BlockReason}\n\nСнять блокировку: пишите администратору");
-                await userMessage.Channel.SendMessageAsync("", false, emb.Build());
-            }
+            await userMessage.Channel.SendMessageAsync("", false, emb.Build());
         }
     }
 }

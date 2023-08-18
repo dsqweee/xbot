@@ -188,7 +188,6 @@ public class Guild_Logs_Service
         => await BanOrUnBan(user, guild, true);
     private async Task BanOrUnBan(SocketUser user, SocketGuild Guild, bool Ban)
     {
-
         var Guild_Log = _db.Guild_Logs.FirstOrDefault(x => x.Type == (Ban ? ChannelsTypeEnum.Ban : ChannelsTypeEnum.UnBan));
         if (Guild_Log == null)
             return;
