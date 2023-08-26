@@ -1,10 +1,8 @@
 ﻿using Fergun.Interactive;
-using XBOT.DataBase.Models;
 using XBOT.DataBase.Models.Roles_data;
 using XBOT.Services;
 using XBOT.Services.Attribute;
 using XBOT.Services.Configuration;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace XBOT.Modules.Command
 {
@@ -36,7 +34,7 @@ namespace XBOT.Modules.Command
 
         [Aliases, Commands, Usage, Descriptions]
         public async Task moderatordel(SocketGuildUser user)
-    => await PermissionDel(UserPermission.RolePermission.Moder, user);
+            => await PermissionDel(UserPermission.RolePermission.Moder, user);
 
         [Aliases, Commands, Usage, Descriptions]
         public async Task iventeradd(SocketGuildUser user)
@@ -203,7 +201,6 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task refferalroledel(SocketRole role)
         {
-
             var refrole = _db.ReferralRole.FirstOrDefault(x => x.RoleId == role.Id);
 
 
@@ -246,7 +243,6 @@ namespace XBOT.Modules.Command
 
         private async Task roleadd(SocketRole role, uint value, RoleTypeEnum Type)
         {
-
             string AuthorText = "";
             string DescriptionText = "";
             string YourRole = "";
@@ -259,6 +255,7 @@ namespace XBOT.Modules.Command
             if (role.IsManaged)
             {
                 SendMessage("Данную роль нельзя выставить.");
+                return;
             }
 
             switch (Type)
@@ -285,6 +282,7 @@ namespace XBOT.Modules.Command
                     if (reprole != null)
                     {
                         SendMessage($"Роль {role.Mention} уже выдается за {reprole.Reputation} {DescriptionText}");
+                        return;
                     }
                     break;
                 case RoleTypeEnum.Buy:
@@ -297,6 +295,7 @@ namespace XBOT.Modules.Command
                     if (buyrole != null)
                     {
                         SendMessage($"Роль {role.Mention} уже выдается за {buyrole.Price} {DescriptionText}");
+                        return;
                     }
                     break;
             }
@@ -305,13 +304,13 @@ namespace XBOT.Modules.Command
             async void SendMessage(string description, string text = "")
             {
                 await Context.Channel.SendMessageAsync(text, false, emb.Build());
-                return;
             }
 
             var rolepos = role.Guild.CurrentUser.Roles.FirstOrDefault(x => x.Position > role.Position);
             if (rolepos == null)
             {
                 SendMessage($"Позиция роли {role.Mention} находится выше, роли бота.\nПопросите икс поднять эту роль выше моей", Context.Guild.Owner.Mention);
+                return;
             }
 
             var Settings = _db.Settings.FirstOrDefault();
@@ -507,7 +506,6 @@ namespace XBOT.Modules.Command
 
                 await result.Message.ModifyAsync(x => x.Embed = emb.Build());
             }
-
         }
 
 

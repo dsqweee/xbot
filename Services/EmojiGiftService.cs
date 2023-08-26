@@ -1,4 +1,7 @@
-﻿namespace XBOT.Services;
+﻿using GEmojiSharp;
+using Pcg;
+
+namespace XBOT.Services;
 
 public class EmojiGiftService
 {
@@ -9,26 +12,76 @@ public class EmojiGiftService
         _db = db;
     }
 
-    public (string name, double factory) GenerateEmoji()
+    public string AddEmoji(string Name, double factory)
     {
-        var emojiAllowed = _db.EmojiGift_emojiadded.ToList();
+        if (factory < 0 && factory > 1)
+            return "Фактор не может быть меньше 0 или больше 1.";
 
-        var Random = new Random();
-        var ElementIndex = Random.Next(emojiAllowed.Count());
-        double factory = Random.NextDouble();
+        var EmojiAny = _db.EmojiGift_emojiadded.FirstOrDefault(x=>x.Name == Name);
+        if (EmojiAny != null)
+            return $"Эмодзи уже есть в системе под номером {EmojiAny.Id}";
 
-        var emojigift = emojiAllowed.ElementAt(ElementIndex);
-        return (emojigift.Name, factory);
+        var isEmoji = GEmojiSharp.Emoji.Get(Name);
+        if (isEmoji == GEmoji.Empty)
+            return $"{Name} - не является эмодзи!";
+
+        _db.EmojiGift_emojiadded.Add(new EmojiGift_emojiadded { Name = Name, Factor = factory});
+        _db.SaveChangesAsync();
+        return "Эмодзи успешно добавлен в систему";
     }
 
-    public void UserSetEmoji(ulong userId)
+    public string DisableEmoji(string Name)
+        => ActionStatusEmoji(Name, false);
+
+    public string EnableEmoji(string Name)
+        => ActionStatusEmoji(Name, true);
+
+    private string ActionStatusEmoji(string Name, bool Enable)
     {
-        //using (Db _db = new ())
-        //{
-        //    var user = db.User.Include(x=>x.EmojiGift).FirstOrDefault(x=>x.Id == userId);
+        var EmojiAny = _db.EmojiGift_emojiadded.FirstOrDefault(x => x.Name == Name);
+        if (EmojiAny == null)
+            return $"Эмодзи нет в системе под именем {Name}";
 
-
-        //}
+        EmojiAny.IsDisable = !Enable;
+        _db.SaveChangesAsync();
+        return $"Эмодзи успешно {(Enable ? "включен" : "отключен")} в системе";
     }
 
+
+    public EmojiGift_emojiadded UserSetEmoji(ulong userId)
+    {
+        var randomDropemoji = new PcgRandom().NextDouble();
+
+        if (randomDropemoji > 0.3) // Chance drop emoji 
+            return null;
+
+        var randomDouble = new PcgRandom().NextDouble(); // Chance drop rare emoji
+        var AllEmoji = _db.EmojiGift_emojiadded.Where(x=>!x.IsDisable).ToList();
+
+        var RndEmoji = AllEmoji
+            .OrderBy(x => x.Factor)
+            .OrderBy(x => Math.Abs(x.Factor - randomDouble))
+            .ElementAt(0);
+
+        _db.EmojiGift.Add(new EmojiGift { EmojiId = RndEmoji.Id,UserId = userId });
+        _db.SaveChangesAsync();
+        return RndEmoji;
+    }
+
+    public string SetEmojiInTrade(ulong emojiId, ulong Price)
+        => ActionTradeEmoji(emojiId, Price);
+
+    public string DelEmojiInTrade(ulong emojiId)
+        => ActionTradeEmoji(emojiId, 0);
+
+    private string ActionTradeEmoji(ulong emojiId, ulong Price)
+    {
+        var GetEmoji = _db.EmojiGift.FirstOrDefault(x => x.Id == emojiId);
+        if (GetEmoji == null)
+            return $"Эмодзи с id `{emojiId}` не найдено.";
+
+        GetEmoji.PriceTrade = Price;
+        _db.SaveChangesAsync();
+        return $"Эмодзи {GetEmoji.Name}, {(Price == 0 ? "удалено с продажи." : $"выставлено на продажу за {Price} coins.")}";
+    }
 }

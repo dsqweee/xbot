@@ -72,7 +72,7 @@ namespace XBOT.Modules.Command
             var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor)
                                         .WithAuthor($"Совместимость пары", Context.User.GetAvatarUrl());
 
-            var percent = new Random().Next(0,101);
+            var percent = new Random().Next(0, 101);
             emb.WithDescription($"{user.Mention} и {Context.User.Mention} совместимы на {percent}%");
 
             await Context.Channel.SendMessageAsync("", false, emb.Build());
@@ -86,7 +86,7 @@ namespace XBOT.Modules.Command
                                         .WithAuthor($"Чпокан чпокан чпокан", Context.User.GetAvatarUrl());
 
             var thisuserDb = await _db.GetUser(Context.User.Id);
-            
+
             var prefix = _db.Settings.FirstOrDefault().Prefix;
 
             if (thisuserDb.BirthDate.Year != 1 || thisuserDb.BirthDate.Year <= 18)
@@ -145,7 +145,7 @@ namespace XBOT.Modules.Command
                 }
                 else
                     emb.WithDescription($"{user.Mention} отказался(лась) от чпоканья!");
-                    
+
             }
 
             await result.Message.ModifyAsync(x => x.Embed = emb.Build());
@@ -223,7 +223,7 @@ namespace XBOT.Modules.Command
                 .WithDescription("На сервере еще нет варнов!");
             var Warns = _db.Guild_Warn.OrderBy(x => x.CountWarn);
 
-            
+
             if (Warns.Any())
             {
                 emb.WithDescription("");
@@ -240,7 +240,7 @@ namespace XBOT.Modules.Command
                             break;
                         case ReportTypeEnum.TimeOut:
                             text = $"Мут на ";
-                            if(warn.Time.Days > 0)
+                            if (warn.Time.Days > 0)
                                 text += $"{warn.Time.Days} дней ";
                             if (warn.Time.Hours > 0)
                                 text += $"{warn.Time.Hours} часов ";
@@ -258,7 +258,7 @@ namespace XBOT.Modules.Command
                     emb.Description += $"{warn.CountWarn}.{text}\n";
                 }
             }
-                
+
             await Context.Channel.SendMessageAsync("", false, emb.Build());
         }
 
@@ -329,7 +329,7 @@ namespace XBOT.Modules.Command
                 birthday = $"{Settings.Prefix}birthdateset 01.01.2005";
 
             var WarnsCount = _db.Guild_Warn.Count();
-            
+
             emb.AddField("Другое", $"Реферальная система: {Settings.Prefix}refferal\nНарушений: {UserDataBase.CountWarns}/{WarnsCount}\nДень рождения: {birthday}", true);
 
             var TimePublic = ConvertTime(UserDataBase.voiceActive_public);
@@ -344,7 +344,7 @@ namespace XBOT.Modules.Command
             emb.AddField("Опыт", $"Уровень: {UserDataBase.Level}\nОпыт: {UserDataBase.XP - count}/{countNext - count}\nАктивность в голосовых чатах: {TimePublic}\nАктивность в приватных чатах: {TimePrivate}", false);
 
 
-            
+
 
             //if (UserDataBase.MinecraftAccountId != 0)
             //{
@@ -506,7 +506,7 @@ namespace XBOT.Modules.Command
             var transfUser = await _db.GetUser(User.Id);
             var TransferLog = new TransactionUsers_Logs { SenderId = currentUser.Id, RecipientId = transfUser.Id, Amount = coin, TimeTransaction = DateTime.Now, Type = TransactionUsers_Logs.TypeTransation.Transfer };
             _db.TransactionUsers_Logs.Add(TransferLog);
-            
+
             if (transfUser.money + coin >= BotSettings.CoinsMaxUser)
             {
                 var MinimalMoneyTransfer = (currentUser.money + coin) - BotSettings.CoinsMaxUser;
@@ -523,7 +523,7 @@ namespace XBOT.Modules.Command
 
             _db.User.UpdateRange(new User[] { currentUser, transfUser });
             await _db.SaveChangesAsync();
-            
+
 
             async void SendMessage(string description)
             {
@@ -888,8 +888,8 @@ namespace XBOT.Modules.Command
 
                 int groupSize = 5;
                 var TimeoutMessage = new TimeSpan(0, 0, 60);
-                
-                
+
+
                 for (int i = 0; i < LvlRoles.Count; i += groupSize)
                 {
                     int remaining = Math.Min(groupSize, LvlRoles.Count - i);
@@ -1066,10 +1066,10 @@ namespace XBOT.Modules.Command
                 {
                     var ThisRole = _db.Roles_Buy.FirstOrDefault(x => x.RoleId == result.Value.SelectId);
                     var ThisRoleDs = Context.Guild.GetRole(ThisRole.RoleId);
-                    var userDb = _db.User.Include(x=>x.Roles_User).FirstOrDefault(x=>x.Id == User.Id);
+                    var userDb = _db.User.Include(x => x.Roles_User).FirstOrDefault(x => x.Id == User.Id);
                     if (userDb.money >= ThisRole.Price)
                     {
-                        if (!userDb.Roles_User.Any(x=>x.RoleId == ThisRole.Id))
+                        if (!userDb.Roles_User.Any(x => x.RoleId == ThisRole.Id))
                         {
                             _db.Roles_User.Add(new Roles_User { RoleId = ThisRole.RoleId, UserId = Context.User.Id });
                             userDb.money -= ThisRole.Price;
@@ -1168,7 +1168,7 @@ namespace XBOT.Modules.Command
                 returnmessage = true;
                 emb.WithDescription($"Ставка может быть не меньше 100 и не больше 30000");
             }
-                
+
             if (account.money < money)
             {
                 emb.WithDescription($"Недостаточно средств для ставки.\nВаш баланс: {account.money} coins");
@@ -1180,11 +1180,11 @@ namespace XBOT.Modules.Command
                 await Context.Channel.SendMessageAsync("", embed: emb.Build());
                 return;
             }
-                
 
-            var RandomNumber = new PcgRandom().Next(0,100);
+
+            var RandomNumber = new PcgRandom().Next(0, 100);
             string WinnerText = Fishka.ToString();
-            if(RandomNumber > 50)
+            if (RandomNumber > 50)
             {
                 emb.Author.Name += "✔️ Выигрыш";
                 account.money += money;
@@ -1207,98 +1207,93 @@ namespace XBOT.Modules.Command
 
 
 
-
         //[Aliases, Commands, Usage, Descriptions]
         //public async Task emojigiftshop(ulong number = 0, ulong price = 0)
         //{
-        //    using (Db _db = new ())
+        //    var emb = new EmbedBuilder()
+        //        .WithColor(BotSettings.DiscordColor)
+        //        .WithAuthor("Магазин эмодзи");
+
+        //    if (number == 0 && price == 0)
         //    {
-        //        var emb = new EmbedBuilder()
-        //            .WithColor(BotSettings.DiscordColor)
-        //            .WithAuthor("Магазин эмодзи");
-
-        //        if(number == 0 && price == 0)
+        //        var gifts = _db.EmojiGift.Where(x => x.PriceTrade != 0).ToList();
+        //        var giftsOrdered = gifts.OrderBy(x => x.Emoji.Factor).ThenBy(x => x.PriceTrade).ToList();
+        //        if (giftsOrdered.Count == 0)
         //        {
-        //            var gifts = db.EmojiGift.Include(x => x.User).Include(x => x.Emoji).Where(x => x.PriceTrade != 0).ToList();
-        //            var giftsordered = gifts.OrderBy(x => x.Emoji.Factor).ThenBy(x => x.PriceTrade).ToList();
-        //            if (giftsordered.Count == 0)
-        //            {
-        //                var prefix = db.Settings.FirstOrDefault().Prefix;
-        //                emb.WithDescription("Эмодзи на продажу еще не выставлены!").WithFooter($"Выставить - {prefix}emojigiftshop [number] [price]");
-        //                await Context.Channel.SendMessageAsync("", false, emb.Build());
-        //            }
-        //            else
-        //            {
-        //                int CountSlot = 3;
-        //                var Id = await new ListBuilder(_componentEventService).ListButtonSliderBuilder(giftsordered, emb, "emojigiftshop", Context, CountSlot, true);
-
-
-        //                if (Id == (0, 0))
-        //                    return;
-        //                var UserBuyed = await db.GetUser(Context.User.Id);
-        //                var product = giftsordered[Id.Item2];
-        //                if (UserBuyed.money < product.PriceTrade)
-        //                {
-        //                    emb.WithDescription($"Недостаточно денег для покупки {product.Name}.\nВам нехватает: {product.PriceTrade - UserBuyed.money} coins");
-
-        //                    await Context.Channel.ModifyMessageAsync(Id.MessageId, x => { x.Embed = emb.Build(); });
-
-        //                    return;
-        //                }
-
-        //                var UserGetted = await db.GetUser(product.UserId);
-
-        //                UserBuyed.money -= product.PriceTrade;
-        //                UserGetted.money += product.PriceTrade;
-
-        //                product.UserId = Context.User.Id;
-        //                product.PriceTrade = 0;
-        //                await db.SaveChangesAsync();
-        //                emb.WithDescription($"Вы успешно купили {product.Name} за {product.PriceTrade}");
-
-        //                await Context.Channel.ModifyMessageAsync(Id.MessageId, x => { x.Embed = emb.Build(); });
-        //            }
+        //            var prefix = _db.Settings.FirstOrDefault().Prefix;
+        //            emb.WithDescription("Эмодзи на продажу еще не выставлены!").WithFooter($"Выставить - {prefix}emojigiftshop [number] [price]");
+        //            await Context.Channel.SendMessageAsync("", false, emb.Build());
         //        }
         //        else
         //        {
-        //            var Emojiinfo = db.EmojiGift.Include(x=>x.Emoji).Include(x=>x.User).FirstOrDefault(x=>x.Id == number);
-        //            if(Emojiinfo is null)
+        //            int CountSlot = 3;
+        //            var Id = await new ListBuilder(_componentEventService).ListButtonSliderBuilder(giftsordered, emb, "emojigiftshop", Context, CountSlot, true);
+
+
+        //            if (Id == (0, 0))
+        //                return;
+        //            var UserBuyed = await db.GetUser(Context.User.Id);
+        //            var product = giftsordered[Id.Item2];
+        //            if (UserBuyed.money < product.PriceTrade)
         //            {
-        //                emb.WithDescription("Эмодзи с таким номером не найден.");
+        //                emb.WithDescription($"Недостаточно денег для покупки {product.Name}.\nВам нехватает: {product.PriceTrade - UserBuyed.money} coins");
+
+        //                await Context.Channel.ModifyMessageAsync(Id.MessageId, x => { x.Embed = emb.Build(); });
+
+        //                return;
+        //            }
+
+        //            var UserGetted = await db.GetUser(product.UserId);
+
+        //            UserBuyed.money -= product.PriceTrade;
+        //            UserGetted.money += product.PriceTrade;
+
+        //            product.UserId = Context.User.Id;
+        //            product.PriceTrade = 0;
+        //            await db.SaveChangesAsync();
+        //            emb.WithDescription($"Вы успешно купили {product.Name} за {product.PriceTrade}");
+
+        //            await Context.Channel.ModifyMessageAsync(Id.MessageId, x => { x.Embed = emb.Build(); });
+        //        }
+        //    }
+        //    else
+        //    {
+        //        var Emojiinfo = _db.EmojiGift.FirstOrDefault(x => x.Id == number);
+        //        if (Emojiinfo is null)
+        //            emb.WithDescription("Эмодзи с таким номером не найден.");
+        //        else
+        //        {
+        //            var prefix = _db.Settings.FirstOrDefault().Prefix;
+        //            if (Emojiinfo.PriceTrade == 0)
+        //            {
+        //                if (price == 0)
+        //                    emb.WithDescription($"Для выставления эмодзи на продажу, нужно выставить его цену!\n{prefix}emojigiftshop [number] [price]");
+        //                else
+        //                {
+        //                    Emojiinfo.PriceTrade = price;
+        //                    emb.WithDescription("Вы успешно выставили эмодзи на продажу!");
+        //                    await _db.SaveChangesAsync();
+        //                }
         //            }
         //            else
         //            {
-        //                var prefix = db.Settings.FirstOrDefault().Prefix;
-        //                if (Emojiinfo.PriceTrade == 0)
+        //                if (price == 0)
         //                {
-        //                    if(price == 0)
-        //                        emb.WithDescription($"Для выставления эмодзи на продажу, нужно выставить его цену!\n{prefix}emojigiftshop [number] [price]");
-        //                    else
-        //                    {
-        //                        Emojiinfo.PriceTrade = price;
-        //                        emb.WithDescription("Вы успешно выставили эмодзи на продажу!");
-        //                        await db.SaveChangesAsync();
-        //                    }
+        //                    Emojiinfo.PriceTrade = 0;
+        //                    emb.WithDescription("Вы успешно сняли эмодзи с продажу!");
         //                }
         //                else
         //                {
-        //                    if (price == 0)
-        //                    {
-        //                        Emojiinfo.PriceTrade = 0;
-        //                        emb.WithDescription("Вы успешно сняли эмодзи с продажу!");
-        //                    }
-        //                    else
-        //                    {
-        //                        emb.WithDescription($"Вы успешно сменили цену эмодзи с {Emojiinfo.PriceTrade} на {price} coins");
-        //                        Emojiinfo.PriceTrade = price;
-        //                    }
-        //                    await db.SaveChangesAsync();
+        //                    emb.WithDescription($"Вы успешно сменили цену эмодзи с {Emojiinfo.PriceTrade} на {price} coins");
+        //                    Emojiinfo.PriceTrade = price;
         //                }
-
+        //                await _db.SaveChangesAsync();
         //            }
-        //            await Context.Channel.SendMessageAsync("",false, emb.Build());
+
         //        }
+        //        await Context.Channel.SendMessageAsync("", false, emb.Build());
         //    }
+
         //}
     }
 }

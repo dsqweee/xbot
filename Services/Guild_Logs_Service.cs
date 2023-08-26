@@ -179,7 +179,6 @@ public class Guild_Logs_Service
                 await KickChannel?.SendMessageAsync("", false, builder.Build());
             }
         }
-
     }
 
     public async Task InUserUnBanned(SocketUser user, SocketGuild guild)

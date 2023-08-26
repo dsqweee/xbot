@@ -64,14 +64,15 @@ public class GiftQuestion_Service
         QuestionResult = result;
         var Timer = sender as System.Timers.Timer;
         var RandomMinutes = new Random().Next(60, 180);
+        var TimeActive = TimeSpan.FromSeconds(30);
         Timer.Interval = new TimeSpan(0, RandomMinutes, 0).TotalMilliseconds;
 
         question = $"{RandomNumber1} {symbol} {RandomNumber2}";
         emb.WithDescription($"Вопрос: сколько будет {question}?")
-           .WithFooter("На ответ дается 30 секунд.");
+           .WithFooter($"На ответ дается {TimeActive.TotalSeconds} секунд.");
 
         var message = await channel.SendMessageAsync("",false, emb.Build());
-        var MessageResult = await _interactive.NextMessageAsync(x => x.Channel.Id == channel.Id, timeout: TimeSpan.FromSeconds(30));
+        var MessageResult = await _interactive.NextMessageAsync(x => x.Channel.Id == channel.Id, timeout: TimeActive);
         
         if(MessageResult.IsTimeout)
         {
