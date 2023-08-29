@@ -89,6 +89,9 @@ namespace XBOT.Migrations
                     b.Property<double>("Factor")
                         .HasColumnType("REAL");
 
+                    b.Property<bool>("IsDisable")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
@@ -234,26 +237,6 @@ namespace XBOT.Migrations
                     b.ToTable("PrivateChannel");
                 });
 
-            modelBuilder.Entity("XBOT.DataBase.Models.QiwiTransactions", b =>
-                {
-                    b.Property<ulong>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<ulong>("discord_id")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<double>("invoice_ammount")
-                        .HasColumnType("REAL");
-
-                    b.Property<DateTime>("invoice_date_add")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("QiwiTransactions");
-                });
-
             modelBuilder.Entity("XBOT.DataBase.Models.Roles_data.Roles", b =>
                 {
                     b.Property<ulong>("Id")
@@ -380,9 +363,6 @@ namespace XBOT.Migrations
                     b.Property<ulong?>("LeaveTextChannelId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("MinecraftOpen")
-                        .HasColumnType("TEXT");
-
                     b.Property<ulong?>("ModeratorRoleId")
                         .HasColumnType("INTEGER");
 
@@ -416,15 +396,6 @@ namespace XBOT.Migrations
                     b.Property<ulong?>("WelcomeTextChannelId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("minecraft_IP")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("minecraft_Key")
-                        .HasColumnType("TEXT");
-
-                    b.Property<ushort>("minecraft_port")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AdminRoleId");
@@ -447,13 +418,11 @@ namespace XBOT.Migrations
                         new
                         {
                             Id = 1ul,
-                            MinecraftOpen = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Prefix = "x.",
                             PrivateMessageId = 0ul,
                             PrivateVoiceChannelId = 0ul,
                             Status = "Prefix: `x.`",
-                            WelcomeDMuser = false,
-                            minecraft_port = (ushort)0
+                            WelcomeDMuser = false
                         });
                 });
 
@@ -516,9 +485,6 @@ namespace XBOT.Migrations
                     b.Property<DateTime>("MarriageTime")
                         .HasColumnType("TEXT");
 
-                    b.Property<ulong?>("MinecraftAccountId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<DateTime>("ReferalActivate")
                         .HasColumnType("TEXT");
 
@@ -563,32 +529,6 @@ namespace XBOT.Migrations
                     b.HasIndex("MarriageId");
 
                     b.ToTable("User");
-                });
-
-            modelBuilder.Entity("XBOT.DataBase.Models.User_MinecraftAccount", b =>
-                {
-                    b.Property<ulong>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("LicenceTo")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("MinecraftName")
-                        .HasColumnType("TEXT");
-
-                    b.Property<ulong>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("whitelistAdded")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("User_MinecraftAccount");
                 });
 
             modelBuilder.Entity("XBOT.DataBase.TextChannel", b =>
@@ -669,7 +609,7 @@ namespace XBOT.Migrations
                     b.Property<DateTime>("ReviewAdd")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Status")
+                    b.Property<byte>("Status")
                         .HasColumnType("INTEGER");
 
                     b.Property<ulong>("Warn_Id")
@@ -975,17 +915,6 @@ namespace XBOT.Migrations
                     b.Navigation("Marriage");
                 });
 
-            modelBuilder.Entity("XBOT.DataBase.Models.User_MinecraftAccount", b =>
-                {
-                    b.HasOne("XBOT.DataBase.Models.User", "User")
-                        .WithOne("MinecraftAccount")
-                        .HasForeignKey("XBOT.DataBase.Models.User_MinecraftAccount", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("XBOT.DataBase.TextChannel", b =>
                 {
                     b.HasOne("XBOT.DataBase.Models.Settings", "Settings")
@@ -1083,8 +1012,6 @@ namespace XBOT.Migrations
             modelBuilder.Entity("XBOT.DataBase.Models.User", b =>
                 {
                     b.Navigation("EmojiGift");
-
-                    b.Navigation("MinecraftAccount");
 
                     b.Navigation("MyConnectionAudits");
 

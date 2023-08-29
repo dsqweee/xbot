@@ -24,6 +24,7 @@ public class GiftQuestion_Service
         TimeSpan time = new TimeSpan(0, 60, 0);
         System.Timers.Timer TaskTime = new(time);
         TaskTime.Elapsed += GiftQuestionActivate;
+        TaskTime.AutoReset = true;
         TaskTime.Start();
         return Task.CompletedTask;
     }
@@ -72,9 +73,25 @@ public class GiftQuestion_Service
            .WithFooter($"На ответ дается {TimeActive.TotalSeconds} секунд.");
 
         var message = await channel.SendMessageAsync("",false, emb.Build());
-        var MessageResult = await _interactive.NextMessageAsync(x => x.Channel.Id == channel.Id, timeout: TimeActive);
-        
-        if(MessageResult.IsTimeout)
+
+        var MessageResult = await _interactive.NextMessageAsync((message) =>
+        {
+            string sanitizedInput = Regex.Replace(message.Content, @"\s+", "");
+            if (!Regex.IsMatch(sanitizedInput, @"^-?\d+$"))
+                return false;
+            if (!long.TryParse(sanitizedInput, out long numberAnswer))
+                return false;
+
+            if (QuestionResult != numberAnswer)
+                return false;
+
+            return true;
+
+        }, timeout: TimeActive);
+
+        //var MessageResult = await _interactive.NextMessageAsync(x => long.TryParse(x.Content, out long result) == QuestionResult, timeout: TimeActive); // не активировались условия
+
+        if (MessageResult.IsTimeout)
         {
             emb.WithDescription($"Вопрос: сколько будет {question}?\nОтвет: {QuestionResult}")
                 .WithFooter("Ни кто не успел ответить правильно.");
@@ -82,18 +99,8 @@ public class GiftQuestion_Service
             await Task.Delay(5000);
             await message.DeleteAsync();
         }
-        else if(MessageResult.IsSuccess)
+        else if (MessageResult.IsSuccess)
         {
-            string sanitizedInput = Regex.Replace(MessageResult.Value.Content, @"\s+", "");
-            if (!Regex.IsMatch(sanitizedInput, @"^-?\d+$"))
-                return;
-            if (!long.TryParse(sanitizedInput, out long numberAnswer))
-                return;
-            
-
-            if (QuestionResult != numberAnswer)
-                return;
-
             emb.WithAuthor("Победитель викторины!");
             var userDb = await _db.GetUser(MessageResult.Value.Author.Id);
             var randomMoney = (uint)new Random().Next(0, 500);

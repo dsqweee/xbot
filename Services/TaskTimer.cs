@@ -32,27 +32,43 @@ public class TaskTimer
         await _refferal.ReferalRoleScaningUser(Users);
     }
 
-    private static readonly TimeSpan TimeAddExp = new TimeSpan(0, 0, 10);
+    private readonly TimeSpan TimeAddExp = new TimeSpan(0, 0, 10);
 
-    internal Task StartVoiceActivity(SocketGuildUser User)
+    internal Task StartVoiceActivity(SocketGuildUser User) /*СДелать проверку если перезапустится, чтобы включался механизм*/
     {
         System.Timers.Timer TaskTime = new(TimeAddExp);
-        TaskTime.Elapsed += (s, e) => VoiceActivity(s);
+        TaskTime.Elapsed += (s, e) => VoiceActivity(TaskTime, User);
         TaskTime.Start();
         return Task.CompletedTask;
         //Timer TaskTime = new Timer(VoiceActivity, User, time, time);
         //await Task.CompletedTask;
     }
-    private async void VoiceActivity(object obj)
+
+    internal Task StartVoiceAllActivity() /*СДелать проверку если перезапустится, чтобы включался механизм*/
     {
-        SocketGuildUser User = obj as SocketGuildUser;
+        var Guild = _client.Guilds.First();
+        foreach (var VoiceChannel in Guild.VoiceChannels)
+        {
+            foreach (var User in VoiceChannel.ConnectedUsers)
+            {
+                System.Timers.Timer TaskTime = new(TimeAddExp);
+                TaskTime.Elapsed += (s, e) => VoiceActivity(TaskTime, User);
+                TaskTime.Start();
+                
+            }
+        }
+        return Task.CompletedTask;
+    }
+
+    private async void VoiceActivity(System.Timers.Timer TaskTime, SocketGuildUser User)
+    {
         if (User.VoiceChannel != null && User.VoiceChannel.Id != User.Guild.AFKChannel?.Id)
         {
-            if (User.VoiceChannel.Users.Count > 1)
+            if (User.VoiceChannel.ConnectedUsers.Count > 1)
             {
                 uint CountSpeak = 0;
                 bool ThisUserActive = false;
-                foreach (var UserChannel in User.VoiceChannel.Users)
+                foreach (var UserChannel in User.VoiceChannel.ConnectedUsers)
                 {
                     var UserStatus = UserChannel.VoiceState.Value;
 
@@ -66,7 +82,6 @@ public class TaskTimer
                             ThisUserActive = true;
                     }
                 }
-
                 if (ThisUserActive && CountSpeak > 1)
                 {
                     var isPrivateChannel = await _db.PrivateChannel.AnyAsync(x => x.Id == User.VoiceChannel.Id);
@@ -84,8 +99,7 @@ public class TaskTimer
         }
         else
         {
-            var Timer = obj as System.Timers.Timer;
-            Timer?.Dispose();
+            TaskTime?.Dispose();
         }
 
     }

@@ -459,7 +459,7 @@ namespace XBOT.Modules.Command
                 emb.WithDescription($"Вы успешно выставили роль {text} {role.Mention}");
             else
             {
-                emb.WithDescription($"Вы успешно заменили роль {text} с <@{oldroleId}> на {role.Mention}");
+                emb.WithDescription($"Вы успешно заменили роль {text} с <@&{oldroleId}> на {role.Mention}");
                 foreach (var user in Context.Guild.Users.Where(x => x.Roles.Any(x => x.Id == oldroleId)))
                 {
                     await user.RemoveRoleAsync(oldroleId);
@@ -497,27 +497,22 @@ namespace XBOT.Modules.Command
 
         }
 
-        [Aliases, Commands, Usage, Descriptions]
-        public async Task test(string prefix = null)
-        {
-            var stopwatch1 = new Stopwatch();
-            var RoleId = BotSettings.IventerLoverId;
-            stopwatch1.Start();
-            SocketRole role = Context.Guild.GetRole(RoleId);
-            stopwatch1.Stop();
+        //[Aliases, Commands, Usage, Descriptions]
+        //public async Task test()
+        //{
+        //    var user = await _db.GetUser(Context.User.Id);
+        //    user.money += 1;
+        //    _db.User.Update(user);
+        //    await _db.SaveChangesAsync();
+        //}
 
-
-            var stopwatch2 = new Stopwatch();
-            var RoleId1 = BotSettings.IventerLoverId;
-            stopwatch2.Start();
-            SocketRole role1;
-            if(RoleId1 != 0)
-                role1 = Context.Guild.GetRole(RoleId1);
-            stopwatch2.Stop();
-
-            await Context.Channel.SendMessageAsync($"{stopwatch1.Elapsed} - {stopwatch2.Elapsed} ");
-
-        }
+        //[Aliases, Commands, Usage, Descriptions]
+        //public async Task test2()
+        //{
+        //    var user = await _db.GetUser(Context.User.Id);
+        //    user.money += 1;
+        //    await _db.SaveChangesAsync();
+        //}
 
         [Aliases, Commands, Usage, Descriptions]
         public async Task prefix(string prefix = null)
@@ -543,7 +538,6 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task RoleToMessage(ulong messageId, SocketTextChannel channel, SocketRole role, bool add)
         {
-
             var Settings = _db.Settings.FirstOrDefault();
             var emb = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor);

@@ -26,7 +26,7 @@ public class BotSettings
     }
 
     public const ulong xId = 1018972629534773310;
-    public const ulong DefaultChannel = 1128457837346041858;
+    public const ulong DefaultChannel = 1128457837346041858; // 1146121657853956168
 
     public const ulong IventerLoverId = 1128877663638003733;
 }

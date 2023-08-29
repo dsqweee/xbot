@@ -8,7 +8,6 @@ namespace XBOT.DataBase
     public class Db : DbContext
     {
 
-
         public DbSet<PrivateChannel> PrivateChannel { get; set; }
         public DbSet<TextChannel> TextChannel { get; set; }
         public DbSet<Guild_Logs> Guild_Logs { get; set; }
@@ -37,7 +36,12 @@ namespace XBOT.DataBase
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseSqlite(BotSettings.connectionStringDbPath);
+        {
+            optionsBuilder.UseSqlite(BotSettings.connectionStringDbPath);
+            //optionsBuilder.EnableDetailedErrors(false);
+            //optionsBuilder.EnableSensitiveDataLogging(false);
+            //optionsBuilder.EnableServiceProviderCaching(false);
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

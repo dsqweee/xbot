@@ -102,5 +102,59 @@ namespace XBOT.Modules.Command
             await Context.Channel.SendMessageAsync("", false, emb.Build());
 
         }
+
+        [Aliases, Commands, Usage, Descriptions]
+        public async Task mute(SocketGuildUser user, string time)
+        {
+            var emb = new EmbedBuilder()
+                .WithColor(BotSettings.DiscordColor)
+                .WithAuthor($"Mute {user}");
+
+            bool Success = TimeSpan.TryParse(time, out TimeSpan result);
+            if (!Success)
+                emb.WithDescription("Время введено неверно, возможно вы ввели слишком больше число?\nФормат: 01:00:00 [ч:м:с]\nФормат 2: 07:00:00:00 [д:ч:с:м]");
+            else if (result.TotalSeconds < 30)
+                emb.WithDescription("Время мута не может быть меньше 30 секунд!");
+            else if (result.TotalHours > 12)
+                emb.WithDescription("Больше чем на 12 часов замутить пользователя нельзя!");
+            else
+            {
+                if (result.TotalDays > 28)
+                    result = new TimeSpan(28, 0, 0, 0);
+
+                var text = $"Вы успешно выдали нарушение на ";
+                if (result.TotalSeconds > 86400)
+                    text += $"{result.Days} дней и {result.Hours} часов";
+                else if (result.TotalSeconds > 3600)
+                    text += $"{result.Hours} часов и {result.Minutes} минут";
+                if (result.TotalSeconds > 60)
+                    text += $"{result.Minutes} минут и {result.Seconds} секунд";
+                else
+                    text += $"{result.Seconds} секунд";
+
+                emb.WithDescription(text);
+                await user.SetTimeOutAsync(result);
+            }
+            await Context.Channel.SendMessageAsync("", false, emb.Build());
+
+        }
+
+        [Aliases, Commands, Usage, Descriptions]
+        public async Task unmute(SocketGuildUser user)
+        {
+            var emb = new EmbedBuilder()
+                .WithColor(BotSettings.DiscordColor)
+                .WithAuthor($"unMute {user}");
+
+            if (user.TimedOutUntil == null)
+                emb.WithDescription("У пользователя нету мута!");
+            else
+            {
+                emb.WithDescription("Вы успешно сняли мут с пользователя.");
+                await user.RemoveTimeOutAsync();
+            }
+
+            await Context.Channel.SendMessageAsync("", false, emb.Build());
+        }
     }
 }

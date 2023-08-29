@@ -182,6 +182,13 @@
     "Usage": [ "w", "warn" ]
   },
 
+  "channelsettings": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "123",
+    "Usage": [ "cs", "channelsettings" ]
+  },
+
   "cuddle": {
     "Category": "",
     "MinDesc": "",
@@ -274,7 +281,7 @@
     "Usage": [ "sex", "sex" ]
   },
 
-  "burthdateset": {
+  "birthdateset": {
     "Category": "",
     "MinDesc": "",
     "Desc": "Выставить дату рождения. Формат - 01.01.2001",
@@ -295,7 +302,19 @@
     "Usage": [ "ref", "refferal" ]
   },
 
+  "myloves": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "Узнать совместимость с человеком. user - пользователь с которым вы хотите узнать совместимость.",
+    "Usage": [ "ml", "myloves" ]
+  },
 
+  "warns": {
+    "Category": "",
+    "MinDesc": "",
+    "Desc": "Узнать варны на сервере.",
+    "Usage": [ "ws", "warns" ]
+  },
 
 
   "daily": {
@@ -356,5 +375,11 @@
     "MinDesc": "",
     "Desc": "Просмотреть рефферальные роли на сервере",
     "Usage": [ "refr", "refferalrole" ]
+  },
+  "kazino": {
+    "Category": "Экономика",
+    "MinDesc": "",
+    "Desc": "Поставить деньги в казино. 'Fishka' - название игральной фишки на что хотите поставить (Red, Black)",
+    "Usage": [ "kz", "kazino" ]
   }
 }

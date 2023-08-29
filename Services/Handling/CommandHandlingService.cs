@@ -211,6 +211,8 @@ public class CommandHandlingService : IHostedService
 
         await _timer.StartBirthdates();
 
+        await _timer.StartVoiceAllActivity();
+
         foreach (var Give in _db.GiveAways)
         {
             var TextChannel = Guild.GetTextChannel(Give.TextChannelId);
@@ -255,14 +257,14 @@ public class CommandHandlingService : IHostedService
             var PrivateVoiceDiscord = userDiscord.Guild.GetVoiceChannel(Settings.PrivateVoiceChannelId);
             if (PrivateVoiceDiscord != null)
                 await _privatesystem.PrivateChecking(userDiscord.Guild);
-
-
-            if (Before.VoiceChannel != After.VoiceChannel)
-                await _timer.StartVoiceActivity(userDiscord);
         }
+            
 
         if (After.VoiceChannel != null)
         {
+            if(Before.VoiceChannel == null)
+                await _timer.StartVoiceActivity(userDiscord);
+
             if (Settings.PrivateVoiceChannelId == After.VoiceChannel.Id && !User.IsBot)
             {
                 await _privatesystem.PrivateCreate(userDiscord, After.VoiceChannel);

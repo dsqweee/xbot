@@ -28,7 +28,11 @@ public class DiscordStartupService : IHostedService
         await _db.SaveChangesAsync();
 
         var prefix = _db.Settings.FirstOrDefault().Prefix;
-        await _discord.LoginAsync(TokenType.Bot, _config["token"]);
+        string token = "";
+
+        token = _config["token-test"];
+        //token = _config["token"];
+        await _discord.LoginAsync(TokenType.Bot, token);
 
         await _discord.StartAsync();
         await _discord.SetStatusAsync(UserStatus.DoNotDisturb);

@@ -86,6 +86,10 @@ public class Guild_Logs_Service
                     text = "Пользователь включил микрофон";
                 else if (ActionBefore.IsStreaming)
                     text = "Пользователь закончил стрим";
+                else if (ActionBefore.IsVideoing)
+                    text = "Пользователь выключил камеру";
+                else if (ActionAfter.IsVideoing)
+                    text = "Пользователь включил камеру"; 
 
                 if (TypeAction != VoiceAuditActionEnum.Defect)
                     Audit = User.AdminVoiceAudit(User.Id, 1, TypeAction).Result?.FirstOrDefault();
@@ -244,17 +248,22 @@ public class Guild_Logs_Service
             emb.WithAuthor($"Сообщение удалено", Message.Author.GetAvatarUrl())
                .AddField("Сообщение", string.IsNullOrWhiteSpace(Message.Content) ? "-" : Message.Content);
         else
+        {
+            if (MessageNow.Attachments.Count > 0)
+                emb.WithImageUrl(MessageNow.Attachments.FirstOrDefault().Url);
+
             emb.WithAuthor($"Сообщение изменено", Message.Author.GetAvatarUrl())
                .AddField("Прошлое", string.IsNullOrWhiteSpace(Message.Content) ? "-" : Message.Content)
                .AddField("Новое", string.IsNullOrWhiteSpace(MessageNow.Content) ? "-" : MessageNow.Content);
+        }
+            
 
         emb.AddField("Канал", $"<#{Message.Channel.Id}>", true)
-           .AddField("Отправитель", MessageNow.Author.Mention, true)
+           .AddField("Отправитель", Message.Author.Mention, true)
            .WithTimestamp(DateTime.Now.ToUniversalTime());
 
 
-        if (MessageNow.Attachments.Count > 0)
-            emb.WithImageUrl(MessageNow.Attachments.FirstOrDefault().Url);
+        
 
         await MessageChannel.SendMessageAsync("", false, emb.Build());
 

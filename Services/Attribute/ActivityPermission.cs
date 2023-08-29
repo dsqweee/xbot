@@ -18,7 +18,7 @@ sealed class ActivityPermission : PreconditionAttribute
 
 
         bool isUserGetterActive = CheckUserActivity(userGetter);
-        bool isUserSetterActive = CheckUserActivity(userSetter);
+        bool isUserSetterActive = userSetter is null ? true : CheckUserActivity(userSetter);
 
         bool CheckUserActivity(User user)
         {

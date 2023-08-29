@@ -67,7 +67,7 @@ namespace XBOT.Modules.Command
         }
 
         [Aliases, Commands, Usage, Descriptions]
-        public async Task loves(SocketGuildUser user)
+        public async Task myloves(SocketGuildUser user)
         {
             var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor)
                                         .WithAuthor($"Совместимость пары", Context.User.GetAvatarUrl());
@@ -163,7 +163,7 @@ namespace XBOT.Modules.Command
 
             if (!DateOnly.TryParseExact(date, "dd.MM.yyyy", out dateConvert))
             {
-                emb.WithDescription($"Введит дату в формате: {DateOnly.FromDateTime(DateTime.Now)}");
+                emb.WithDescription($"Введит дату в формате: {DateTime.Now.ToString("dd.MM.yyyy")}");
                 await Context.Channel.SendMessageAsync("", false, emb.Build());
                 return;
             }
@@ -858,6 +858,7 @@ namespace XBOT.Modules.Command
 
                 var paginator = new StaticPaginatorBuilder()
                     .WithActionOnTimeout(ActionOnStop.DeleteInput)
+                    .WithActionOnCancellation(ActionOnStop.DeleteInput)
                     .AddUser(Context.User)
                     .WithPages(pages);
 
@@ -1188,6 +1189,8 @@ namespace XBOT.Modules.Command
             {
                 emb.Author.Name += "✔️ Выигрыш";
                 account.money += money;
+                var transaction = new TransactionUsers_Logs { Amount = money, RecipientId = account.Id, TimeTransaction = DateTime.Now, Type = TransactionUsers_Logs.TypeTransation.Kazino };
+                _db.TransactionUsers_Logs.Add(transaction);
             }
             else
             {

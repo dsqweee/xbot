@@ -512,16 +512,15 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task mute(SocketGuildUser user, string time)
         {
-
             var emb = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor)
-                .WithAuthor($"Mute {user.Mention}");
+                .WithAuthor($"Mute {user}");
 
             bool Success = TimeSpan.TryParse(time, out TimeSpan result);
             if (!Success)
                 emb.WithDescription("Время введено неверно, возможно вы ввели слишком больше число?\nФормат: 01:00:00 [ч:м:с]\nФормат 2: 07:00:00:00 [д:ч:с:м]");
             else if (result.TotalSeconds < 30)
-                emb.WithDescription("Время розыгрыша не может быть меньше 30 секунд!");
+                emb.WithDescription("Время мута не может быть меньше 30 секунд!");
             else
             {
                 if (result.TotalDays > 28)
@@ -542,6 +541,26 @@ namespace XBOT.Modules.Command
             }
             await Context.Channel.SendMessageAsync("", false, emb.Build());
 
+        }
+
+        [Aliases, Commands, Usage, Descriptions]
+        public async Task unmute(SocketGuildUser user)
+        {
+            var emb = new EmbedBuilder()
+                .WithColor(BotSettings.DiscordColor)
+                .WithAuthor($"unMute {user}");
+
+            if(user.TimedOutUntil == null)
+            {
+                emb.WithDescription("У пользователя нету мута!");
+            }
+            else
+            {
+                emb.WithDescription("Вы успешно сняли мут с пользователя.");
+                await user.RemoveTimeOutAsync();
+            }
+
+            await Context.Channel.SendMessageAsync("", false, emb.Build());
         }
 
 
