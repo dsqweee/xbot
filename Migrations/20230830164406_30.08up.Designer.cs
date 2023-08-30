@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using XBOT.DataBase;
 
@@ -10,9 +11,11 @@ using XBOT.DataBase;
 namespace XBOT.Migrations
 {
     [DbContext(typeof(Db))]
-    partial class dbModelSnapshot : ModelSnapshot
+    [Migration("20230830164406_30.08up")]
+    partial class _3008up
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0-preview.2.23128.3");

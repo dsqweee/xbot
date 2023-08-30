@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\xXx\\source\\repos\\XBOT\\XBOT\\XBOT.csproj": {}
+    "c:\\Users\\xXx\\source\\repos\\XBOT\\XBOT\\XBOT.csproj": {}
   },
   "projects": {
-    "C:\\Users\\xXx\\source\\repos\\XBOT\\XBOT\\XBOT.csproj": {
+    "c:\\Users\\xXx\\source\\repos\\XBOT\\XBOT\\XBOT.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\xXx\\source\\repos\\XBOT\\XBOT\\XBOT.csproj",
+        "projectUniqueName": "c:\\Users\\xXx\\source\\repos\\XBOT\\XBOT\\XBOT.csproj",
         "projectName": "XBOT",
-        "projectPath": "C:\\Users\\xXx\\source\\repos\\XBOT\\XBOT\\XBOT.csproj",
+        "projectPath": "c:\\Users\\xXx\\source\\repos\\XBOT\\XBOT\\XBOT.csproj",
         "packagesPath": "C:\\Users\\xXx\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\xXx\\source\\repos\\XBOT\\XBOT\\obj\\",
+        "outputPath": "c:\\Users\\xXx\\source\\repos\\XBOT\\XBOT\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\xXx\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -111,12 +111,31 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Runtime.linux-musl-x64",
+              "version": "[7.0.10, 7.0.10]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.linux-musl-x64",
+              "version": "[7.0.10, 7.0.10]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Runtime.linux-musl-x64",
+              "version": "[7.0.10, 7.0.10]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "alpine-x64": {
+          "#import": []
         }
       }
     }

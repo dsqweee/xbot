@@ -7,6 +7,7 @@ namespace XBOT.DataBase
 {
     public class Db : DbContext
     {
+        //public Db(DbContextOptions<Db> options) : base(options) { }
 
         public DbSet<PrivateChannel> PrivateChannel { get; set; }
         public DbSet<TextChannel> TextChannel { get; set; }
@@ -60,14 +61,16 @@ namespace XBOT.DataBase
 
             //Transaction
             modelBuilder.Entity<TransactionUsers_Logs>()
-                        .HasOne(s => s.Recipient)
-                        .WithOne()
-                        .HasForeignKey<TransactionUsers_Logs>(x => x.RecipientId);
+                    .HasOne(t => t.Sender)
+                    .WithMany(u => u.SentTransactions)
+                    .HasForeignKey(t => t.SenderId)
+                    .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<TransactionUsers_Logs>()
-                        .HasOne(s => s.Sender)
-                        .WithOne()
-                        .HasForeignKey<TransactionUsers_Logs>(x => x.SenderId);
+                .HasOne(t => t.Recipient)
+                .WithMany(u => u.ReceivedTransactions)
+                .HasForeignKey(t => t.RecipientId)
+                .OnDelete(DeleteBehavior.Restrict);
 
 
 

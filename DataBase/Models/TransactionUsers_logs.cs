@@ -6,9 +6,9 @@
         public ulong Amount { get; set; }
         public DateTime TimeTransaction { get; set; }
         public ulong? SenderId { get; set; }
-        public User Sender { get; set; }
+        public virtual User Sender { get; set; }
         public ulong RecipientId { get; set; }
-        public User Recipient { get; set; }
+        public virtual User Recipient { get; set; }
         public TypeTransation Type { get; set; }
         public enum TypeTransation : byte
         {

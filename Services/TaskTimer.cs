@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using XBOT.DataBase.Models;
 using XBOT.Services.Configuration;
 
 namespace XBOT.Services;
@@ -7,13 +9,14 @@ public class TaskTimer
 {
     private readonly DiscordSocketClient _client;
     private readonly Guild_Logs_Service _guildlogs;
-    private readonly Db _db;
+    //private readonly Db _db;
     private readonly Refferal_Service _refferal;
-    public TaskTimer(DiscordSocketClient client, Guild_Logs_Service guildlogs, Db db, Refferal_Service refferal)
+    public TaskTimer(DiscordSocketClient client, Guild_Logs_Service guildlogs/*, Db db*/, Refferal_Service refferal)
     {
         _client = client;
-        _guildlogs = guildlogs;
-        _db = db;
+        //_guildlogs = guildlogs;
+        //_db = db;
+
         _refferal = refferal;
     }
 
@@ -34,6 +37,8 @@ public class TaskTimer
 
     private readonly TimeSpan TimeAddExp = new TimeSpan(0, 0, 10);
 
+
+
     internal Task StartVoiceActivity(SocketGuildUser User) /*СДелать проверку если перезапустится, чтобы включался механизм*/
     {
         System.Timers.Timer TaskTime = new(TimeAddExp);
@@ -44,64 +49,63 @@ public class TaskTimer
         //await Task.CompletedTask;
     }
 
-    internal Task StartVoiceAllActivity() /*СДелать проверку если перезапустится, чтобы включался механизм*/
+    internal async Task StartVoiceAllActivity() /*СДелать проверку если перезапустится, чтобы включался механизм*/
     {
         var Guild = _client.Guilds.First();
         foreach (var VoiceChannel in Guild.VoiceChannels)
         {
             foreach (var User in VoiceChannel.ConnectedUsers)
             {
-                System.Timers.Timer TaskTime = new(TimeAddExp);
-                TaskTime.Elapsed += (s, e) => VoiceActivity(TaskTime, User);
-                TaskTime.Start();
-                
+                await StartVoiceActivity(User);
             }
         }
-        return Task.CompletedTask;
     }
 
     private async void VoiceActivity(System.Timers.Timer TaskTime, SocketGuildUser User)
     {
-        if (User.VoiceChannel != null && User.VoiceChannel.Id != User.Guild.AFKChannel?.Id)
-        {
-            if (User.VoiceChannel.ConnectedUsers.Count > 1)
+        using var _db = new Db();
+        //using (var db = new Db(new DbContextOptionsBuilder<Db>().UseSqlite(BotSettings.connectionStringDbPath).Options))
+        
+            if (User.VoiceChannel != null && User.VoiceChannel.Id != User.Guild.AFKChannel?.Id)
             {
-                uint CountSpeak = 0;
-                bool ThisUserActive = false;
-                foreach (var UserChannel in User.VoiceChannel.ConnectedUsers)
+                if (User.VoiceChannel.ConnectedUsers.Count > 1)
                 {
-                    var UserStatus = UserChannel.VoiceState.Value;
-
-                    if (!UserStatus.IsMuted && !UserStatus.IsDeafened &&
-                        !UserStatus.IsSelfMuted && !UserStatus.IsSelfDeafened &&
-                        !UserChannel.IsBot)
+                    uint CountSpeak = 0;
+                    bool ThisUserActive = false;
+                    foreach (var UserChannel in User.VoiceChannel.ConnectedUsers)
                     {
-                        CountSpeak++;
+                        var UserStatus = UserChannel.VoiceState.Value;
 
-                        if (UserChannel.Id == User.Id)
-                            ThisUserActive = true;
+                        if (!UserStatus.IsMuted && !UserStatus.IsDeafened &&
+                            !UserStatus.IsSelfMuted && !UserStatus.IsSelfDeafened &&
+                            !UserChannel.IsBot)
+                        {
+                            CountSpeak++;
+
+                            if (UserChannel.Id == User.Id)
+                                ThisUserActive = true;
+                        }
+                    }
+                    if (ThisUserActive && CountSpeak > 1)
+                    {
+                        var isPrivateChannel = _db.PrivateChannel.FirstOrDefault(x => x.Id == User.VoiceChannel.Id);
+                        var user = await _db.GetUser(User.Id);
+                        if (isPrivateChannel is not null)
+                            user.voiceActive_private += TimeAddExp;
+                        else
+                            user.voiceActive_public += TimeAddExp;
+
+                        user.XP += 10;
+                        await _db.SaveChangesAsync();
                     }
                 }
-                if (ThisUserActive && CountSpeak > 1)
-                {
-                    var isPrivateChannel = await _db.PrivateChannel.AnyAsync(x => x.Id == User.VoiceChannel.Id);
-                    var user = await _db.GetUser(User.Id);
-                    if (isPrivateChannel)
-                        user.voiceActive_private += TimeAddExp;
-                    else
-                        user.voiceActive_public += TimeAddExp;
-
-                    user.XP += 10;
-                    _db.User.Update(user);
-                    await _db.SaveChangesAsync();
-                }
             }
-        }
-        else
-        {
-            TaskTime?.Dispose();
-        }
-
+            else
+            {
+                TaskTime?.Dispose();
+            }
+        
+        
     }
 
 
@@ -126,6 +130,7 @@ public class TaskTimer
 
     private async void MuteTimer(User_Warn Warn) // Обновление бесконечного мута
     {
+        using var _db = new Db();
         Warn = _db.User_Warn.Include(x => x.UnWarn).FirstOrDefault(x => x.Id == Warn.Id);
         if (Warn.UnWarnId == null ||
            (Warn.UnWarn != null && Warn.UnWarn.Status != User_UnWarn.WarnStatus.review && Warn.UnWarn.Status != User_UnWarn.WarnStatus.Rejected))
@@ -149,6 +154,7 @@ public class TaskTimer
 
     internal Task StartBirthdates()
     {
+        using var _db = new Db();
         var TimeNow = DateTime.Now;
 
         var UsersBirthdayInThisYear = _db.User.Where(x => x.BirthDateComplete == TimeNow.Year);
@@ -169,6 +175,7 @@ public class TaskTimer
 
     private async void Birthdates(User User)
     {
+        using var _db = new Db();
         User = _db.User.FirstOrDefault(x => x.Id == User.Id);
         var UserDiscord = _client.GetUser(User.Id) as SocketGuildUser;
         if (UserDiscord == null)

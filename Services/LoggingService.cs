@@ -4,7 +4,10 @@ namespace XBOT.Services;
 
 public class LoggingService
 {
-    public static Task OnLogAsync(ILogger logger, LogMessage msg)
+    private static string LogDirectory => Path.Combine(AppContext.BaseDirectory, "logs");
+    private static string LogFile => Path.Combine(LogDirectory, $"{DateTime.Now:dd-MM-yy}.txt");
+
+    public async static Task OnLogAsync(ILogger logger, LogMessage msg)
     {
         switch (msg.Severity)
         {
@@ -24,6 +27,14 @@ public class LoggingService
                 logger.LogCritical(msg.ToString());
                 break;
         }
-        return Task.CompletedTask;
+
+        if (!Directory.Exists(LogDirectory))
+            Directory.CreateDirectory(LogDirectory);
+        if (!File.Exists(LogFile))
+            File.Create(LogFile).Dispose();
+
+        string logText = $"{DateTime.Now:dd.MM.yy HH:mm:ss} [{msg.Severity}]: {msg.Exception?.ToString() ?? msg.Message}";
+
+        await File.AppendAllTextAsync(LogFile, logText + "\n");
     }
 }

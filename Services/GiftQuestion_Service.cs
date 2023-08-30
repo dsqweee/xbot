@@ -9,13 +9,13 @@ public class GiftQuestion_Service
 {
     private readonly DiscordSocketClient _client;
     private readonly InteractiveService _interactive;
-    private readonly Db _db;
+    //private readonly Db _db;
     private string question { get; set; }
     private long QuestionResult { get; set; }
-    public GiftQuestion_Service(DiscordSocketClient client, Db db, InteractiveService interactive)
+    public GiftQuestion_Service(DiscordSocketClient client, /*Db db,*/ InteractiveService interactive)
     {
         _client = client;
-        _db = db;
+        //_db = db;
         _interactive = interactive;
     }
 
@@ -32,6 +32,7 @@ public class GiftQuestion_Service
 
     private async void GiftQuestionActivate(object sender, ElapsedEventArgs e)
     {
+        using var _db = new Db();
         var channel = _client.GetChannel(BotSettings.DefaultChannel) as SocketTextChannel;
 
         var emb = new EmbedBuilder()

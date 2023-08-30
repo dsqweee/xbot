@@ -10,19 +10,19 @@ namespace XBOT.Modules.Command
     public class ModeratorModule : ModuleBase<SocketCommandContext>
     {
         private readonly TaskTimer _timer;
-        private readonly Db _db;
+        //private readonly Db _db;
 
-        public ModeratorModule(TaskTimer timer, Db db)
+        public ModeratorModule(TaskTimer timer/*, Db db*/)
         {
             _timer = timer;
-            _db = db;
+            //_db = db;
         }
 
 
         [Aliases, Commands, Usage, Descriptions]
         public async Task warn(SocketGuildUser User, string Reason)
         {
-
+            using var _db = new Db();
             var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor).WithAuthor("Warn");
             var GuildWarn = _db.Guild_Warn.ToList();
             if (!GuildWarn.Any())

@@ -25,7 +25,7 @@ public class CommandHandlingService : IHostedService
     private readonly CommandService _commands;
     private readonly IServiceProvider _services;
     private readonly ILogger<CommandService> _commandslogger;
-    private readonly Db _db;
+    //private readonly Db _db;
 
     public CommandHandlingService(
         DiscordSocketClient discord,
@@ -36,7 +36,7 @@ public class CommandHandlingService : IHostedService
         GiftQuestion_Service gift,
         Invite_Service invite,
         Guild_Logs_Service guildlogs,
-        Db db,
+        //Db db,
         PrivateSystem privatesystem,
         UserMessagesSolution messagesolution,
         Meeting_Logs_Service meeting,
@@ -52,7 +52,7 @@ public class CommandHandlingService : IHostedService
         _gift = gift;
         _invite = invite;
         _guildlogs = guildlogs;
-        _db = db;
+        //_db = db;
         _privatesystem = privatesystem;
         _messagesolution = messagesolution;
         _meeting = meeting;
@@ -144,6 +144,7 @@ public class CommandHandlingService : IHostedService
 
     private async Task CommandExecuted(Optional<CommandInfo> CommandInfo, ICommandContext Context, Discord.Commands.IResult Result)
     {
+        using var _db = new Db();
         if (!string.IsNullOrWhiteSpace(Result?.ErrorReason))
         {
             string Prefix = _db.Settings.FirstOrDefault().Prefix;
@@ -196,10 +197,10 @@ public class CommandHandlingService : IHostedService
 
     private async Task Ready()
     {
+        using var _db = new Db();
         Console.WriteLine($"Connected and Start Scanning!");
 
         var Guild = _discord.Guilds.FirstOrDefault();
-        var Invites = await Guild.GetInvitesAsync();
 
         await _invite.InviteScanning(); // Проверка инвайтов
 
@@ -246,6 +247,7 @@ public class CommandHandlingService : IHostedService
 
     private async Task UserVoiceStateUpdated(SocketUser User, SocketVoiceState Before, SocketVoiceState After)
     {
+        using var _db = new Db();
         var Settings = _db.Settings.FirstOrDefault();
         var userDiscord = User as SocketGuildUser;
         await _db.GetUser(userDiscord.Id);
@@ -274,6 +276,7 @@ public class CommandHandlingService : IHostedService
 
     private async Task UserJoined(SocketGuildUser userDiscord)
     {
+        using var _db = new Db();
         await _db.GetUser(userDiscord.Id);
 
         await _guildlogs.InJoinedUser(userDiscord);
@@ -282,6 +285,7 @@ public class CommandHandlingService : IHostedService
 
     private async Task MessageReceivedAsync(SocketMessage message)
     {
+        using var _db = new Db();
         if (message is not SocketUserMessage userMessage || message.Source != MessageSource.User)
             return;
 

@@ -12,17 +12,17 @@ namespace XBOT.Modules.Command
     [Name("Settings"), Summary("Настройки бота")]
     public class SettingsModule : ModuleBase<SocketCommandContext>
     {
-        private readonly Db _db;
+        //private readonly Db _db;
 
-        public SettingsModule(Db db)
-        {
-            _db = db;
-        }
+        //public SettingsModule(Db db)
+        //{
+        //    _db = db;
+        //}
 
         [Aliases, Commands, Usage, Descriptions]
         public async Task PrivateCreate()
         {
-
+            using var _db = new Db();
             var embed = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor)
                 .WithAuthor("🔨 Создание канала для приваток");
@@ -79,7 +79,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task logsettings(uint selection = 0, SocketTextChannel channel = null)
         {
-
+            using var _db = new Db();
             var Prefix = _db.Settings.FirstOrDefault().Prefix;
             var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor).WithAuthor(" - Логирование на сервере", Context.Guild.IconUrl);
             var ChannelTypes = Enum.GetNames(typeof(ChannelsTypeEnum));
@@ -160,7 +160,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task messagesettings(byte selection = 0, [Remainder] string text = null)
         {
-
+            using var _db = new Db();
             var ThisGuild = _db.Settings
                 .Include(x => x.WelcomeTextChannel)
                 .Include(x => x.LeaveTextChannel)
@@ -349,7 +349,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task addwarn(byte CountWarn, ReportTypeEnum report, string Time = null)
         {
-
+            using var _db = new Db();
             var emb = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor)
                 .WithAuthor("⚜️ WarnSystem - Добавить варн");
@@ -396,7 +396,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task delwarn(byte CountWarn)
         {
-
+            using var _db = new Db();
             var Prefix = _db.Settings.FirstOrDefault().Prefix;
             var warn = _db.Guild_Warn.FirstOrDefault(x => x.CountWarn == CountWarn);
             var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor).WithAuthor("⚜️ WarnSystem - Удалить варн");
@@ -425,7 +425,7 @@ namespace XBOT.Modules.Command
 
         private async Task PrivilegeRoleSet(UserPermission.RolePermission permission, SocketRole role)
         {
-
+            using var _db = new Db();
             string text = "";
             var newrole = await _db.GetRole(role.Id);
             ulong oldroleId = 0;
@@ -474,7 +474,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task botblock(ulong userId, string reason)
         {
-
+            using var _db = new Db();
             var user = await _db.GetUser(userId);
             var emb = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor);
@@ -517,6 +517,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task prefix(string prefix = null)
         {
+            using var _db = new Db();
             var Settings = _db.Settings.FirstOrDefault();
             var emb = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor)
@@ -538,6 +539,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task RoleToMessage(ulong messageId, SocketTextChannel channel, SocketRole role, bool add)
         {
+            using var _db = new Db();
             var Settings = _db.Settings.FirstOrDefault();
             var emb = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor);
@@ -599,7 +601,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task channelsettings(SocketTextChannel channel = null, float number = 0)
         {
-
+            using var _db = new Db();
             var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor);
             var Prefix = _db.Settings.FirstOrDefault().Prefix;
             var chnl = new TextChannel();

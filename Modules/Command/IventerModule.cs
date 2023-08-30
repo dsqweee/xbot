@@ -8,12 +8,12 @@ namespace XBOT.Modules.Command
     [Name("Iventer"), Summary("Команды управления ивентами")]
     public class IventerModule : ModuleBase<SocketCommandContext>
     {
-        private readonly Db _db;
+        //private readonly Db _db;
         private readonly GiveAway_Service _giveaway;
 
-        public IventerModule(Db db, GiveAway_Service giveaway)
+        public IventerModule(/*Db db, */GiveAway_Service giveaway)
         {
-            _db = db;
+            //_db = db;
             _giveaway = giveaway;
         }
 
@@ -34,6 +34,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task giveawaystart(string Time, byte WinnersCount, [Remainder] string Given)
         {
+            using var _db = new Db();
             bool Error = true;
             var emb = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor)

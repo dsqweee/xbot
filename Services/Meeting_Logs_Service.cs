@@ -2,18 +2,18 @@
 
 public class Meeting_Logs_Service
 {
-    private readonly Db _db;
+    //private readonly Db _db;
 
-    public Meeting_Logs_Service(Db db)
-    {
-        _db = db;
-    }
+    //public Meeting_Logs_Service(Db db)
+    //{
+    //    _db = db;
+    //}
 
     public async Task UserJoinAction(SocketGuildUser User)
     {
         if (User.IsBot)
             return;
-
+        using var _db = new Db();
         var Settings = _db.Settings.FirstOrDefault();
         var RoleId = Convert.ToUInt64(Settings.WelcomeRoleId);
 
@@ -30,7 +30,7 @@ public class Meeting_Logs_Service
     {
         if (User.IsBot)
             return;
-
+        using var _db = new Db();
         var Settings = _db.Settings.FirstOrDefault();
         await MeetingSendMessage(User, Guild, Settings.WelcomeDMmessage, 0);
     }

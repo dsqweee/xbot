@@ -5,15 +5,16 @@ namespace XBOT.Services;
 
 public class Refferal_Service
 {
-    private readonly Db _db;
+    //private readonly Db _db;
 
-    public Refferal_Service(Db db)
-    {
-        _db = db;
-    }
+    //public Refferal_Service(Db db)
+    //{
+    //    _db = db;
+    //}
 
     public async Task ReferalRoleScaningUser(IReadOnlyCollection<SocketGuildUser> Users)
     {
+        using var _db = new Db();
         foreach (var currentUser in Users)
         {
             var userDb = await _db.GetUser(currentUser.Id);
@@ -22,16 +23,17 @@ public class Refferal_Service
                 break;
             foreach (var RefRole in _db.ReferralRole)
             {
-                if (currentUser.Roles.Any(x => x.Id == RefRole.Id) && RefRole.Id != RefferalRole.Id)
-                    await currentUser.RemoveRoleAsync(RefRole.Id);
+                if (currentUser.Roles.Any(x => x.Id == RefRole.RoleId) && RefRole.Id != RefferalRole.Id)
+                    await currentUser.RemoveRoleAsync(RefRole.RoleId);
             }
 
-            await currentUser.AddRoleAsync(RefferalRole.Id);
+            await currentUser.AddRoleAsync(RefferalRole.RoleId);
         }
     }
 
-    public static (int CountRef, int WriteInWeek, int Level5up) GetRefferalValue(User userDb)
+    public async Task<(int CountRef, int WriteInWeek, int Level5up)> GetRefferalValue(User userDb)
     {
+        using var _db = new Db();
         int CountRef = 0;
         int UserWriteInWeek = 0;
         int UserLevel5Up = 0;
@@ -40,10 +42,11 @@ public class Refferal_Service
             foreach (var Ref in MyInvite.ReferralLinks)
             {
                 CountRef++;
-                if (Ref.User.LastMessageTime > DateTime.Now.AddDays(-7))
+                var user = await _db.GetUser(Ref.UserId);
+                if (user.LastMessageTime > DateTime.Now.AddDays(-7))
                     UserWriteInWeek++;
 
-                if (Ref.User.Level >= 5)
+                if (user.Level >= 5)
                     UserLevel5Up++;
 
             }
@@ -53,8 +56,9 @@ public class Refferal_Service
 
     public async Task<DiscordInvite_ReferralRole> AuthorReferalRole(ulong AuthorId)
     {
-        var userDb = _db.User.Include(x => x.MyInvites).ThenInclude(x => x.ReferralLinks).ThenInclude(x => x.User).FirstOrDefault(x => x.Id == AuthorId);
-        var UserValue = GetRefferalValue(userDb);
+        using var _db = new Db();
+        var userDb = await _db.User.Include(x => x.MyInvites).ThenInclude(x => x.ReferralLinks).FirstOrDefaultAsync(x => x.Id == AuthorId);
+        var UserValue = await GetRefferalValue(userDb);
 
         var Role = _db.ReferralRole.FirstOrDefault(x => UserValue.CountRef >= x.UserJoinedValue && UserValue.WriteInWeek >= x.UserWriteInWeekValue && UserValue.Level5up >= x.UserUp5LevelValue);
         return Role;

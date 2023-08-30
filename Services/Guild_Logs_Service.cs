@@ -8,15 +8,16 @@ namespace XBOT.Services;
 public class Guild_Logs_Service
 {
     private readonly Invite_Service _invite;
-    private readonly Db _db;
+    //private readonly Db _db;
 
-    public Guild_Logs_Service(Invite_Service invite, Db db)
+    public Guild_Logs_Service(Invite_Service invite/*, Db db*/)
     {
         _invite = invite;
-        _db = db;
+        //_db = db;
     }
     public async Task InVoicelogs(SocketUser User, SocketVoiceState ActionBefore, SocketVoiceState ActionAfter)
     {
+        using var _db = new Db();
         var Guild_Log = _db.Guild_Logs.FirstOrDefault(x => x.Type == ChannelsTypeEnum.VoiceAction);
         if (Guild_Log == null)
             return;
@@ -115,6 +116,7 @@ public class Guild_Logs_Service
 
     public async Task InJoinedUser(SocketGuildUser user)
     {
+        using var _db = new Db();
         var AllInvites = await user.Guild.GetInvitesAsync();
         var InUserJoinedInvite = await _invite.JoinedUserInviteAttach(user);
 
@@ -151,6 +153,7 @@ public class Guild_Logs_Service
 
         SocketTextChannel GetLogChannel(bool left)
         {
+            using var _db = new Db();
             var LogChannel = _db.Guild_Logs.FirstOrDefault(x => x.Type == (left ? ChannelsTypeEnum.Left : ChannelsTypeEnum.Kick));
 
             var LogDiscord = Guild.GetTextChannel(Convert.ToUInt64(LogChannel?.TextChannelId));
@@ -191,6 +194,7 @@ public class Guild_Logs_Service
         => await BanOrUnBan(user, guild, true);
     private async Task BanOrUnBan(SocketUser user, SocketGuild Guild, bool Ban)
     {
+        using var _db = new Db();
         var Guild_Log = _db.Guild_Logs.FirstOrDefault(x => x.Type == (Ban ? ChannelsTypeEnum.Ban : ChannelsTypeEnum.UnBan));
         if (Guild_Log == null)
             return;
@@ -225,6 +229,7 @@ public class Guild_Logs_Service
 
     public async Task DeletedAndEditedMessage(Cacheable<IMessage, ulong> CachedMessage, SocketMessage MessageNow)
     {
+        using var _db = new Db();
         var Message = await CachedMessage.GetOrDownloadAsync();
         if (Message == null || Message.Author.IsBot || Message.Content.Length > 1023 || MessageNow?.Content.Length > 1023)
             return;
@@ -271,6 +276,7 @@ public class Guild_Logs_Service
 
     public async Task Birthday(SocketGuildUser user)
     {
+        using var _db = new Db();
         var emb = new EmbedBuilder()
             .WithColor(BotSettings.DiscordColor)
             .WithAuthor("С днем рождения солнышко🎉");

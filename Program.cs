@@ -1,9 +1,11 @@
-﻿using Fergun.Interactive;
+﻿using Discord;
+using Fergun.Interactive;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using XBOT.Services;
 using XBOT.Services.Configuration;
 using XBOT.Services.Handling;
@@ -21,8 +23,12 @@ using IHost host = Host.CreateDefaultBuilder(args)
         services.AddSingleton(new DiscordSocketClient(XBOT.Services.Configuration.DiscordConfig.discordSocketConfig));
         services.AddSingleton(new CommandService(XBOT.Services.Configuration.DiscordConfig.configService));
 
-
-        services.AddDbContext<Db>();
+        
+        //services.AddDbContext<Db>(x=>
+        //{
+        //    x.UseSqlite(BotSettings.connectionStringDbPath);
+        //    x.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddFilter((category, level) => false)));
+        //});
         services.AddSingleton<TaskTimer>();
         services.AddSingleton<Refferal_Service>();
         services.AddSingleton<GiveAway_Service>();
@@ -41,5 +47,4 @@ using IHost host = Host.CreateDefaultBuilder(args)
         services.AddHostedService<DiscordStartupService>();         
     })
     .Build();
-
 await host.RunAsync();

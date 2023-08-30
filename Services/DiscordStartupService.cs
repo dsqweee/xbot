@@ -10,28 +10,29 @@ public class DiscordStartupService : IHostedService
     private readonly DiscordSocketClient _discord;
     private readonly IConfiguration _config;
     private readonly ILogger<DiscordSocketClient> _discordlogger;
-    private readonly Db _db;
+    //private readonly Db _db;
 
-    public DiscordStartupService(DiscordSocketClient discord, IConfiguration config, ILogger<DiscordSocketClient> discordlogger, Db db)
+    public DiscordStartupService(DiscordSocketClient discord, IConfiguration config, ILogger<DiscordSocketClient> discordlogger/*, Db db*/)
     {
         _discord = discord;
         _config = config;
         _discordlogger = discordlogger;
 
         _discord.Log += msg => LoggingService.OnLogAsync(_discordlogger, msg);
-        _db = db;
+        //_db = db;
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
+        using var _db = new Db();
         _db.Database.Migrate();
         await _db.SaveChangesAsync();
 
         var prefix = _db.Settings.FirstOrDefault().Prefix;
         string token = "";
 
-        token = _config["token-test"];
-        //token = _config["token"];
+        //token = _config["token-test"];
+        token = _config["token"];
         await _discord.LoginAsync(TokenType.Bot, token);
 
         await _discord.StartAsync();

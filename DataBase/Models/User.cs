@@ -37,7 +37,9 @@ namespace XBOT.DataBase.Models
 
         public virtual ICollection<User_Warn> User_Warn { get; set; } = new List<User_Warn>();
 
-        public virtual ICollection<EmojiGift> EmojiGift { get; set; } = new List<EmojiGift>();
+        public virtual ICollection<EmojiGift> EmojiGift { get; set; } = new List<EmojiGift>(); 
+        public ICollection<TransactionUsers_Logs> SentTransactions { get; set; }
+        public ICollection<TransactionUsers_Logs> ReceivedTransactions { get; set; }
 
         public List<Roles_User> Roles_User { get; set; }
         public ulong XP { get; set; }

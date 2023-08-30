@@ -5,15 +5,16 @@ namespace XBOT.Services;
 
 public class UserMessagesSolution
 {
-    private readonly Db _db;
+    //private readonly Db _db;
 
-    public UserMessagesSolution(Db db)
-    {
-        _db = db;
-    }
+    //public UserMessagesSolution(Db db)
+    //{
+    //    _db = db;
+    //}
 
     public async Task SetPointAsync(SocketMessage Message)
     {
+        using var _db = new Db();
         var userDiscord = Message.Author as SocketGuildUser;
         var userDb = await _db.GetUser(userDiscord.Id);
 
@@ -63,7 +64,7 @@ public class UserMessagesSolution
 
     public async Task<bool> ChatSystem(SocketCommandContext Context, TextChannel Channel, string Prefix)
     {
-
+        using var _db = new Db();
         string message = Context.Message.Content;
         bool retorn = false;
         var Settings = _db.Settings.FirstOrDefault();

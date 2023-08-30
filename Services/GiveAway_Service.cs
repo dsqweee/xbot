@@ -5,12 +5,12 @@ namespace XBOT.Services;
 
 public class GiveAway_Service
 {
-    private readonly Db _db;
+    //private readonly Db _db;
 
-    public GiveAway_Service(Db db)
-    {
-        _db = db;
-    }
+    //public GiveAway_Service(Db db)
+    //{
+    //    _db = db;
+    //}
 
     public Dictionary<ulong, bool> Giveaway_List = new();
 
@@ -32,6 +32,7 @@ public class GiveAway_Service
 
     public async Task GiveAwayTimer(GiveAways ThisTask, RestUserMessage message)
     {
+        using var _db = new Db();
         var emb = new EmbedBuilder()
             .WithColor(BotSettings.DiscordColor)
             .WithAuthor($"🎲 **РОЗЫГРЫШ** 🎲");

@@ -17,16 +17,19 @@ namespace XBOT.Modules.Command
     public class UserModule : ModuleBase<SocketCommandContext>
     {
         private readonly InteractiveService _interactive;
-        private readonly Db _db;
-        public UserModule(InteractiveService interactive, Db db)
+        private readonly Refferal_Service _refferal_Service;
+        //private readonly Db _db;
+        public UserModule(InteractiveService interactive/*, Db db*/, Refferal_Service refferal_Service)
         {
             _interactive = interactive;
-            _db = db;
+            //_db = db;
+            _refferal_Service = refferal_Service;
         }
 
         [Aliases, Commands, Usage, Descriptions]
         public async Task usertop()
         {
+            using var _db = new Db();
             var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor)
                                             .WithAuthor($"Топ пользователей", Context.User.GetAvatarUrl());
 
@@ -82,6 +85,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task sex(SocketGuildUser user)
         {
+            using var _db = new Db();
             var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor)
                                         .WithAuthor($"Чпокан чпокан чпокан", Context.User.GetAvatarUrl());
 
@@ -156,7 +160,7 @@ namespace XBOT.Modules.Command
         [BirthDatePermission]
         public async Task BirthDateSet(string date)
         {
-
+            using var _db = new Db();
             var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor)
                                         .WithAuthor($"День рождения", Context.User.GetAvatarUrl());
             DateOnly dateConvert;
@@ -217,6 +221,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task warns()
         {
+            using var _db = new Db();
             var emb = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor)
                 .WithAuthor("⚜️ Варны сервера")
@@ -265,8 +270,10 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task userinfo(SocketGuildUser user = null)
         {
+            using var _db = new Db();
             if (user == null)
                 user = Context.User as SocketGuildUser;
+
 
             var emb = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor)
@@ -358,12 +365,13 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task refferal()
         {
+            using var _db = new Db();
             var emb = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor)
                 .WithAuthor($"Реферальная система");
             var userDs = Context.User as SocketGuildUser;
             var userDb = _db.User.Include(x => x.MyInvites).ThenInclude(x => x.ReferralLinks).ThenInclude(x => x.User).FirstOrDefault(x => x.Id == userDs.Id);
-            var UserValue = Refferal_Service.GetRefferalValue(userDb);
+            var UserValue = await _refferal_Service.GetRefferalValue(userDb);
 
             var RefferalRoles = _db.ReferralRole.OrderBy(x => x.UserJoinedValue).ToList();
             if (RefferalRoles.Count == 0)
@@ -372,7 +380,6 @@ namespace XBOT.Modules.Command
             }
             else
             {
-
                 var ThisRole = RefferalRoles.FirstOrDefault(x => UserValue.CountRef >= x.UserJoinedValue && UserValue.WriteInWeek >= x.UserWriteInWeekValue && UserValue.Level5up >= x.UserUp5LevelValue);
 
                 var indexThisRole = RefferalRoles.IndexOf(ThisRole);
@@ -479,7 +486,7 @@ namespace XBOT.Modules.Command
         [ActivityPermission]
         public async Task transfer(SocketGuildUser User, ushort coin)
         {
-
+            using var _db = new Db();
             var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor).WithAuthor($"{Context.User} 💱 {User}");
             const ushort maxSum = 25000;
 
@@ -537,7 +544,7 @@ namespace XBOT.Modules.Command
         [ActivityPermission]
         public async Task reputation(SocketGuildUser RepUser)
         {
-
+            using var _db = new Db();
             var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor)
                                         .WithAuthor($" - Репутация 🏧", Context.User.GetAvatarUrl());
             var userDB = await _db.GetUser(Context.User.Id);
@@ -589,7 +596,7 @@ namespace XBOT.Modules.Command
 
         public async Task RepRole(SocketGuildUser UserDiscord, ulong Reputation)
         {
-
+            using var _db = new Db();
             var Roles = _db.Roles_Reputation.OrderBy(x => x.Reputation);
             var ThisRole = Roles.LastOrDefault(x => x.Reputation <= Reputation);
 
@@ -610,7 +617,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task daily()
         {
-
+            using var _db = new Db();
             var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor)
                                         .WithAuthor($"Ежедневное пособие Coins 🏧", Context.User.GetAvatarUrl());
 
@@ -651,7 +658,7 @@ namespace XBOT.Modules.Command
                 emb.Description += $"\nКомбо: {userDB.streak}\nСледующее получение coins через {User.PeriodHours} часов";
 
                 _db.User.Update(userDB);
-                await _db.SaveChangesAsync();
+                await _db.SaveChangesAsync(); // SQLite Error 19: 'UNIQUE constraint failed: TransactionUsers_Logs.RecipientId'
             }
             else
             {
@@ -694,7 +701,7 @@ namespace XBOT.Modules.Command
         [MarryPermission]
         public async Task marry(SocketGuildUser user)
         {
-
+            using var _db = new Db();
             var emb = new EmbedBuilder()
                         .WithColor(BotSettings.DiscordColor)
                         .WithAuthor($"💞 Женидьба - Ошибка");
@@ -813,6 +820,7 @@ namespace XBOT.Modules.Command
         [MarryPermission]
         public async Task divorce()
         {
+            using var _db = new Db();
             var ContextUser = await _db.GetUser(Context.User.Id);
             var MarryedUserId = Convert.ToUInt64(ContextUser.MarriageId);
             var userDs = Context.Guild.GetUser(MarryedUserId);
@@ -832,6 +840,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task reprole()
         {
+            using var _db = new Db();
             var RepRoles = _db.Roles_Reputation.OrderBy(u => u.Reputation).ToList();
 
             if (RepRoles.Any())
@@ -881,6 +890,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task levelrole()
         {
+            using var _db = new Db();
             var LvlRoles = _db.Roles_Level.OrderBy(u => u.Level).ToList();
 
             if (LvlRoles.Any())
@@ -951,6 +961,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task refferalrole()
         {
+            using var _db = new Db();
             var RefRoles = _db.ReferralRole.OrderBy(u => u.UserJoinedValue).ToList();
 
             if (RefRoles.Any())
@@ -1016,6 +1027,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task buyrole()
         {
+            using var _db = new Db();
             var User = Context.User as SocketGuildUser;
             var embed = new EmbedBuilder().WithColor(BotSettings.DiscordColor);
 
@@ -1156,6 +1168,7 @@ namespace XBOT.Modules.Command
         [ActivityPermission]
         public async Task kazino(KazinoChipEnum Fishka, ushort money)
         {
+            using var _db = new Db();
             var emb = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor)
                 .WithAuthor(" - Казино", Context.User.GetAvatarUrl());
@@ -1204,9 +1217,6 @@ namespace XBOT.Modules.Command
 
             await Context.Channel.SendMessageAsync("", false, emb.Build());
         }
-
-
-
 
 
 

@@ -12,19 +12,19 @@ namespace XBOT.Modules.Command
     {
         private readonly CommandService _service;
         private readonly IServiceProvider _provider;
-        private readonly Db _db;
+        //private readonly Db _db;
 
-        public HelpModule(CommandService service, IServiceProvider provider, Db db)
+        public HelpModule(CommandService service, IServiceProvider provider/*, Db db*/)
         {
             _service = service;
             _provider = provider;
-            _db = db;
+            //_db = db;
         }
 
         [Aliases, Commands, Usage, Descriptions]
         public async Task modules()
         {
-
+            using var _db = new Db();
             var settings = _db.Settings.FirstOrDefault();
             var emb = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor)
@@ -68,7 +68,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task commands(string modules)
         {
-
+            using var _db = new Db();
             var settings = _db.Settings.FirstOrDefault();
             var emb = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor)
@@ -150,6 +150,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task info(string command)
         {
+            using var _db = new Db();
             command = command.ToLower();
             var Command = _service.Commands.FirstOrDefault(x => x.Aliases[0] == command || x.Aliases.Last() == command);
             var emb = new EmbedBuilder()

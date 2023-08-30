@@ -11,7 +11,7 @@ public static class GOC
         if (user == null)
         {
             user = new User { Id = userId, money = User.DefaultMoney };
-            ctx.Add(user);
+            ctx.User.Add(user);
             await ctx.SaveChangesAsync();
         }
         return user;
@@ -23,7 +23,7 @@ public static class GOC
         if (textChannel == null)
         {
             textChannel = new TextChannel { Id = textChannelId,giveXp = true,useCommand = true, useAdminCommand = true, useRPcommand = true };
-            ctx.Add(textChannel);
+            ctx.TextChannel.Add(textChannel);
             await ctx.SaveChangesAsync();
         }
         return textChannel;
@@ -35,7 +35,7 @@ public static class GOC
         if (role == null)
         {
             role = new Roles { Id = RoleId };
-            ctx.Add(role);
+            ctx.Roles.Add(role);
             await ctx.SaveChangesAsync();
         }
 
