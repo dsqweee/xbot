@@ -163,7 +163,11 @@ public class Guild_Logs_Service
         var LeftChannel = GetLogChannel(true);
 
         if (LeftChannel != null)
+        {
+            builder.WithAuthor($"{user} - Пользователь вышел", user.GetAvatarUrl());
             await LeftChannel.SendMessageAsync("", false, builder.Build());
+        }
+            
 
 
 

@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Linq;
+using System.Text.RegularExpressions;
 using XBOT.Services.Configuration;
 
 namespace XBOT.Services;
@@ -21,8 +22,18 @@ public class UserMessagesSolution
         userDb.messageCounterForDaily += 1;
         userDb.LastMessageTime = DateTime.Now;
 
-        var Roles = _db.Roles_Level.OrderBy(x => x.Level);
+        var Roles = _db.Roles_Level.OrderBy(x => x.Level).ToList();
         var thisRole = Roles.LastOrDefault(x => x.Level <= userDb.Level);
+
+        if(thisRole != null)
+        {
+            foreach (var role in Roles)
+            {
+                if (userDiscord.Roles.Any(x => x.Id == role.RoleId) && role.RoleId != thisRole.RoleId)
+                    await userDiscord.RemoveRoleAsync(role.RoleId);
+            }
+        }
+        
 
         var nextLevel = (ulong)Math.Sqrt((userDb.XP + User.ExpPlus) / User.PointFactor);
         if (nextLevel > userDb.Level)
@@ -55,7 +66,11 @@ public class UserMessagesSolution
             await Message.Channel.SendMessageAsync("", false, Fields.Build());
         }
         else if (thisRole != null)
-            await userDiscord.AddRoleAsync(thisRole.RoleId);
+        {
+            if(userDiscord.Guild.GetRole(thisRole.RoleId) != null)
+                await userDiscord.AddRoleAsync(thisRole.RoleId);
+        }
+            
 
         userDb.XP += User.ExpPlus;
         await _db.SaveChangesAsync();

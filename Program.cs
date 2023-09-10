@@ -1,16 +1,13 @@
-﻿using Discord;
-using Fergun.Interactive;
-using Microsoft.EntityFrameworkCore;
+﻿using Fergun.Interactive;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using XBOT.Services;
 using XBOT.Services.Configuration;
 using XBOT.Services.Handling;
 using XBOT.Services.PrivateStructure;
 
+using Discord.Interactions;
 
 using IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration(config =>
@@ -23,7 +20,9 @@ using IHost host = Host.CreateDefaultBuilder(args)
         services.AddSingleton(new DiscordSocketClient(XBOT.Services.Configuration.DiscordConfig.discordSocketConfig));
         services.AddSingleton(new CommandService(XBOT.Services.Configuration.DiscordConfig.configService));
 
-        
+        //services.AddSingleton<InteractionService>();
+        //services.AddHostedService<InteractionHandlingService>();
+
         //services.AddDbContext<Db>(x=>
         //{
         //    x.UseSqlite(BotSettings.connectionStringDbPath);
@@ -41,8 +40,9 @@ using IHost host = Host.CreateDefaultBuilder(args)
         //services.AddSingleton<ListBuilder>();
         //services.AddSingleton(new InteractiveConfig { ReturnAfterSendingPaginator = true });
         services.AddSingleton<InteractiveService>();
-        //services.AddSingleton<InteractionService>();
-        //services.AddHostedService<InteractionHandlingService>();    
+
+
+
         services.AddHostedService<CommandHandlingService>();
         services.AddHostedService<DiscordStartupService>();         
     })

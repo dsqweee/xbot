@@ -21,9 +21,10 @@ public class Refferal_Service
             var RefferalRole = await AuthorReferalRole(userDb.Id);
             if (RefferalRole == null)
                 break;
+
             foreach (var RefRole in _db.ReferralRole)
             {
-                if (currentUser.Roles.Any(x => x.Id == RefRole.RoleId) && RefRole.Id != RefferalRole.Id)
+                if (currentUser.Roles.Any(x => x.Id == RefRole.RoleId) && RefRole.RoleId != RefferalRole.RoleId)
                     await currentUser.RemoveRoleAsync(RefRole.RoleId);
             }
 
@@ -48,7 +49,6 @@ public class Refferal_Service
 
                 if (user.Level >= 5)
                     UserLevel5Up++;
-
             }
         }
         return (CountRef, UserWriteInWeek, UserLevel5Up);
@@ -57,10 +57,11 @@ public class Refferal_Service
     public async Task<DiscordInvite_ReferralRole> AuthorReferalRole(ulong AuthorId)
     {
         using var _db = new Db();
-        var userDb = await _db.User.Include(x => x.MyInvites).ThenInclude(x => x.ReferralLinks).FirstOrDefaultAsync(x => x.Id == AuthorId);
+        var userDb = _db.User.Include(x => x.MyInvites).ThenInclude(x => x.ReferralLinks).FirstOrDefault(x => x.Id == AuthorId);
         var UserValue = await GetRefferalValue(userDb);
 
-        var Role = _db.ReferralRole.FirstOrDefault(x => UserValue.CountRef >= x.UserJoinedValue && UserValue.WriteInWeek >= x.UserWriteInWeekValue && UserValue.Level5up >= x.UserUp5LevelValue);
-        return Role;
+        var RefferalRoles = _db.ReferralRole.OrderBy(x => x.UserJoinedValue).ToList();
+        var ThisRefferalRole = RefferalRoles.FirstOrDefault(x => UserValue.CountRef >= x.UserJoinedValue && UserValue.WriteInWeek >= x.UserWriteInWeekValue && UserValue.Level5up >= x.UserUp5LevelValue);
+        return ThisRefferalRole;
     }
 }

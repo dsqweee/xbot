@@ -213,11 +213,11 @@
 //                return InteractiveInputStatus.Canceled;
 //            }
 
-//            await paginator.ApplyActionAsync(action).ConfigureAwait(false);
+//            await paginator.ApplyActionAsync(action);
 //        }
 
-//        var currentPage = await paginator.GetOrLoadCurrentPageAsync().ConfigureAwait(false);
-//        var attachments = currentPage.AttachmentsFactory is null ? null : await currentPage.AttachmentsFactory().ConfigureAwait(false);
+//        var currentPage = await paginator.GetOrLoadCurrentPageAsync();
+//        var attachments = currentPage.AttachmentsFactory is null ? null : await currentPage.AttachmentsFactory();
 
 //        await input.UpdateAsync(x =>
 //        {
@@ -226,7 +226,7 @@
 //            x.Components = GetOrAddComponents(false).Build();
 //            x.AllowedMentions = currentPage.AllowedMentions;
 //            x.Attachments = attachments is null ? new Optional<IEnumerable<FileAttachment>>() : new Optional<IEnumerable<FileAttachment>>(attachments);
-//        }).ConfigureAwait(false);
+//        });
 
 //        return InteractiveInputStatus.Ignored;
 //    }

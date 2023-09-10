@@ -297,7 +297,7 @@ namespace XBOT.Modules.Command
             }
 
             string DailyRep = null;
-            TimeToDaily = UserDataBase.daily_Time - DateTime.Now;
+            TimeToDaily = UserDataBase.reputation_Time - DateTime.Now;
             if (TimeToDaily.TotalSeconds < -1)
                 DailyRep = "Репутация - доступна сейчас!";
             else
@@ -381,24 +381,25 @@ namespace XBOT.Modules.Command
             else
             {
                 var ThisRole = RefferalRoles.FirstOrDefault(x => UserValue.CountRef >= x.UserJoinedValue && UserValue.WriteInWeek >= x.UserWriteInWeekValue && UserValue.Level5up >= x.UserUp5LevelValue);
-
+                
                 var indexThisRole = RefferalRoles.IndexOf(ThisRole);
                 DiscordInvite_ReferralRole NextRole = null;
 
+                if (indexThisRole >= 0)
+                    NextRole = RefferalRoles?.ElementAt(indexThisRole + 1);
+
                 string thisroletext = "";
-                if (ThisRole is not null)
-                    thisroletext = $"<@&{ThisRole.Id}>";
-                else
+
+                if (ThisRole is null)
                     thisroletext = "Отсутствует";
+                else
+                    thisroletext = $"<@&{ThisRole.RoleId}>";
 
                 string nextroletext = "";
-                if (indexThisRole == -1)
-                {
-                    NextRole = RefferalRoles?.ElementAt(indexThisRole + 1);
-                    nextroletext = $"<@&{NextRole?.RoleId}>";
-                }
-                else
+                if (NextRole is null)
                     nextroletext = "Максимум";
+                else
+                    nextroletext = $"<@&{NextRole?.RoleId}>";
 
                 emb.WithDescription("Это реферальная система друзей. Приглашая на сервер друга, вы получаете за него ачько и дополнительные плюшки.\n" +
                                     "Чем больше вы пригласите активных друзей, тем лучше. Мы надеемся что вы не будете тревожить незнакомых людей, ведь это не круто!\n\n" +
@@ -524,7 +525,7 @@ namespace XBOT.Modules.Command
             else
             {
                 currentUser.money -= coin;
-                transfUser.money = coin;
+                transfUser.money += coin;
                 SendMessage($"Перевод в размере {coin} StarCoin успешно прошел.");
             }
 
@@ -597,7 +598,7 @@ namespace XBOT.Modules.Command
         public async Task RepRole(SocketGuildUser UserDiscord, ulong Reputation)
         {
             using var _db = new Db();
-            var Roles = _db.Roles_Reputation.OrderBy(x => x.Reputation);
+            var Roles = _db.Roles_Reputation.AsEnumerable().OrderBy(x => x.Reputation);
             var ThisRole = Roles.LastOrDefault(x => x.Reputation <= Reputation);
 
             Reputation++;

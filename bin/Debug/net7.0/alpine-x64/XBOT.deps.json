@@ -13,7 +13,7 @@
           "Discord.Net.Interactions": "3.12.0",
           "Discord.Net.WebSocket": "3.12.0",
           "Fergun.Interactive": "1.7.3",
-          "GEmojiSharp": "3.0.0",
+          "GEmojiSharp": "3.1.0",
           "Microsoft.EntityFrameworkCore": "8.0.0-preview.2.23128.3",
           "Microsoft.EntityFrameworkCore.Proxies": "8.0.0-preview.2.23128.3",
           "Microsoft.EntityFrameworkCore.Sqlite": "8.0.0-preview.2.23128.3",
@@ -827,11 +827,11 @@
           }
         }
       },
-      "GEmojiSharp/3.0.0": {
+      "GEmojiSharp/3.1.0": {
         "runtime": {
           "lib/netstandard2.0/GEmojiSharp.dll": {
-            "assemblyVersion": "3.0.0.0",
-            "fileVersion": "3.0.0.0"
+            "assemblyVersion": "3.1.0.0",
+            "fileVersion": "3.1.0.0"
           }
         }
       },
@@ -1559,12 +1559,12 @@
       "path": "fergun.interactive/1.7.3",
       "hashPath": "fergun.interactive.1.7.3.nupkg.sha512"
     },
-    "GEmojiSharp/3.0.0": {
+    "GEmojiSharp/3.1.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-7HzA76ZfSAAm5CaQtevvTDmxV97tpLsoB2GHqGOc95VbyMKRnP3Zl9LKfO8x+jqz3ey6kHZolahG66SjtS1Wlg==",
-      "path": "gemojisharp/3.0.0",
-      "hashPath": "gemojisharp.3.0.0.nupkg.sha512"
+      "sha512": "sha512-qE7QXrV4GKZyn7l5aUpk02hSCabKlVVSL1bMKFlnBE5cgvDAKTg60ujcEocMVwVeYhKJKOSQldAAcDKDc6Up0A==",
+      "path": "gemojisharp/3.1.0",
+      "hashPath": "gemojisharp.3.1.0.nupkg.sha512"
     },
     "Humanizer.Core/2.14.1": {
       "type": "package",

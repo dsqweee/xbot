@@ -6,8 +6,8 @@ public class MarryPermission : PreconditionAttribute
 {
     public async override Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context, CommandInfo command, IServiceProvider services)
     {
-        var db = services.GetRequiredService<Db>();
-
+        //var db = services.GetRequiredService<Db>();
+        using var db = new Db();
         var SocketContext = context as SocketCommandContext;
         var UserMarry = await db.GetUser(context.User.Id);
 

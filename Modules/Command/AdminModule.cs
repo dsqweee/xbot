@@ -592,46 +592,5 @@ namespace XBOT.Modules.Command
         {
             await TextChannel.SendMessageAsync(Text);
         }
-
-        [Aliases, Commands, Usage, Descriptions]
-        public async Task clear(uint CountMessage)
-        {
-            var emb = new EmbedBuilder()
-                .WithColor(BotSettings.DiscordColor).
-                WithAuthor("Чистка сообщений");
-            if (CountMessage > 100)
-                emb.WithFooter("Удалить больше 100 сообщений нельзя!");
-
-            var messages = await Context.Message.Channel.GetMessagesAsync((int)CountMessage + 1).FlattenAsync();
-            await ((SocketTextChannel)Context.Channel).DeleteMessagesAsync(messages);
-            emb.WithDescription($"Удалено {messages.Count()} сообщений");
-            var x = await Context.Channel.SendMessageAsync("", false, emb.Build());
-            await Task.Delay(5000);
-            await x.DeleteAsync();
-        }
-
-        [Aliases, Commands, Usage, Descriptions]
-        public async Task userclear(SocketGuildUser User, uint CountMessage)
-        {
-            var messages = await Context.Message.Channel.GetMessagesAsync((int)CountMessage).FlattenAsync();
-            var result = messages.Where(x => x.Author.Id == User.Id);
-
-            var emb = new EmbedBuilder()
-                .WithColor(BotSettings.DiscordColor)
-                .WithAuthor($"Чиста сообщений {User}")
-                .WithDescription($"Удалено {result.Count()} сообщений от {User.Mention}");
-            if (CountMessage > 100)
-                emb.WithFooter("Удалить больше 100 сообщений нельзя!");
-            else
-                emb.WithFooter("Сообщения которым больше 14 дней не удаляются!");
-
-            if (User == Context.User)
-                await Context.Message.DeleteAsync();
-
-            await ((SocketTextChannel)Context.Message.Channel).DeleteMessagesAsync(result);
-            var x = await Context.Channel.SendMessageAsync("", false, emb.Build());
-            await Task.Delay(5000);
-            await x.DeleteAsync();
-        }
     }
 }

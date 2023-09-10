@@ -2,6 +2,7 @@
 using XBOT.Services.Attribute;
 using XBOT.Services.Configuration;
 using Nekos.Net.V2.Endpoint;
+using Nekos.Net.V2.Responses;
 
 namespace DarlingNet.Modules
 {
@@ -17,7 +18,16 @@ namespace DarlingNet.Modules
                 .WithColor(BotSettings.DiscordColor)
                 .WithAuthor($"{Type} GIF");
             NekosV2Client NekoClient = new();
-            var Request = await NekoClient.RequestSfwResultsAsync(Type);
+            IEnumerable<NekosImage> Request;
+
+            try
+            {
+                Request = await NekoClient.RequestSfwResultsAsync(Type);
+            }
+            catch 
+            {
+                Request = null;
+            }
             string Description = $"{Context.User.Mention} " + text;
 
             if (user != null && user != Context.User)
@@ -26,7 +36,7 @@ namespace DarlingNet.Modules
                 Description += $" себя";
 
 
-            if (Request.Any())
+            if (Request != null)
             {
                 embed.WithImageUrl(Request.First().Url)
                      .WithDescription(Description);

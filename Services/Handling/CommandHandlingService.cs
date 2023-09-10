@@ -7,6 +7,8 @@ using XBOT.Services.PrivateStructure;
 using System.Text.RegularExpressions;
 using XBOT.Services.Attribute.ErrorList;
 using Discord;
+using static XBOT.DataBase.Guild_Logs;
+using XBOT.DataBase;
 
 namespace XBOT.Services.Handling;
 
@@ -136,10 +138,67 @@ public class CommandHandlingService : IHostedService
         _discord.UserUnbanned += _guildlogs.InUserUnBanned;
 
         _discord.MessageUpdated += _guildlogs.EditedMessage;
+        _discord.MessagesBulkDeleted += BulkDeleteMessages;
         _discord.MessageDeleted += _guildlogs.DeleteMessage;
 
 
         await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
+    }
+
+    private async Task BulkDeleteMessages(IReadOnlyCollection<Cacheable<IMessage, ulong>> messages, Cacheable<IMessageChannel, ulong> channel)
+    {
+        using var db = new Db();
+
+        if (await channel.GetOrDownloadAsync() is not SocketTextChannel textChannel)
+            return;
+
+        var guildLog = db.Guild_Logs.FirstOrDefault(x=>x.Type == ChannelsTypeEnum.MessageDelete);
+        if (guildLog is null)
+            return;
+
+        var messageChannel = textChannel.Guild.GetTextChannel(guildLog.TextChannelId);
+        if (messageChannel is null)
+            return;
+
+        var emb = new EmbedBuilder()
+            .WithColor(BotSettings.DiscordColor)
+            .WithAuthor("Массовое удаление сообщений")
+            .WithTimestamp(DateTime.UtcNow);
+
+        IUser? currentUser = null;
+
+        var reversedMessages = messages.Reverse().ToList();
+
+        foreach (var message in reversedMessages)
+        {
+            var getMessage = await message.GetOrDownloadAsync();
+            if (getMessage is null || getMessage.Author.IsBot || getMessage.Content.Length > 1023)
+                continue;
+
+            if (currentUser != getMessage.Author || currentUser is null)
+            {
+                currentUser = getMessage.Author;
+                emb.Description += $"Отправитель [{getMessage.Author.Mention}]\n";
+            }
+
+            string text = "⠀⠀Сообщение [`{0}`:{1}]";
+
+            var messageTime = getMessage.Timestamp.ToString("HH:mm dd.MM.yy");
+            emb.Description += string.IsNullOrWhiteSpace(getMessage.Content)
+                ? string.Format(text, getMessage.Attachments.FirstOrDefault()?.Url, messageTime)
+                : string.Format(text, getMessage.Content, messageTime);
+
+            emb.Description += "\n";
+
+            if (emb.Description.Length > 800)
+            {
+                currentUser = null;
+                await messageChannel.SendMessageAsync("", embed: emb.Build());
+                emb.WithDescription("");
+            }
+        }
+
+        await messageChannel.SendMessageAsync("", embed: emb.Build());
     }
 
     private async Task CommandExecuted(Optional<CommandInfo> CommandInfo, ICommandContext Context, Discord.Commands.IResult Result)
@@ -322,7 +381,7 @@ public class CommandHandlingService : IHostedService
 
         if (!TextChannel.useRPcommand && CheckCommands("SfwGif")) // Проверка на RP команды
             return;
-        else if (!TextChannel.useAdminCommand && CheckCommands("Admin")) // Проверка на Админ команды
+        else if (!TextChannel.useAdminCommand && (CheckCommands("Admin") || CheckCommands("Moderator"))) // Проверка на Админ команды
             return;
 
         bool CheckCommands(string CommandName)

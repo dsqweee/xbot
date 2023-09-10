@@ -48,7 +48,7 @@
 //                ModulesComamnd(ref menuBuilder, ref emb);
 
 //                var builder = new ComponentBuilder().WithSelectMenu(menuBuilder);
-//                await RespondAsync("", embed: emb.Build(), components: builder.Build());
+//                await ReplyAsync("", embed: emb.Build(), components: builder.Build());
 
 //                var selectedOption = await userInteraction.WaitForInteraction();
 //                InteractionDispose();

@@ -35,22 +35,27 @@ public class TaskTimer
         await _refferal.ReferalRoleScaningUser(Users);
     }
 
-    private readonly TimeSpan TimeAddExp = new TimeSpan(0, 0, 10);
+    private readonly TimeSpan TimeAddExp = new TimeSpan(0, 0, 30);
 
-
+    private readonly List<ulong> userInVoiceActive = new();
 
     internal Task StartVoiceActivity(SocketGuildUser User) /*СДелать проверку если перезапустится, чтобы включался механизм*/
     {
-        System.Timers.Timer TaskTime = new(TimeAddExp);
-        TaskTime.Elapsed += (s, e) => VoiceActivity(TaskTime, User);
-        TaskTime.Start();
+        if (!userInVoiceActive.Any(x => x == User.Id))
+        {
+            userInVoiceActive.Add(User.Id);
+
+            System.Timers.Timer TaskTime = new(TimeAddExp);
+            TaskTime.Elapsed += (s, e) => VoiceActivity(TaskTime, User);
+            TaskTime.Start();
+        }
+
         return Task.CompletedTask;
-        //Timer TaskTime = new Timer(VoiceActivity, User, time, time);
-        //await Task.CompletedTask;
     }
 
     internal async Task StartVoiceAllActivity() /*СДелать проверку если перезапустится, чтобы включался механизм*/
     {
+        Console.WriteLine("StartVoiceAllActivity");
         var Guild = _client.Guilds.First();
         foreach (var VoiceChannel in Guild.VoiceChannels)
         {
@@ -65,47 +70,46 @@ public class TaskTimer
     {
         using var _db = new Db();
         //using (var db = new Db(new DbContextOptionsBuilder<Db>().UseSqlite(BotSettings.connectionStringDbPath).Options))
-        
-            if (User.VoiceChannel != null && User.VoiceChannel.Id != User.Guild.AFKChannel?.Id)
+
+        if (User.VoiceChannel != null && User.VoiceChannel.Id != User.Guild.AFKChannel?.Id)
+        {
+            if (User.VoiceChannel.ConnectedUsers.Count > 1)
             {
-                if (User.VoiceChannel.ConnectedUsers.Count > 1)
+                uint CountSpeak = 0;
+                bool ThisUserActive = false;
+                foreach (var UserChannel in User.VoiceChannel.ConnectedUsers)
                 {
-                    uint CountSpeak = 0;
-                    bool ThisUserActive = false;
-                    foreach (var UserChannel in User.VoiceChannel.ConnectedUsers)
+                    var UserStatus = UserChannel.VoiceState.Value;
+
+                    if (!UserStatus.IsMuted && !UserStatus.IsDeafened &&
+                        !UserStatus.IsSelfMuted && !UserStatus.IsSelfDeafened &&
+                        !UserChannel.IsBot)
                     {
-                        var UserStatus = UserChannel.VoiceState.Value;
+                        CountSpeak++;
 
-                        if (!UserStatus.IsMuted && !UserStatus.IsDeafened &&
-                            !UserStatus.IsSelfMuted && !UserStatus.IsSelfDeafened &&
-                            !UserChannel.IsBot)
-                        {
-                            CountSpeak++;
-
-                            if (UserChannel.Id == User.Id)
-                                ThisUserActive = true;
-                        }
-                    }
-                    if (ThisUserActive && CountSpeak > 1)
-                    {
-                        var isPrivateChannel = _db.PrivateChannel.FirstOrDefault(x => x.Id == User.VoiceChannel.Id);
-                        var user = await _db.GetUser(User.Id);
-                        if (isPrivateChannel is not null)
-                            user.voiceActive_private += TimeAddExp;
-                        else
-                            user.voiceActive_public += TimeAddExp;
-
-                        user.XP += 10;
-                        await _db.SaveChangesAsync();
+                        if (UserChannel.Id == User.Id)
+                            ThisUserActive = true;
                     }
                 }
+                if (ThisUserActive && CountSpeak > 1)
+                {
+                    var isPrivateChannel = _db.PrivateChannel.FirstOrDefault(x => x.Id == User.VoiceChannel.Id);
+                    var user = await _db.GetUser(User.Id);
+                    if (isPrivateChannel is not null)
+                        user.voiceActive_private += TimeAddExp;
+                    else
+                        user.voiceActive_public += TimeAddExp;
+                    Console.WriteLine(User.Mention + " - " + $" 30 сек 10 опыта {DateTime.Now}");
+                    //user.XP += 5;
+                    await _db.SaveChangesAsync();
+                }
             }
-            else
-            {
-                TaskTime?.Dispose();
-            }
-        
-        
+        }
+        else
+        {
+            userInVoiceActive.Remove(User.Id);
+            TaskTime?.Dispose();
+        }
     }
 
 

@@ -11,8 +11,8 @@ sealed class ActivityPermission : PreconditionAttribute
         if (userId == BotSettings.xId)
             return PreconditionResult.FromSuccess();
 
-        var db = services.GetRequiredService<Db>();
-
+        //var db = services.GetRequiredService<Db>();
+        using var db = new Db();
         var userGetter = await db.GetUser(userId);
         var userSetter = await GetUserSetter(context, db);
 

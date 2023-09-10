@@ -1,0 +1,16 @@
+03.09.23 19:09:16 [Info]: Discord.Net v3.12.0 (API v10)
+03.09.23 19:09:16 [Info]: Connecting
+03.09.23 19:09:18 [Warning]: You're using the GuildScheduledEvents gateway intent without listening to any events related to that intent, consider removing the intent from your config.
+03.09.23 19:09:18 [Info]: Connected
+03.09.23 19:09:19 [Info]: Ready
+03.09.23 19:09:22 [Warning]: Discord.Net.HttpException: The server responded with error 10011: Unknown Role
+   at Discord.Net.Queue.RequestBucket.SendAsync(RestRequest request)
+   at Discord.Net.Queue.RequestQueue.SendAsync(RestRequest request)
+   at Discord.API.DiscordRestApiClient.SendInternalAsync(String method, String endpoint, RestRequest request)
+   at Discord.API.DiscordRestApiClient.SendAsync(String method, String endpoint, BucketId bucketId, ClientBucketType clientBucket, RequestOptions options)
+   at Discord.API.DiscordRestApiClient.AddRoleAsync(UInt64 guildId, UInt64 userId, UInt64 roleId, RequestOptions options)
+   at Discord.Rest.UserHelper.AddRolesAsync(IGuildUser user, BaseDiscordClient client, IEnumerable`1 roleIds, RequestOptions options)
+   at XBOT.Services.UserMessagesSolution.SetPointAsync(SocketMessage Message) in C:\Users\xXx\source\repos\XBOT\XBOT\Services\UserMessagesSolution.cs:line 58
+   at XBOT.Services.Handling.CommandHandlingService.MessageReceivedAsync(SocketMessage message) in C:\Users\xXx\source\repos\XBOT\XBOT\Services\Handling\CommandHandlingService.cs:line 313
+   at Discord.EventExtensions.InvokeAsync[T](AsyncEvent`1 eventHandler, T arg)
+   at Discord.WebSocket.DiscordSocketClient.TimeoutWrap(String name, Func`1 action)
