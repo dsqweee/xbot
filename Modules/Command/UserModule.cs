@@ -320,7 +320,7 @@ namespace XBOT.Modules.Command
                 Marryed = $"Половинка: <@{UserDataBase.MarriageId}>\nВ браке: {Timemarryed}";
             }
             if (UserDataBase.BirthDate.Year != 1 && UserDataBase.BirthDate.Year >= 18)
-                Marryed += $"\nКол-во половых партнеров: {UserDataBase.CountSex}";
+                Marryed += $"\nКол-во половых актов: {UserDataBase.CountSex}";
 
             emb.AddField("Отношения", Marryed, true);
 
@@ -380,13 +380,15 @@ namespace XBOT.Modules.Command
             }
             else
             {
-                var ThisRole = RefferalRoles.FirstOrDefault(x => UserValue.CountRef >= x.UserJoinedValue && UserValue.WriteInWeek >= x.UserWriteInWeekValue && UserValue.Level5up >= x.UserUp5LevelValue);
+                var ThisRole = RefferalRoles.LastOrDefault(x => UserValue.UserJoinedValue >= x.UserJoinedValue && UserValue.WriteInWeek >= x.UserWriteInWeekValue && UserValue.Level5up >= x.UserUp5LevelValue);
                 
                 var indexThisRole = RefferalRoles.IndexOf(ThisRole);
                 DiscordInvite_ReferralRole NextRole = null;
 
                 if (indexThisRole >= 0)
                     NextRole = RefferalRoles?.ElementAt(indexThisRole + 1);
+                else if ((indexThisRole + 1) != RefferalRoles.Count)
+                    NextRole = RefferalRoles.FirstOrDefault();
 
                 string thisroletext = "";
 
@@ -401,10 +403,12 @@ namespace XBOT.Modules.Command
                 else
                     nextroletext = $"<@&{NextRole?.RoleId}>";
 
-                emb.WithDescription("Это реферальная система друзей. Приглашая на сервер друга, вы получаете за него ачько и дополнительные плюшки.\n" +
-                                    "Чем больше вы пригласите активных друзей, тем лучше. Мы надеемся что вы не будете тревожить незнакомых людей, ведь это не круто!\n\n" +
+                string prefix = _db.Settings.FirstOrDefault().Prefix;
+
+                emb.WithDescription("Приглашая на сервер друга, вы получаете за него баллы, которые преобразуются в роли. Чем выше роль, тем больше ваш престиж.\n" +
+                                    $"Список реферальных ролей: `{prefix}refferalrole`\n\n" +
                                     $"Ваша текущая роль: {thisroletext} -> {nextroletext}\n" +
-                                    $"Приведенных клиентов: `{UserValue.CountRef}/{(NextRole is not null ? NextRole.UserJoinedValue : "max")}`\n" +
+                                    $"Приведенных участников: `{UserValue.UserJoinedValue}/{(NextRole is not null ? NextRole.UserJoinedValue : "max")}`\n" +
                                     $"Писали в течении недели: `{UserValue.WriteInWeek}/{(NextRole is not null ? NextRole.UserWriteInWeekValue : "max")}`\n" +
                                     $"Достигли 5 уровня: `{UserValue.Level5up}/{(NextRole is not null ? NextRole.UserUp5LevelValue : "max")}`")
                     .WithFooter("Роль может выдаваться в течении часа.");
