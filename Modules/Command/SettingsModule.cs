@@ -618,7 +618,7 @@ namespace XBOT.Modules.Command
                     if (chnl.delUrl) emb.AddField("2.1 Удалять ссылки-изображения?", chnl.delUrlImage ? "Вкл" : "Выкл", true);
                     emb.AddField("3 Использование команд", chnl.useCommand ? "Вкл" : "Выкл", true);
                     if (!chnl.useCommand) emb.AddField("3.1 Использование RP команд?", chnl.useRPcommand ? "Вкл" : "Выкл", true);
-                    if (!chnl.useAdminCommand) emb.AddField("3.2 Использование Admin команд?", chnl.useAdminCommand ? "Вкл" : "Выкл", true);
+                    if (!chnl.useCommand) emb.AddField("3.2 Использование Admin команд?", chnl.useAdminCommand ? "Вкл" : "Выкл", true);
                     emb.AddField("4 Удалять приглашения(кроме тех что сюда)", chnl.inviteLink ? "Вкл" : "Выкл", true);
                     emb.AddField("Номер Чата", chnl.Id, true);
                     emb.WithFooter($"Вкл/Выкл опции канала - {Prefix}cs [channel] [number]");

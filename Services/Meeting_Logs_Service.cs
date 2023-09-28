@@ -15,15 +15,14 @@ public class Meeting_Logs_Service
             return;
         using var _db = new Db();
         var Settings = _db.Settings.FirstOrDefault();
+
         var RoleId = Convert.ToUInt64(Settings.WelcomeRoleId);
-
-        if (RoleId != 0)
-            await User.AddRoleAsync(RoleId);
-
-        await MeetingSendMessage(User, User.Guild, Settings.WelcomeDMmessage, 0);
+        await User.AddRoleAsync(RoleId);
 
         var WelcomeTextChannelId = Convert.ToUInt64(Settings.WelcomeTextChannelId);
         await MeetingSendMessage(User, User.Guild, Settings.WelcomeMessage, WelcomeTextChannelId);
+
+        await MeetingSendMessage(User, User.Guild, Settings.WelcomeDMmessage, 0);
     }
 
     public async Task UserLeftAction(SocketUser User, SocketGuild Guild)

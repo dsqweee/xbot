@@ -10,6 +10,7 @@ using Fergun.Interactive.Pagination;
 using System.Data;
 using static XBOT.DataBase.Guild_Warn;
 using Pcg;
+using System.Data.SqlTypes;
 
 namespace XBOT.Modules.Command
 {
@@ -304,7 +305,8 @@ namespace XBOT.Modules.Command
                 DailyRep = $"До репутации - {TimeToDaily.Hours}:{TimeToDaily.Minutes}:{TimeToDaily.Seconds}";
 
             string Marryed = "Не состоит";
-            if (Convert.ToUInt64(UserDataBase.MarriageId) != 0)
+            var marryedId = Convert.ToUInt64(UserDataBase.MarriageId);
+            if (marryedId != 0)
             {
                 string Timemarryed = string.Empty;
                 var Time = DateTime.Now - UserDataBase.MarriageTime;
@@ -319,6 +321,7 @@ namespace XBOT.Modules.Command
 
                 Marryed = $"Половинка: <@{UserDataBase.MarriageId}>\nВ браке: {Timemarryed}";
             }
+
             if (UserDataBase.BirthDate.Year != 1 && UserDataBase.BirthDate.Year >= 18)
                 Marryed += $"\nКол-во половых актов: {UserDataBase.CountSex}";
 
@@ -349,14 +352,6 @@ namespace XBOT.Modules.Command
             uint count = Convert.ToUInt32(UserDataBase.Level * User.PointFactor * UserDataBase.Level);
             uint countNext = Convert.ToUInt32((UserDataBase.Level + 1) * User.PointFactor * (UserDataBase.Level + 1));
             emb.AddField("Опыт", $"Уровень: {UserDataBase.Level}\nОпыт: {UserDataBase.XP - count}/{countNext - count}\nАктивность в голосовых чатах: {TimePublic}\nАктивность в приватных чатах: {TimePrivate}", false);
-
-
-
-
-            //if (UserDataBase.MinecraftAccountId != 0)
-            //{
-            //    emb.AddField("Minecraft профиль", "Напиши боту: `GetMinecraft`");
-            //}
 
             await Context.Channel.SendMessageAsync("", false, emb.Build());
 
@@ -655,13 +650,16 @@ namespace XBOT.Modules.Command
                 }
                 else
                 {
-                    userDB.money += result;
+                    if(result == 0 && userDB.money >= 10)
+                        userDB.money += -10;
+                    else
+                        userDB.money += result;
                     var TransferLog = new TransactionUsers_Logs { RecipientId = Context.User.Id, Amount = result, TimeTransaction = DateTime.Now, Type = TransactionUsers_Logs.TypeTransation.daily };
                     _db.TransactionUsers_Logs.Add(TransferLog);
                     emb.WithDescription($"Монет получено: {result}");
                 }
                 emb.Description += $"\nКомбо: {userDB.streak}\nСледующее получение coins через {User.PeriodHours} часов";
-
+                emb.WithFooter("Кол-во coins зависит от активности в чате <3");
                 _db.User.Update(userDB);
                 await _db.SaveChangesAsync(); // SQLite Error 19: 'UNIQUE constraint failed: TransactionUsers_Logs.RecipientId'
             }

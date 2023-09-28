@@ -27,22 +27,22 @@ sealed class ActivityPermission : PreconditionAttribute
             {
                 if (command.Name == "reputation")
                 {
-                    isActive &= user.streak < 5;
+                    isActive = user.streak >= 5;
                 }
             }
             return isActive;
         }
 
-        string reason = null;
+        string reason = "";
         if (!isUserGetterActive)
             reason = "Ваш уровень активности не соответствует требованиям.";
         else if (!isUserSetterActive)
             reason = $"Уровень активности <@{userSetter.Id}> не соответствует требованиям.";
 
-        if (reason == null)
+        if (reason == "")
             return PreconditionResult.FromSuccess();
 
-        reason = "\nТребования:\n • 5 уровень\n • Daily Streak 5\n • Просто общаться в чате :)";
+        reason += "\nТребования:\n • 5 уровень\n • Daily Streak 5\n • Просто общаться в чате :)";
 
         return PreconditionResult.FromError(reason);
 

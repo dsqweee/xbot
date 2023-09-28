@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "TsCJFUvDHJS7JL8atQ+aC+8D09n5OJHFJCZUNr/NAEMYTbWvQzyFfFzBCroq3ojHkWCTCnpNfaz0nZLehRG4ng==",
+  "dgSpecHash": "q2brztQbCFWtQHG9DOloKouQ4IMfELdn8Ki8oru7rnn3Kr0uQYpapX+D7XRIpNMVxYgWsYyJkf4Oy4ggWOYpcg==",
   "success": true,
-  "projectFilePath": "c:\\Users\\xXx\\source\\repos\\xbot\\XBOT.csproj",
+  "projectFilePath": "C:\\Users\\xXx\\source\\repos\\xbot\\XBOT.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\xXx\\.nuget\\packages\\castle.core\\5.1.1\\castle.core.5.1.1.nupkg.sha512",
     "C:\\Users\\xXx\\.nuget\\packages\\discord.net.commands\\3.12.0\\discord.net.commands.3.12.0.nupkg.sha512",
@@ -73,10 +73,7 @@
     "C:\\Users\\xXx\\.nuget\\packages\\system.text.encodings.web\\8.0.0-preview.2.23128.3\\system.text.encodings.web.8.0.0-preview.2.23128.3.nupkg.sha512",
     "C:\\Users\\xXx\\.nuget\\packages\\system.text.json\\8.0.0-preview.2.23128.3\\system.text.json.8.0.0-preview.2.23128.3.nupkg.sha512",
     "C:\\Users\\xXx\\.nuget\\packages\\system.valuetuple\\4.5.0\\system.valuetuple.4.5.0.nupkg.sha512",
-    "C:\\Users\\xXx\\.nuget\\packages\\yamldotnet\\13.0.1\\yamldotnet.13.0.1.nupkg.sha512",
-    "C:\\Users\\xXx\\.nuget\\packages\\microsoft.netcore.app.runtime.linux-musl-x64\\7.0.10\\microsoft.netcore.app.runtime.linux-musl-x64.7.0.10.nupkg.sha512",
-    "C:\\Users\\xXx\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.linux-musl-x64\\7.0.10\\microsoft.aspnetcore.app.runtime.linux-musl-x64.7.0.10.nupkg.sha512",
-    "C:\\Users\\xXx\\.nuget\\packages\\microsoft.netcore.app.host.linux-musl-x64\\7.0.10\\microsoft.netcore.app.host.linux-musl-x64.7.0.10.nupkg.sha512"
+    "C:\\Users\\xXx\\.nuget\\packages\\yamldotnet\\13.0.1\\yamldotnet.13.0.1.nupkg.sha512"
   ],
   "logs": []
 }
