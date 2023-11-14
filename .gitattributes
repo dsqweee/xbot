@@ -1,7 +1,12 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
-bin/debug/
-bin/release/
-config.yml
+# Игнорирование папки .vs
 .vs/
+
+# Игнорирование папок bin/Debug и bin/Release
+bin/Debug/
+bin/Release/
+
+# Игнорирование файла config.yml
+config.yml
