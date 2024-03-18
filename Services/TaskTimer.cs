@@ -9,30 +9,13 @@ public class TaskTimer
 {
     private readonly DiscordSocketClient _client;
     private readonly Guild_Logs_Service _guildlogs;
-    //private readonly Db _db;
-    private readonly Refferal_Service _refferal;
-    public TaskTimer(DiscordSocketClient client, Guild_Logs_Service guildlogs/*, Db db*/, Refferal_Service refferal)
+    private readonly Db _db;
+    public TaskTimer(DiscordSocketClient client, Guild_Logs_Service guildlogs, Db db)
     {
         _client = client;
         //_guildlogs = guildlogs;
-        //_db = db;
+        _db = db;
 
-        _refferal = refferal;
-    }
-
-    internal Task StartEveryHoursScan()
-    {
-        EveryHoursScan();
-
-        System.Timers.Timer TaskTime = new(new TimeSpan(0, 60, 0));
-        TaskTime.Elapsed += (s, e) => EveryHoursScan();
-        TaskTime.Start();
-        return Task.CompletedTask;
-    }
-    private async void EveryHoursScan()
-    {
-        var Users = _client.Guilds.First().Users;
-        await _refferal.ReferalRoleScaningUser(Users);
     }
 
     private readonly TimeSpan TimeAddExp = new TimeSpan(0, 0, 30);
@@ -55,7 +38,6 @@ public class TaskTimer
 
     internal async Task StartVoiceAllActivity() /*СДелать проверку если перезапустится, чтобы включался механизм*/
     {
-        Console.WriteLine("StartVoiceAllActivity");
         var Guild = _client.Guilds.First();
         foreach (var VoiceChannel in Guild.VoiceChannels)
         {
@@ -68,7 +50,7 @@ public class TaskTimer
 
     private async void VoiceActivity(System.Timers.Timer TaskTime, SocketGuildUser User)
     {
-        using var _db = new Db();
+        //using var _db = new Db();
         //using (var db = new Db(new DbContextOptionsBuilder<Db>().UseSqlite(BotSettings.connectionStringDbPath).Options))
 
         if (User.VoiceChannel != null && User.VoiceChannel.Id != User.Guild.AFKChannel?.Id)
@@ -99,7 +81,7 @@ public class TaskTimer
                         user.voiceActive_private += TimeAddExp;
                     else
                         user.voiceActive_public += TimeAddExp;
-                    Console.WriteLine(User.Mention + " - " + $" 30 сек 10 опыта {DateTime.Now}");
+                    //Console.WriteLine(User.Mention + " - " + $" 30 сек 10 опыта {DateTime.Now}");
                     //user.XP += 5;
                     await _db.SaveChangesAsync();
                 }
@@ -134,7 +116,7 @@ public class TaskTimer
 
     private async void MuteTimer(User_Warn Warn) // Обновление бесконечного мута
     {
-        using var _db = new Db();
+        //using var _db = new Db();
         Warn = _db.User_Warn.Include(x => x.UnWarn).FirstOrDefault(x => x.Id == Warn.Id);
         if (Warn.UnWarnId == null ||
            (Warn.UnWarn != null && Warn.UnWarn.Status != User_UnWarn.WarnStatus.review && Warn.UnWarn.Status != User_UnWarn.WarnStatus.Rejected))
@@ -158,7 +140,7 @@ public class TaskTimer
 
     internal Task StartBirthdates()
     {
-        using var _db = new Db();
+        //using var _db = new Db();
         var TimeNow = DateTime.Now;
 
         var UsersBirthdayInThisYear = _db.User.Where(x => x.BirthDateComplete == TimeNow.Year);
@@ -179,7 +161,7 @@ public class TaskTimer
 
     private async void Birthdates(User User)
     {
-        using var _db = new Db();
+        //using var _db = new Db();
         User = _db.User.FirstOrDefault(x => x.Id == User.Id);
         var UserDiscord = _client.GetUser(User.Id) as SocketGuildUser;
         if (UserDiscord == null)
@@ -208,15 +190,5 @@ public class TaskTimer
         }
         catch { }
 
-    }
-
-    public Task StartAsync(CancellationToken cancellationToken)
-    {
-        return Task.CompletedTask;
-    }
-
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        return Task.CompletedTask;
     }
 }

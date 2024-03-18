@@ -1,14 +1,10 @@
-﻿using Discord.Rest;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System.Reflection;
+﻿using System.Reflection;
 using XBOT.Services.Configuration;
 using XBOT.Services.PrivateStructure;
-using System.Text.RegularExpressions;
 using XBOT.Services.Attribute.ErrorList;
-using Discord;
 using static XBOT.DataBase.Guild_Logs;
-using XBOT.DataBase;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace XBOT.Services.Handling;
 
@@ -22,12 +18,13 @@ public class CommandHandlingService : IHostedService
     private readonly UserMessagesSolution _messagesolution;
     private readonly Meeting_Logs_Service _meeting;
     private readonly GiveAway_Service _giveaway;
+    private readonly Refferal_Service _refferal;
 
     private readonly PrivateSystem _privatesystem;
     private readonly CommandService _commands;
     private readonly IServiceProvider _services;
     private readonly ILogger<CommandService> _commandslogger;
-    //private readonly Db _db;
+    private readonly Db _db;
 
     public CommandHandlingService(
         DiscordSocketClient discord,
@@ -38,11 +35,12 @@ public class CommandHandlingService : IHostedService
         GiftQuestion_Service gift,
         Invite_Service invite,
         Guild_Logs_Service guildlogs,
-        //Db db,
+        Db db,
         PrivateSystem privatesystem,
         UserMessagesSolution messagesolution,
         Meeting_Logs_Service meeting,
-        GiveAway_Service giveaway)
+        GiveAway_Service giveaway,
+        Refferal_Service refferal)
     {
         _discord = discord;
         _commands = commands;
@@ -54,11 +52,12 @@ public class CommandHandlingService : IHostedService
         _gift = gift;
         _invite = invite;
         _guildlogs = guildlogs;
-        //_db = db;
+        _db = db;
         _privatesystem = privatesystem;
         _messagesolution = messagesolution;
         _meeting = meeting;
         _giveaway = giveaway;
+        _refferal = refferal;
     }
 
 
@@ -116,6 +115,10 @@ public class CommandHandlingService : IHostedService
         }
     }
 
+    //protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    //{
+
+    //}
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
@@ -147,12 +150,12 @@ public class CommandHandlingService : IHostedService
 
     private async Task BulkDeleteMessages(IReadOnlyCollection<Cacheable<IMessage, ulong>> messages, Cacheable<IMessageChannel, ulong> channel)
     {
-        using var db = new Db();
+        //using var _db = new Db();
 
         if (await channel.GetOrDownloadAsync() is not SocketTextChannel textChannel)
             return;
 
-        var guildLog = db.Guild_Logs.FirstOrDefault(x=>x.Type == ChannelsTypeEnum.MessageDelete);
+        var guildLog = _db.Guild_Logs.FirstOrDefault(x=>x.Type == ChannelsTypeEnum.MessageDelete);
         if (guildLog is null)
             return;
 
@@ -203,7 +206,7 @@ public class CommandHandlingService : IHostedService
 
     private async Task CommandExecuted(Optional<CommandInfo> CommandInfo, ICommandContext Context, Discord.Commands.IResult Result)
     {
-        using var _db = new Db();
+        //using var _db = new Db();
         if (!string.IsNullOrWhiteSpace(Result?.ErrorReason))
         {
             string Prefix = _db.Settings.FirstOrDefault().Prefix;
@@ -256,38 +259,17 @@ public class CommandHandlingService : IHostedService
 
     private async Task Ready()
     {
-        using var _db = new Db();
         Console.WriteLine($"Connected and Start Scanning!");
 
-        var Guild = _discord.Guilds.FirstOrDefault();
+        await _giveaway.GiveAwayScan();              // Запуск розыгрышей
+        await _invite.InviteScanning();              // Проверка инвайтов
+        await _refferal.StartRefferalScan();         // Запуск сканирования рефералок
+        await _gift.StartGiftQuestion();             // Запуск Мат. задач
+        await _privatesystem.PrivateChecking();      // Проверка приваток
+        await _timer.StartBirthdates();              // Запуск дней рождений
+        await _timer.StartVoiceAllActivity();        // Запуск активности в голосовых
 
-        await _invite.InviteScanning(); // Проверка инвайтов
 
-        await _timer.StartEveryHoursScan();
-
-        await _gift.StartGiftQuestion();
-
-        await _privatesystem.PrivateChecking(Guild); // Проверка приваток
-
-        await _timer.StartBirthdates();
-
-        await _timer.StartVoiceAllActivity();
-
-        foreach (var Give in _db.GiveAways)
-        {
-            var TextChannel = Guild.GetTextChannel(Give.TextChannelId);
-            if (TextChannel != null)
-            {
-                var Message = await TextChannel.GetMessageAsync(Give.Id);
-                if (Message != null)
-                    await _giveaway.GiveAwayTimer(Give, Message as RestUserMessage);
-                else
-                    _db.GiveAways.Remove(Give);
-            }
-            else
-                _db.GiveAways.Remove(Give);
-        } // проверка розыгрышей
-        await _db.SaveChangesAsync();
 
         Console.WriteLine("Ready to work!");
     }
@@ -306,7 +288,7 @@ public class CommandHandlingService : IHostedService
 
     private async Task UserVoiceStateUpdated(SocketUser User, SocketVoiceState Before, SocketVoiceState After)
     {
-        using var _db = new Db();
+        //using var _db = new Db();
         var Settings = _db.Settings.FirstOrDefault();
         var userDiscord = User as SocketGuildUser;
         await _db.GetUser(userDiscord.Id);
@@ -317,7 +299,7 @@ public class CommandHandlingService : IHostedService
         {
             var PrivateVoiceDiscord = userDiscord.Guild.GetVoiceChannel(Settings.PrivateVoiceChannelId);
             if (PrivateVoiceDiscord != null)
-                await _privatesystem.PrivateChecking(userDiscord.Guild);
+                await _privatesystem.PrivateChecking();
         }
             
 
@@ -335,7 +317,7 @@ public class CommandHandlingService : IHostedService
 
     private async Task UserJoined(SocketGuildUser userDiscord)
     {
-        using var _db = new Db();
+        //using var _db = new Db();
         await _db.GetUser(userDiscord.Id);
 
         await _guildlogs.InJoinedUser(userDiscord);
@@ -344,7 +326,7 @@ public class CommandHandlingService : IHostedService
 
     private async Task MessageReceivedAsync(SocketMessage message)
     {
-        using var _db = new Db();
+        //using var _db = new Db();
         if (message is not SocketUserMessage userMessage || message.Source != MessageSource.User)
             return;
 

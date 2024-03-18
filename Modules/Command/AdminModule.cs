@@ -11,11 +11,11 @@ namespace XBOT.Modules.Command
     public class AdminModule : ModuleBase<SocketCommandContext>
     {
         private readonly InteractiveService _interactive;
-        //private readonly Db _db;
-        public AdminModule(InteractiveService interactive/*, Db db*/)
+        private readonly Db _db;
+        public AdminModule(InteractiveService interactive, Db db)
         {
             _interactive = interactive;
-            //_db = db;
+            _db = db;
         }
 
         public enum RoleTypeEnum : byte
@@ -56,7 +56,7 @@ namespace XBOT.Modules.Command
 
         public async Task PermissionAdd(UserPermission.RolePermission permission, SocketGuildUser user, bool unlimited)
         {
-            using var _db = new Db();
+            //using var _db = new Db();
             string role = "";
             ulong RoleId = 0;
             var Settings = _db.Settings.FirstOrDefault();
@@ -114,7 +114,7 @@ namespace XBOT.Modules.Command
 
         public async Task PermissionDel(UserPermission.RolePermission permission, SocketGuildUser user)
         {
-            using var _db = new Db();
+            //using var _db = new Db();
             var emb = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor)
                 .WithAuthor($"🔨 удалить привилигированного пользователя");
@@ -163,7 +163,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task refferalroleadd(SocketRole role, uint Invite, uint WriteInWeek, uint Get5Level)
         {
-            using var _db = new Db();
+            //using var _db = new Db();
             bool returnMessage = false;
             var emb = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor)
@@ -203,7 +203,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task refferalroledel(SocketRole role)
         {
-            using var _db = new Db();
+            //using var _db = new Db();
             var refrole = _db.ReferralRole.FirstOrDefault(x => x.RoleId == role.Id);
 
 
@@ -246,7 +246,7 @@ namespace XBOT.Modules.Command
 
         private async Task roleadd(SocketRole role, uint value, RoleTypeEnum Type)
         {
-            using var _db = new Db();
+            //using var _db = new Db();
             string AuthorText = "";
             string DescriptionText = "";
             string YourRole = "";
@@ -343,7 +343,7 @@ namespace XBOT.Modules.Command
         }
         private async Task roledel(SocketRole role, RoleTypeEnum Type)
         {
-            using var _db = new Db();
+            //using var _db = new Db();
             string AuthorText = "";
             string DescriptionText = "";
             string DescriptionText2 = "";
@@ -395,7 +395,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task unwarn(SocketGuildUser user)
         {
-            using var _db = new Db();
+            //using var _db = new Db();
             var emb = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor)
                 .WithAuthor($"unwarn {user}");

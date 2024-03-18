@@ -9,13 +9,13 @@ public class GiftQuestion_Service
 {
     private readonly DiscordSocketClient _client;
     private readonly InteractiveService _interactive;
-    //private readonly Db _db;
-    private string question { get; set; }
+    private readonly Db _db;
+    private string Question { get; set; }
     private long QuestionResult { get; set; }
-    public GiftQuestion_Service(DiscordSocketClient client, /*Db db,*/ InteractiveService interactive)
+    public GiftQuestion_Service(DiscordSocketClient client, Db db, InteractiveService interactive)
     {
         _client = client;
-        //_db = db;
+        _db = db;
         _interactive = interactive;
     }
 
@@ -24,7 +24,6 @@ public class GiftQuestion_Service
         TimeSpan time = new TimeSpan(0, 60, 0);
         System.Timers.Timer TaskTime = new(time);
         TaskTime.Elapsed += GiftQuestionActivate;
-        TaskTime.AutoReset = true;
         TaskTime.Start();
         return Task.CompletedTask;
     }
@@ -32,7 +31,12 @@ public class GiftQuestion_Service
 
     private async void GiftQuestionActivate(object sender, ElapsedEventArgs e)
     {
-        using var _db = new Db();
+        //using var _db = new Db();
+
+        var Timer = sender as System.Timers.Timer;
+        var RandomMinutes = new Random().Next(60, 180);
+        Timer.Interval = new TimeSpan(0, RandomMinutes, 0).TotalMilliseconds;
+
         var channel = _client.GetChannel(BotSettings.DefaultChannel) as SocketTextChannel;
 
         var emb = new EmbedBuilder()
@@ -64,13 +68,11 @@ public class GiftQuestion_Service
                 break;
         }
         QuestionResult = result;
-        var Timer = sender as System.Timers.Timer;
-        var RandomMinutes = new Random().Next(60, 180);
-        var TimeActive = TimeSpan.FromSeconds(30);
-        Timer.Interval = new TimeSpan(0, RandomMinutes, 0).TotalMilliseconds;
 
-        question = $"{RandomNumber1} {symbol} {RandomNumber2}";
-        emb.WithDescription($"Вопрос: сколько будет {question}?")
+        var TimeActive = TimeSpan.FromSeconds(60);
+
+        Question = $"{RandomNumber1} {symbol} {RandomNumber2}";
+        emb.WithDescription($"Вопрос: сколько будет {Question}?")
            .WithFooter($"На ответ дается {TimeActive.TotalSeconds} секунд.");
 
         var message = await channel.SendMessageAsync("",false, emb.Build());
@@ -94,7 +96,7 @@ public class GiftQuestion_Service
 
         if (MessageResult.IsTimeout)
         {
-            emb.WithDescription($"Вопрос: сколько будет {question}?\nОтвет: {QuestionResult}")
+            emb.WithDescription($"Вопрос: сколько будет {Question}?\nОтвет: {QuestionResult}")
                 .WithFooter("Ни кто не успел ответить правильно.");
             await message.ModifyAsync(x => x.Embed = emb.Build());
             await Task.Delay(5000);
@@ -109,13 +111,12 @@ public class GiftQuestion_Service
             _db.Update(userDb);
             await _db.SaveChangesAsync();
             emb.WithDescription($"Победитель: {MessageResult.Value.Author.Mention}\n" +
-                                $"{QuestionResult} = {question}\n" +
+                                $"{QuestionResult} = {Question}\n" +
                                 $"Приз: {randomMoney} coins")
                .WithFooter("Не пропусти следующую викторину, и забери приз!");
             QuestionResult = 0;
             await message.DeleteAsync();
-            var Channel = _client.GetChannel(BotSettings.DefaultChannel) as SocketTextChannel;
-            await Channel.SendMessageAsync("", false, emb.Build());
+            await channel.SendMessageAsync("", false, emb.Build());
         }
     }
 }

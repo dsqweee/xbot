@@ -7,7 +7,10 @@ namespace XBOT.DataBase
 {
     public class Db : DbContext
     {
-        //public Db(DbContextOptions<Db> options) : base(options) { }
+        public Db(DbContextOptions<Db> options) : base(options) { }
+
+        //public DbSet<User_Minecraft> User_Minecraft { get; set; }
+        //public DbSet<User_Minecraft_Subscribe> User_Minecraft_Subscribe { get; set; }
 
         public DbSet<PrivateChannel> PrivateChannel { get; set; }
         public DbSet<TextChannel> TextChannel { get; set; }
@@ -36,13 +39,13 @@ namespace XBOT.DataBase
         public DbSet<TransactionUsers_Logs> TransactionUsers_Logs { get; set; }
 
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlite(BotSettings.connectionStringDbPath);
-            //optionsBuilder.EnableDetailedErrors(false);
-            //optionsBuilder.EnableSensitiveDataLogging(false);
-            //optionsBuilder.EnableServiceProviderCaching(false);
-        }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlite(BotSettings.connectionStringDbPath);
+        //    //optionsBuilder.EnableDetailedErrors(false);
+        //    //optionsBuilder.EnableSensitiveDataLogging(false);
+        //    //optionsBuilder.EnableServiceProviderCaching(false);
+        //}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

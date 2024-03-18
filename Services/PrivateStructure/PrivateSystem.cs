@@ -5,19 +5,22 @@ namespace XBOT.Services.PrivateStructure;
 
 public class PrivateSystem
 {
-    //private readonly Db _db;
+    private readonly Db _db;
+    private readonly DiscordSocketClient _client;
 
-    //public PrivateSystem(Db db)
-    //{
-    //    _db = db;
-    //}
-
-    public async Task PrivateChecking(SocketGuild Guild)
+    public PrivateSystem(Db db, DiscordSocketClient client)
     {
-        using var _db = new Db();
+        _db = db;
+        _client = client;
+    }
+
+    public async Task PrivateChecking()
+    {
+        //using var _db = new Db();
+        var guild = _client.Guilds.First();
         foreach (var PC in _db.PrivateChannel)
         {
-            var chnl = Guild.GetVoiceChannel(PC.Id);
+            var chnl = guild.GetVoiceChannel(PC.Id);
             if (chnl != null)
                 await PrivateScanUsers(chnl, PC);
             else
@@ -28,7 +31,7 @@ public class PrivateSystem
 
     public async Task PrivateScanUsers(SocketVoiceChannel VoiceChannel, PrivateChannel ThisPrivateChannel)
     {
-        using var _db = new Db();
+        //using var _db = new Db();
         if (VoiceChannel.ConnectedUsers.Count == 0)
         {
             await VoiceChannel.DeleteAsync();
@@ -52,7 +55,7 @@ public class PrivateSystem
 
     public async Task PrivateCreate(SocketGuildUser user, SocketVoiceChannel PrivateChannel)
     {
-        using var _db = new Db();
+        //using var _db = new Db();
         if (PrivateSpam.CheckSpamPrivate(user))
             return;
 

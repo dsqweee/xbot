@@ -5,16 +5,16 @@ namespace XBOT.Services;
 
 public class EmojiGiftService
 {
-    //private readonly Db _db;
+    private readonly Db _db;
 
-    //public EmojiGiftService(Db db)
-    //{
-    //    _db = db;
-    //}
+    public EmojiGiftService(Db db)
+    {
+        _db = db;
+    }
 
     public async Task<string> AddEmoji(string Name, double factory)
     {
-        using var _db = new Db();
+        //using var _db = new Db();
         if (factory < 0 && factory > 1)
             return "Фактор не может быть меньше 0 или больше 1.";
 
@@ -39,7 +39,7 @@ public class EmojiGiftService
 
     private async Task<string> ActionStatusEmoji(string Name, bool Enable)
     {
-        using var _db = new Db();
+        //using var _db = new Db();
         var EmojiAny = _db.EmojiGift_emojiadded.FirstOrDefault(x => x.Name == Name);
         if (EmojiAny == null)
             return $"Эмодзи нет в системе под именем {Name}";
@@ -52,7 +52,7 @@ public class EmojiGiftService
 
     public async Task<EmojiGift_emojiadded> UserSetEmoji(ulong userId)
     {
-        using var _db = new Db();
+        //using var _db = new Db();
         var randomDropemoji = new PcgRandom().NextDouble();
 
         if (randomDropemoji > 0.3) // Chance drop emoji 
@@ -79,7 +79,7 @@ public class EmojiGiftService
 
     private async Task<string> ActionTradeEmoji(ulong emojiId, ulong Price)
     {
-        using var _db = new Db();
+        //using var _db = new Db();
         var GetEmoji = _db.EmojiGift.FirstOrDefault(x => x.Id == emojiId);
         if (GetEmoji == null)
             return $"Эмодзи с id `{emojiId}` не найдено.";

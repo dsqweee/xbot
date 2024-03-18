@@ -106,6 +106,9 @@ namespace XBOT.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("IsCanceled")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Surpice")
                         .HasColumnType("TEXT");
 

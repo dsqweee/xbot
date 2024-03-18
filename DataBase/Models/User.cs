@@ -14,6 +14,9 @@ namespace XBOT.DataBase.Models
         public ulong? User_Permission_Id { get; set; }
         public User_Permission User_Permission { get; set; }
 
+        //public ulong? User_MinecraftId { get; set; }
+        //public User_Minecraft User_Minecraft { get; set; }
+
         public DateTime ReferalActivate { get; set; }
         public DateTime LastMessageTime { get; set; }
         public List<DiscordInvite> MyInvites { get; set; }

@@ -19,14 +19,14 @@ public class UserPermission : PreconditionAttribute
 
     public override async Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context, CommandInfo command, IServiceProvider services)
     {
-        //var db = services.GetRequiredService<Db>();
-        using var db = new Db();
+        var _db = services.GetRequiredService<Db>();
+        //using var _db = new Db();
         var guildUser = context.User as SocketGuildUser;
 
         if (guildUser.Id == BotSettings.xId)
             return PreconditionResult.FromSuccess();
 
-        var settings = db.Settings.FirstOrDefault();
+        var settings = _db.Settings.FirstOrDefault();
 
         if (!HasRequiredPermission(guildUser, settings))
         {

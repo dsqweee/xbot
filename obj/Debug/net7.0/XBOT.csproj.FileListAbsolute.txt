@@ -206,3 +206,7 @@ C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\runtimes\browser\lib\net7.0\Syst
 C:\Users\xXx\source\repos\xbot\obj\Debug\net7.0\XBOT.csproj.CopyComplete
 C:\Users\xXx\source\repos\xbot\obj\Debug\net7.0\XBOT.genruntimeconfig.cache
 C:\Users\xXx\source\repos\xbot\obj\Debug\net7.0\ref\XBOT.dll
+C:\Users\xXx\source\repos\xbot\obj\Debug\net7.0\XBOT.sourcelink.json
+C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\Microsoft.Extensions.Diagnostics.dll
+C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\Microsoft.Extensions.Diagnostics.Abstractions.dll
+C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\System.Diagnostics.DiagnosticSource.dll

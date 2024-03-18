@@ -19,18 +19,18 @@ namespace XBOT.Modules.Command
     {
         private readonly InteractiveService _interactive;
         private readonly Refferal_Service _refferal_Service;
-        //private readonly Db _db;
-        public UserModule(InteractiveService interactive/*, Db db*/, Refferal_Service refferal_Service)
+        private readonly Db _db;
+        public UserModule(InteractiveService interactive, Db db, Refferal_Service refferal_Service)
         {
             _interactive = interactive;
-            //_db = db;
+            _db = db;
             _refferal_Service = refferal_Service;
         }
 
         [Aliases, Commands, Usage, Descriptions]
         public async Task usertop()
         {
-            using var _db = new Db();
+            //using var _db = new Db();
             var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor)
                                             .WithAuthor($"Топ пользователей", Context.User.GetAvatarUrl());
 
@@ -82,11 +82,24 @@ namespace XBOT.Modules.Command
             await Context.Channel.SendMessageAsync("", false, emb.Build());
         }
 
+        //[Aliases, Commands, Usage, Descriptions]
+        //public async Task clicker()
+        //{
+        //    var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor);
+        //    var user = _db.User.FirstOrDefault(x => x.Id == Context.User.Id);
+            
+        //    var percent = new Random().Next(0, 101);
+        //    emb.WithDescription($"{user.money} -> {user.money + 1}");
+        //    user.money += 1;
+        //    await _db.SaveChangesAsync();
+        //    await Context.Channel.SendMessageAsync("", false, emb.Build());
+        //}
+
 
         [Aliases, Commands, Usage, Descriptions]
         public async Task sex(SocketGuildUser user)
         {
-            using var _db = new Db();
+            //using var _db = new Db();
             var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor)
                                         .WithAuthor($"Чпокан чпокан чпокан", Context.User.GetAvatarUrl());
 
@@ -161,7 +174,7 @@ namespace XBOT.Modules.Command
         [BirthDatePermission]
         public async Task BirthDateSet(string date)
         {
-            using var _db = new Db();
+            //using var _db = new Db();
             var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor)
                                         .WithAuthor($"День рождения", Context.User.GetAvatarUrl());
             DateOnly dateConvert;
@@ -222,7 +235,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task warns()
         {
-            using var _db = new Db();
+            //using var _db = new Db();
             var emb = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor)
                 .WithAuthor("⚜️ Варны сервера")
@@ -271,7 +284,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task userinfo(SocketGuildUser user = null)
         {
-            using var _db = new Db();
+            //using var _db = new Db();
             if (user == null)
                 user = Context.User as SocketGuildUser;
 
@@ -360,7 +373,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task refferal()
         {
-            using var _db = new Db();
+            //using var _db = new Db();
             var emb = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor)
                 .WithAuthor($"Реферальная система");
@@ -486,7 +499,7 @@ namespace XBOT.Modules.Command
         [ActivityPermission]
         public async Task transfer(SocketGuildUser User, ushort coin)
         {
-            using var _db = new Db();
+            //using var _db = new Db();
             var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor).WithAuthor($"{Context.User} 💱 {User}");
             const ushort maxSum = 25000;
 
@@ -544,7 +557,7 @@ namespace XBOT.Modules.Command
         [ActivityPermission]
         public async Task reputation(SocketGuildUser RepUser)
         {
-            using var _db = new Db();
+            //using var _db = new Db();
             var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor)
                                         .WithAuthor($" - Репутация 🏧", Context.User.GetAvatarUrl());
             var userDB = await _db.GetUser(Context.User.Id);
@@ -596,7 +609,7 @@ namespace XBOT.Modules.Command
 
         public async Task RepRole(SocketGuildUser UserDiscord, ulong Reputation)
         {
-            using var _db = new Db();
+            //using var _db = new Db();
             var Roles = _db.Roles_Reputation.AsEnumerable().OrderBy(x => x.Reputation);
             var ThisRole = Roles.LastOrDefault(x => x.Reputation <= Reputation);
 
@@ -617,7 +630,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task daily()
         {
-            using var _db = new Db();
+            //using var _db = new Db();
             var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor)
                                         .WithAuthor($"Ежедневное пособие Coins 🏧", Context.User.GetAvatarUrl());
 
@@ -642,7 +655,6 @@ namespace XBOT.Modules.Command
                 userDB.messageCounterForDaily = 1;
                 userDB.daily_Time = DateNow.AddHours(User.PeriodHours);
 
-
                 if (userDB.money + result >= BotSettings.CoinsMaxUser)
                 {
                     userDB.money = BotSettings.CoinsMaxUser;
@@ -650,10 +662,7 @@ namespace XBOT.Modules.Command
                 }
                 else
                 {
-                    if(result == 0 && userDB.money >= 10)
-                        userDB.money += -10;
-                    else
-                        userDB.money += result;
+                    userDB.money += result;
                     var TransferLog = new TransactionUsers_Logs { RecipientId = Context.User.Id, Amount = result, TimeTransaction = DateTime.Now, Type = TransactionUsers_Logs.TypeTransation.daily };
                     _db.TransactionUsers_Logs.Add(TransferLog);
                     emb.WithDescription($"Монет получено: {result}");
@@ -704,7 +713,7 @@ namespace XBOT.Modules.Command
         [MarryPermission]
         public async Task marry(SocketGuildUser user)
         {
-            using var _db = new Db();
+            //using var _db = new Db();
             var emb = new EmbedBuilder()
                         .WithColor(BotSettings.DiscordColor)
                         .WithAuthor($"💞 Женидьба - Ошибка");
@@ -823,7 +832,7 @@ namespace XBOT.Modules.Command
         [MarryPermission]
         public async Task divorce()
         {
-            using var _db = new Db();
+            //using var _db = new Db();
             var ContextUser = await _db.GetUser(Context.User.Id);
             var MarryedUserId = Convert.ToUInt64(ContextUser.MarriageId);
             var userDs = Context.Guild.GetUser(MarryedUserId);
@@ -843,7 +852,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task reprole()
         {
-            using var _db = new Db();
+            //using var _db = new Db();
             var RepRoles = _db.Roles_Reputation.OrderBy(u => u.Reputation).ToList();
 
             if (RepRoles.Any())
@@ -893,7 +902,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task levelrole()
         {
-            using var _db = new Db();
+            //using var _db = new Db();
             var LvlRoles = _db.Roles_Level.OrderBy(u => u.Level).ToList();
 
             if (LvlRoles.Any())
@@ -964,7 +973,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task refferalrole()
         {
-            using var _db = new Db();
+            //using var _db = new Db();
             var RefRoles = _db.ReferralRole.OrderBy(u => u.UserJoinedValue).ToList();
 
             if (RefRoles.Any())
@@ -1030,7 +1039,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task buyrole()
         {
-            using var _db = new Db();
+            //using var _db = new Db();
             var User = Context.User as SocketGuildUser;
             var embed = new EmbedBuilder().WithColor(BotSettings.DiscordColor);
 
@@ -1171,7 +1180,7 @@ namespace XBOT.Modules.Command
         [ActivityPermission]
         public async Task kazino(KazinoChipEnum Fishka, ushort money)
         {
-            using var _db = new Db();
+            //using var _db = new Db();
             var emb = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor)
                 .WithAuthor(" - Казино", Context.User.GetAvatarUrl());

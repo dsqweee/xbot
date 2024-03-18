@@ -8,12 +8,12 @@ namespace XBOT.Modules.Command
     [Name("Iventer"), Summary("Команды управления ивентами")]
     public class IventerModule : ModuleBase<SocketCommandContext>
     {
-        //private readonly Db _db;
+        private readonly Db _db;
         private readonly GiveAway_Service _giveaway;
 
-        public IventerModule(/*Db db, */GiveAway_Service giveaway)
+        public IventerModule(Db db, GiveAway_Service giveaway)
         {
-            //_db = db;
+            _db = db;
             _giveaway = giveaway;
         }
 
@@ -34,7 +34,7 @@ namespace XBOT.Modules.Command
         [Aliases, Commands, Usage, Descriptions]
         public async Task giveawaystart(string Time, byte WinnersCount, [Remainder] string Given)
         {
-            using var _db = new Db();
+            //using var _db = new Db();
             bool Error = true;
             var emb = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor)
@@ -52,6 +52,7 @@ namespace XBOT.Modules.Command
                     int maxWinners = 25;
                     if (WinnersCount <= maxWinners)
                     {
+                        result = result.Add(new TimeSpan(0, 0, 1)); // Красивый отчет
                         var TimeToIvent = DateTime.Now.Add(result);
                         var TimeToGo = TimeToIvent - DateTime.Now;
                         var ReactionDice = new Emoji("🎟");
@@ -60,8 +61,8 @@ namespace XBOT.Modules.Command
                         await message.AddReactionAsync(ReactionDice);
                         var ThisTask = _db.Add(new GiveAways() { Id = message.Id, TextChannelId = Context.Channel.Id, TimesEnd = TimeToIvent, Surpice = Given, WinnerCount = WinnersCount }).Entity;
                         await _db.SaveChangesAsync();
-                        _giveaway.Giveaway_List.Add(message.Id, false);
-                        await _giveaway.GiveAwayTimer(ThisTask, message);
+                        //_giveaway.Giveaway_List.Add(message.Id, false);
+                        await _giveaway.StartGiveAwayTimer(ThisTask, message);
                         Error = false;
                     }
                     else
@@ -73,23 +74,28 @@ namespace XBOT.Modules.Command
             }
 
             if (Error)
-                await Context.Channel.SendMessageAsync($"<@{BotSettings.IventerLoverId}>", false, emb.Build());
+                await Context.Channel.SendMessageAsync("", false, emb.Build());
         }
 
         [Aliases, Commands, Usage, Descriptions]
         public async Task giveawaystop(ulong MessageId)
         {
+            //using var _db = new Db();
             var emb = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor)
-                .WithAuthor($"🎲 **РОЗЫГРЫШ**  🎲");
+                .WithAuthor($"🎲 **РОЗЫГРЫШ** 🎲");
 
-            if (_giveaway.Giveaway_List.Any(x => x.Key == MessageId))
-                emb.WithDescription("Розыгрыша с таким сообщением не существует!");
-            else
+            var giveAway = _db.GiveAways.FirstOrDefault(x => x.Id == MessageId);
+
+            if (giveAway is not null)
             {
-                _giveaway.Giveaway_List[MessageId] = true;
+                giveAway.IsCanceled = true;
+                await _db.SaveChangesAsync();
                 emb.WithDescription("Розыгрыш принудительно завершен!");
             }
+            else
+                emb.WithDescription("Розыгрыша с таким сообщением не существует!");
+
             await Context.Channel.SendMessageAsync("", false, emb.Build());
         }
     }

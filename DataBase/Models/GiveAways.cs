@@ -8,5 +8,6 @@
         public DateTime TimesEnd { get; set; }
         public string Surpice { get; set; }
         public uint WinnerCount { get; set; }
+        public bool IsCanceled { get; set; }
     }
 }

@@ -6,10 +6,10 @@ public class MarryPermission : PreconditionAttribute
 {
     public async override Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context, CommandInfo command, IServiceProvider services)
     {
-        //var db = services.GetRequiredService<Db>();
-        using var db = new Db();
+        var _db = services.GetRequiredService<Db>();
+        //using var _db = new Db();
         var SocketContext = context as SocketCommandContext;
-        var UserMarry = await db.GetUser(context.User.Id);
+        var UserMarry = await _db.GetUser(context.User.Id);
 
         if (command.Name == "marry" && UserMarry.MarriageId != null)
             return await Task.FromResult(PreconditionResult.FromError($"Вы не можете жениться, так как вы уже женаты!"));

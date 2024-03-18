@@ -24,7 +24,7 @@
 //    [Command("select", RunMode = RunMode.Async)]
 //    public async Task MultiSelectionAsync()
 //    {
-//        using var _db = new db();
+//        //using var _db = new Db();
 //        using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(10));
 
 //        var modules = _commandService.Modules.Where(x=>x.Commands.Count > 0).ToList();

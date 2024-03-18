@@ -1,67 +1,82 @@
 ﻿using Discord.Rest;
+using Microsoft.EntityFrameworkCore;
 using XBOT.Services.Configuration;
 
 namespace XBOT.Services;
 
 public class GiveAway_Service
 {
-    //private readonly Db _db;
+    private readonly Db _db;
+    private readonly DiscordSocketClient _client;
+    private readonly EmbedBuilder embed = new EmbedBuilder().WithColor(BotSettings.DiscordColor).WithAuthor($"🎲 **РОЗЫГРЫШ** 🎲");
 
-    //public GiveAway_Service(Db db)
-    //{
-    //    _db = db;
-    //}
-
-    public Dictionary<ulong, bool> Giveaway_List = new();
+    public GiveAway_Service(Db db, DiscordSocketClient client)
+    {
+        _db = db;
+        _client = client;
+    }
 
 
     public string GiveawayTextFormat(TimeSpan TimeToGo, string Give)
     {
         var text = $"Розыгрыш ***{Give} ***\nНажмите на эмодзи 🎟 чтобы учавствовать!";
-        if (TimeToGo.TotalSeconds > 86400)
+        if (TimeToGo.TotalSeconds >= 86400)
             text += $"\nОсталось: {TimeToGo.Days} дней и {TimeToGo.Hours} часов";
         else if (TimeToGo.TotalSeconds > 3600)
             text += $"\nОсталось: {TimeToGo.Hours} часов и {TimeToGo.Minutes} минут";
-        if (TimeToGo.TotalSeconds > 60)
+        else if (TimeToGo.TotalSeconds == 3600)
+            text += $"\nОсталось: {TimeToGo.Hours} часов";
+        else if (TimeToGo.TotalSeconds > 60)
             text += $"\nОсталось: {TimeToGo.Minutes} минут и {TimeToGo.Seconds} секунд";
+        else if (TimeToGo.TotalSeconds == 60)
+            text += $"\nОсталось: {TimeToGo.Minutes} минут";
         else
             text += $"\nОсталось: {TimeToGo.Seconds} секунд";
         return text;
     }
 
-
-    public async Task GiveAwayTimer(GiveAways ThisTask, RestUserMessage message)
+    internal Task StartGiveAwayTimer(GiveAways ThisTask, RestUserMessage message)
     {
-        using var _db = new Db();
-        var emb = new EmbedBuilder()
-            .WithColor(BotSettings.DiscordColor)
-            .WithAuthor($"🎲 **РОЗЫГРЫШ** 🎲");
+        var time = new TimeSpan(0, 0, 5);
+        System.Timers.Timer TaskTime = new(time);
+        TaskTime.Elapsed += (s, e) => GiveAwayTimer(ThisTask,message, s);
+        TaskTime.Start();
+        return Task.CompletedTask;
+    }
 
-        var TimeToGo = ThisTask.TimesEnd - DateTime.Now;
-        string Text = GiveawayTextFormat(TimeToGo, ThisTask.Surpice);
-        var Task = Giveaway_List.FirstOrDefault(x => x.Key == ThisTask.Id);
+    private async void GiveAwayTimer(GiveAways ThisTask, RestUserMessage message, object timer)
+    {
+        //using var _db = new Db();
+        bool timeOut = false;
 
-        if (!Giveaway_List.Any(x => x.Key == ThisTask.Id))
+        var Time = ThisTask.TimesEnd - DateTime.Now;
+        if (Time.TotalSeconds <= 0)
+            timeOut = true;
+
+        if (timeOut || ThisTask.IsCanceled)
         {
-            Giveaway_List.Add(ThisTask.Id, false);
+            (timer as System.Timers.Timer).Dispose();
+            await GiveAwayResult(ThisTask, message);
         }
-
-        while (ThisTask.TimesEnd > DateTime.Now)
+        else
         {
-            TimeToGo = ThisTask.TimesEnd - DateTime.Now;
+            var emb = embed;
 
-            if (TimeToGo.TotalSeconds % 5 == 0)
-            {
-                Text = GiveawayTextFormat(TimeToGo, ThisTask.Surpice);
-                emb.WithDescription(Text);
-                await message.ModifyAsync(x => x.Embed = emb.Build());
-            }
-            if (Task.Value)
-                break;
+            var TimeToGo = ThisTask.TimesEnd - DateTime.Now;
+            string Text = GiveawayTextFormat(TimeToGo, ThisTask.Surpice);
+
+            ThisTask = await _db.GiveAways.FirstOrDefaultAsync(x => x.Id == ThisTask.Id);
+            Text = GiveawayTextFormat(TimeToGo, ThisTask.Surpice);
+            emb.WithDescription(Text);
+            await message.ModifyAsync(x => x.Embed = emb.Build());
         }
+    }
 
+    private async Task GiveAwayResult(GiveAways ThisTask, RestUserMessage message)
+    {
+        var emb = embed;
         string Winner = string.Empty;
-        if (Task.Value)
+        if (ThisTask.IsCanceled)
             emb.WithDescription("Розыгрыш завершен администрацией!");
         else
         {
@@ -96,8 +111,31 @@ public class GiveAway_Service
         }
         _db.GiveAways.Remove(ThisTask);
         await _db.SaveChangesAsync();
-        Giveaway_List.Remove(Task.Key);
 
         await message.ModifyAsync(x => x.Embed = emb.Build());
+    }
+
+    public async Task GiveAwayScan()
+    {
+        var Guild = _client.Guilds.First();
+        Console.WriteLine(Guild.Id + " - guild");
+        foreach (var Give in _db.GiveAways)
+        {
+            var textChannel = Guild.GetTextChannel(Give.TextChannelId);
+            if (textChannel != null)
+            {
+                var message = await textChannel.GetMessageAsync(Give.Id) as RestUserMessage;
+                if (message != null)
+                {
+                    await StartGiveAwayTimer(Give, message);
+                }
+                else
+                    _db.GiveAways.Remove(Give);
+            }
+            else
+                _db.GiveAways.Remove(Give);
+        }
+        Console.WriteLine(_db.GiveAways.Count());
+        await _db.SaveChangesAsync();
     }
 }

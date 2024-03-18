@@ -7,34 +7,36 @@ namespace XBOT.Services;
 public class Invite_Service
 {
     private readonly DiscordSocketClient _client;
-    //private readonly Db _db;
+    private readonly Db _db;
 
-    public Invite_Service(DiscordSocketClient client/*, Db db*/)
+    public Invite_Service(DiscordSocketClient client, Db db)
     {
         _client = client;
-        //_db = db;
+        _db = db;
     }
 
     public async Task InviteScanning()
     {
-        using var _db = new Db();
+        //using var _db = new Db();
         var Invites = await _client.Guilds.First().GetInvitesAsync();
         foreach (var Invite in Invites)
         {
-            var InviteDB = await _db.DiscordInvite.FirstOrDefaultAsync(x => x.InviteKey == Invite.Code);
+            string InviteCode = Invite.Code;
+            int InviteUses = Invite.Uses.GetValueOrDefault();
+
+            var InviteDB = await _db.DiscordInvite.FirstOrDefaultAsync(x => x.InviteKey == InviteCode);
             if (InviteDB == null)
             {
                 var User = await _db.GetUser(Invite.Inviter.Id);
-                var NewInvite = new DiscordInvite() { AuthorId = User.Id, InviteKey = Invite.Code, DiscordUsesCount = (int)Invite.Uses };
+                var NewInvite = new DiscordInvite() { AuthorId = User.Id, InviteKey = InviteCode, DiscordUsesCount = InviteUses };
                 _db.DiscordInvite.Add(NewInvite);
             }
-            else if (InviteDB.DiscordUsesCount != Invite.Uses)
+            else if (InviteDB.DiscordUsesCount != InviteUses)
             {
-                InviteDB.DiscordUsesCount = (int)Invite.Uses;
-                _db.DiscordInvite.Update(InviteDB);
+                InviteDB.DiscordUsesCount = InviteUses;
             }
-            await _db.SaveChangesAsync();
         }
+        await _db.SaveChangesAsync();
     }
     //public static async Task InviteDelete(SocketGuildChannel Guild, string InviteId)
     //{
@@ -50,7 +52,7 @@ public class Invite_Service
     //}
     public async Task InviteCreate(SocketInvite Invite)
     {
-        using var _db = new Db();
+        //using var _db = new Db();
         var user = await _db.GetUser(Invite.Inviter.Id);
         var NewInvite = new DiscordInvite() { AuthorId = Invite.Inviter.Id, InviteKey = Invite.Code, DiscordUsesCount = Invite.Uses };
         _db.DiscordInvite.Add(NewInvite);
@@ -58,9 +60,10 @@ public class Invite_Service
     }
     public async Task<RestInviteMetadata> JoinedUserInviteAttach(SocketGuildUser JoinedUser)
     {
-        using var _db = new Db();
+        //using var _db = new Db();
         RestInviteMetadata ReadedInvite = null;
         var Invites = await _client.Guilds.First().GetInvitesAsync();
+
         foreach (var InviteDs in Invites)
         {
             var InviteDb = _db.DiscordInvite.FirstOrDefault(x => x.InviteKey == InviteDs.Code);

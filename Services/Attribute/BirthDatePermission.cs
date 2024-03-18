@@ -6,9 +6,9 @@ sealed class BirthDatePermission : PreconditionAttribute
 {
     public override async Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context, CommandInfo command, IServiceProvider services)
     { 
-        //var db = services.GetRequiredService<Db>();
-        using var db = new Db();
-        var userDb = await db.GetUser(context.User.Id);
+        var _db = services.GetRequiredService<Db>();
+        //using var db = new Db();
+        var userDb = await _db.GetUser(context.User.Id);
         if(userDb.BirthDate.Year == 1)
             return PreconditionResult.FromSuccess();
 
