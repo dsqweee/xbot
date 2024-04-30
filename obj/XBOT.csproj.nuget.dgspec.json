@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\xXx\\source\\repos\\xbot\\XBOT.csproj": {}
+    "c:\\Users\\xxx\\source\\repos\\xbot\\XBOT.csproj": {}
   },
   "projects": {
-    "C:\\Users\\xXx\\source\\repos\\xbot\\XBOT.csproj": {
+    "c:\\Users\\xxx\\source\\repos\\xbot\\XBOT.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\xXx\\source\\repos\\xbot\\XBOT.csproj",
+        "projectUniqueName": "c:\\Users\\xxx\\source\\repos\\xbot\\XBOT.csproj",
         "projectName": "XBOT",
-        "projectPath": "C:\\Users\\xXx\\source\\repos\\xbot\\XBOT.csproj",
-        "packagesPath": "C:\\Users\\xXx\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\xXx\\source\\repos\\xbot\\obj\\",
+        "projectPath": "c:\\Users\\xxx\\source\\repos\\xbot\\XBOT.csproj",
+        "packagesPath": "C:\\Users\\xxx\\.nuget\\packages\\",
+        "outputPath": "c:\\Users\\xxx\\source\\repos\\xbot\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\xXx\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\xxx\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -36,7 +36,9 @@
           ]
         },
         "restoreAuditProperties": {
-          "enableAudit": "default"
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -115,20 +117,16 @@
           "warn": true,
           "downloadDependencies": [
             {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[7.0.15, 7.0.15]"
+              "name": "Microsoft.AspNetCore.App.Runtime.linux-musl-x64",
+              "version": "[7.0.18, 7.0.18]"
             },
             {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[7.0.15, 7.0.15]"
+              "name": "Microsoft.NETCore.App.Host.linux-musl-x64",
+              "version": "[7.0.18, 7.0.18]"
             },
             {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[7.0.15, 7.0.15]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[7.0.15, 7.0.15]"
+              "name": "Microsoft.NETCore.App.Runtime.linux-musl-x64",
+              "version": "[7.0.18, 7.0.18]"
             }
           ],
           "frameworkReferences": {
@@ -136,7 +134,12 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204\\RuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "alpine-x64": {
+          "#import": []
         }
       }
     }

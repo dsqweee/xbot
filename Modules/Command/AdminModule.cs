@@ -3,6 +3,7 @@ using XBOT.DataBase.Models.Roles_data;
 using XBOT.Services;
 using XBOT.Services.Attribute;
 using XBOT.Services.Configuration;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace XBOT.Modules.Command
 {
@@ -108,8 +109,7 @@ namespace XBOT.Modules.Command
             else
                 emb.WithDescription($"Роль {role} не назначена в системе!").WithColor(BotSettings.DiscordColorError);
 
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
-
+            await ReplyAsync(embed: emb.Build());
         }
 
         public async Task PermissionDel(UserPermission.RolePermission permission, SocketGuildUser user)
@@ -155,8 +155,7 @@ namespace XBOT.Modules.Command
 
             await user.RemoveRoleAsync(roleId);
 
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
-
+            await ReplyAsync(embed: emb.Build());
         }
 
 
@@ -182,7 +181,7 @@ namespace XBOT.Modules.Command
 
             if (returnMessage)
             {
-                await Context.Channel.SendMessageAsync("", false, emb.Build());
+                await ReplyAsync(embed: emb.Build());
                 return;
             }
 
@@ -196,7 +195,7 @@ namespace XBOT.Modules.Command
             _db.ReferralRole.Add(new DataBase.Models.Invites.DiscordInvite_ReferralRole() { RoleId = role.Id, UserJoinedValue = Invite, UserWriteInWeekValue = WriteInWeek, UserUp5LevelValue = Get5Level });
 
             await _db.SaveChangesAsync();
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
+            await ReplyAsync(embed: emb.Build());
 
         }
 
@@ -205,7 +204,6 @@ namespace XBOT.Modules.Command
         {
             //using var _db = new Db();
             var refrole = _db.ReferralRole.FirstOrDefault(x => x.RoleId == role.Id);
-
 
             var emb = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor)
@@ -221,8 +219,7 @@ namespace XBOT.Modules.Command
             else
                 emb.Description += $"не является рефферальной.";
 
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
-
+            await ReplyAsync(embed: emb.Build());
         }
 
 
@@ -307,7 +304,8 @@ namespace XBOT.Modules.Command
 
             async void SendMessage(string description, string text = "")
             {
-                await Context.Channel.SendMessageAsync(text, false, emb.Build());
+                emb.WithDescription(description);
+                await ReplyAsync(message: text, embed: emb.Build());
             }
 
             var rolepos = role.Guild.CurrentUser.Roles.FirstOrDefault(x => x.Position > role.Position);
@@ -338,8 +336,7 @@ namespace XBOT.Modules.Command
             }
 
             await _db.SaveChangesAsync();
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
-
+            await ReplyAsync(embed: emb.Build());
         }
         private async Task roledel(SocketRole role, RoleTypeEnum Type)
         {
@@ -386,10 +383,8 @@ namespace XBOT.Modules.Command
             else
                 emb.Description += $"не является {DescriptionText2}.";
 
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
-
+            await ReplyAsync(embed: emb.Build());
         }
-
 
 
         [Aliases, Commands, Usage, Descriptions]
@@ -404,7 +399,7 @@ namespace XBOT.Modules.Command
             if (userwarned.CountWarns == 0)
             {
                 emb.WithDescription($"У пользователя {user.Mention} отстствуют нарушения.");
-                await Context.Channel.SendMessageAsync("", false, emb.Build());
+                await ReplyAsync(embed: emb.Build());
                 return;
             }
 
@@ -420,7 +415,7 @@ namespace XBOT.Modules.Command
                 await _db.SaveChangesAsync();
                 await Context.Guild.RemoveBanAsync(user);
                 emb.WithDescription($"Пользователь разбанен. И все нарушения, анулированы.");
-                await Context.Channel.SendMessageAsync("", false, emb.Build());
+                await ReplyAsync(embed: emb.Build());
             }
             else
             {
@@ -429,17 +424,23 @@ namespace XBOT.Modules.Command
                 var TimeoutMessage = new TimeSpan(0, 1, 0);
                 var options = new List<ButtonOption<string>>();
 
+                var AdminPermissionInfo = await _db.GetUser(Context.User.Id);
                 if (ThisWarn.UnWarnId == null || ThisWarn.UnWarnId == 0)
                 {
-                    UnWarnInfo = new User_UnWarn { Warn_Id = ThisWarn.Id, Warn = ThisWarn, AdminId = Context.User.Id, Status = User_UnWarn.WarnStatus.error, ReviewAdd = DateTime.Now, EndStatusSet = DateTime.Now };
+                    UnWarnInfo = new User_UnWarn 
+                    { 
+                        Warn_Id = ThisWarn.Id, 
+                        AdminId = AdminPermissionInfo.User_Permission_Id, 
+                        Status = User_UnWarn.WarnStatus.error, 
+                        ReviewAdd = DateTime.Now, 
+                        EndStatusSet = DateTime.Now 
+                    };
 
                     options.Add(new("Везкая причина", ButtonStyle.Success));
                     options.Add(new("Ошибка выдачи", ButtonStyle.Danger));
                 }
                 else
                 {
-                    var AdminPermissionInfo = await _db.GetUser(Context.User.Id);
-
                     UnWarnInfo = _db.User_UnWarn.FirstOrDefault(x => x.Id == ThisWarn.UnWarnId);
                     UnWarnInfo.EndStatusSet = DateTime.Now;
                     UnWarnInfo.AdminId = AdminPermissionInfo.User_Permission_Id;
@@ -451,7 +452,7 @@ namespace XBOT.Modules.Command
 
                 var pageBuilder = new PageBuilder()
                            .WithAuthor($"Нарушение {user}")
-                           .WithDescription($"Нарушение выдал: <@{ThisWarn.AdminId}>\nПричина: {ThisWarn.Reason}\nВыдано: {ThisWarn.TimeSetWarn}")
+                           .WithDescription($"Нарушение выдал: <@{ThisWarn.Admin.User_Id}>\nПричина: {ThisWarn.Reason}\nВыдано: {ThisWarn.TimeSetWarn}")
                            .WithFooter($"Заявка активна {TimeoutMessage.TotalMinutes} минуту.")
                            .WithThumbnailUrl(user.GetAvatarUrl());
 
@@ -508,9 +509,11 @@ namespace XBOT.Modules.Command
 
                     await _db.SaveChangesAsync();
                     emb.WithDescription($"Статус нарушения {ThisWarn.Id} изменен!");
+                    await result.Message.ModifyAsync(x => x.Embed = emb.Build());
+                    return;
                 }
 
-                await result.Message.ModifyAsync(x => x.Embed = emb.Build());
+                await result.Message.DeleteAsync();
             }
         }
 
@@ -545,8 +548,7 @@ namespace XBOT.Modules.Command
                 emb.WithDescription(text);
                 await user.SetTimeOutAsync(result);
             }
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
-
+            await ReplyAsync(embed: emb.Build());
         }
 
         [Aliases, Commands, Usage, Descriptions]
@@ -566,7 +568,7 @@ namespace XBOT.Modules.Command
                 await user.RemoveTimeOutAsync();
             }
 
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
+            await ReplyAsync(embed: emb.Build());
         }
 
 
@@ -583,6 +585,8 @@ namespace XBOT.Modules.Command
                 mes.Item1.WithAuthor("Ошибка!");
                 mes.Item1.Description = "Неправильная конвертация в Json.\nПрочтите инструкцию! - [Инструкция](https://docs.darlingbot.ru/commands/komandy-adminov/embedsay)";
             }
+            if (string.IsNullOrWhiteSpace(mes.Item2))
+                mes.Item2 = "";
             await TextChannel.SendMessageAsync(mes.Item2, false, mes.Item1.Build());
         }
 

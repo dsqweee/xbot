@@ -73,7 +73,6 @@ public class CommandHandlingService : IHostedService
             return;
 
 
-
         if (interaction.Data.Type == ComponentType.SelectMenu)
         {
             
@@ -93,8 +92,6 @@ public class CommandHandlingService : IHostedService
                 {
                     await user.RemoveRoleAsync(ulongvalue);
                 }
-
-                
 
                 await interaction.DeferAsync();
             }
@@ -217,7 +214,7 @@ public class CommandHandlingService : IHostedService
     }
 
     private async Task ReactAdd(Cacheable<IUserMessage, ulong> mess, Cacheable<IMessageChannel, ulong> chnl, SocketReaction emj)
-=> await GetOrRemoveRole(mess, emj, false);
+        => await GetOrRemoveRole(mess, emj, false);
     private async Task ReactRem(Cacheable<IUserMessage, ulong> mess, Cacheable<IMessageChannel, ulong> chnl, SocketReaction emj)
         => await GetOrRemoveRole(mess, emj, true);
     private static async Task GetOrRemoveRole(Cacheable<IUserMessage, ulong> mess, SocketReaction emj, bool getOrRemove)
@@ -268,7 +265,6 @@ public class CommandHandlingService : IHostedService
         await _privatesystem.PrivateChecking();      // Проверка приваток
         await _timer.StartBirthdates();              // Запуск дней рождений
         await _timer.StartVoiceAllActivity();        // Запуск активности в голосовых
-
 
 
         Console.WriteLine("Ready to work!");
@@ -330,72 +326,67 @@ public class CommandHandlingService : IHostedService
         if (message is not SocketUserMessage userMessage || message.Source != MessageSource.User)
             return;
 
-
         var context = new SocketCommandContext(_discord, userMessage);
-
-        if (message.Channel is IDMChannel DMChannel)
-        {
-            return;
-            int argPoz = 0;
-            await _commands.ExecuteAsync(context, argPoz, _services);
-        }
 
         var TextChannel = await _db.GetTextChannel(userMessage.Channel.Id);
         var user = await _db.GetUser(userMessage.Author.Id);
         var Settings = _db.Settings.FirstOrDefault();
 
-
-        if (await _messagesolution.ChatSystem(context, TextChannel, Settings.Prefix))
-        {
+        bool deleteMessage = await _messagesolution.ChatRulesAutoModeration(context, TextChannel, Settings.Prefix);
+        if (deleteMessage)
             return;
-        }
 
         if (TextChannel.giveXp)
             await _messagesolution.SetPointAsync(userMessage);
 
 
-        if (string.IsNullOrWhiteSpace(userMessage.Content) || (!TextChannel.useCommand && (!TextChannel.useRPcommand && !TextChannel.useAdminCommand)))
-            return;
-
-        
-
-
-
-        if (!TextChannel.useRPcommand && CheckCommands("SfwGif")) // Проверка на RP команды
-            return;
-        else if (!TextChannel.useAdminCommand && (CheckCommands("Admin") || CheckCommands("Moderator"))) // Проверка на Админ команды
-            return;
-
-        bool CheckCommands(string CommandName)
-        {
-            var commands = _commands.Modules.FirstOrDefault(x => x.Name == CommandName)?.Commands;
-            foreach (var command in commands)
-            {
-                foreach (var Alias in command.Aliases)
-                {
-                    if (userMessage.Content.StartsWith($"{Settings.Prefix}{Alias}"))
-                        return true;
-                }
-            }
-            return false;
-        }
-
-
 
         var argPos = 0;
-        if (userMessage.HasStringPrefix(Settings.Prefix, ref argPos) && message.MentionedUsers.Count(x => x.IsBot) == 0)
+        if (!userMessage.HasStringPrefix(Settings.Prefix, ref argPos))
+            return;
+
+        if (!string.IsNullOrWhiteSpace(user.BlockReason))
         {
-            if (string.IsNullOrWhiteSpace(user.BlockReason))
+            var emb = new EmbedBuilder()
+                .WithColor(BotSettings.DiscordColor)
+                .WithAuthor("Вы заблокированы!")
+                .WithDescription($"Вы были заблокированы.\nПричина:{user.BlockReason}\n\nСнять блокировку: пишите администратору");
+            await userMessage.Author?.SendMessageAsync("", false, emb.Build());
+            return;
+        }
+
+        if (message.MentionedUsers.Any(x => x.IsBot))
+            return;
+
+        if (!TextChannel.useCommand)
+        {
+
+            bool CheckCommands(string CommandName)
             {
-                await _commands.ExecuteAsync(context, argPos, _services);
-                return;
+                var commands = _commands.Modules.FirstOrDefault(x => x.Name == CommandName)?.Commands;
+                foreach (var command in commands)
+                {
+                    foreach (var Alias in command.Aliases)
+                    {
+                        if (userMessage.Content.StartsWith($"{Settings.Prefix}{Alias}"))
+                            return true;
+                    }
+                }
+                return false;
             }
 
-            var emb = new EmbedBuilder()
-                    .WithColor(BotSettings.DiscordColor)
-                    .WithAuthor("Вы заблокированы!")
-                    .WithDescription($"Вы были заблокированы за препядствие работы бота.\nПричина:{user.BlockReason}\n\nСнять блокировку: пишите администратору");
-            await userMessage.Channel.SendMessageAsync("", false, emb.Build());
+
+            bool SuccessCommand = false;
+            if (TextChannel.useRPcommand && CheckCommands("SfwGif")) // Проверка на RP команды
+                SuccessCommand = true;
+            else if (TextChannel.useAdminCommand && (CheckCommands("Admin") || CheckCommands("Moderator"))) // Проверка на Админ команды
+                SuccessCommand = true;
+
+            if (!SuccessCommand)
+                return;
         }
+
+        await _commands.ExecuteAsync(context, argPos, _services);
+        return;
     }
 }

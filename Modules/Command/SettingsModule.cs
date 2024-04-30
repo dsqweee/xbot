@@ -23,7 +23,7 @@ namespace XBOT.Modules.Command
         public async Task PrivateCreate()
         {
             //using var _db = new Db();
-            var embed = new EmbedBuilder()
+            var emb = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor)
                 .WithAuthor("🔨 Создание канала для приваток");
 
@@ -37,14 +37,14 @@ namespace XBOT.Modules.Command
                 var PrivateVoice = await Context.Guild.CreateVoiceChannelAsync(BotSettings.PrivateVoiceName, x => { x.CategoryId = Category.Id; x.PermissionOverwrites = voicePermissions; });
                 Settings.PrivateVoiceChannelId = PrivateVoice.Id;
                 await _db.SaveChangesAsync();
-                embed.WithDescription("Приватка успешно создана!");
+                emb.WithDescription("Приватка успешно создана!");
             }
             else
-                embed.WithDescription("Приватка уже существует.")
+                emb.WithDescription("Приватка уже существует.")
                      .WithColor(BotSettings.DiscordColorError);
 
 
-            await Context.Channel.SendMessageAsync("", false, embed.Build());
+            await ReplyAsync(embed: emb.Build());
 
         }
 
@@ -152,7 +152,7 @@ namespace XBOT.Modules.Command
 
                 }
             }
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
+            await ReplyAsync(embed: emb.Build());
 
         }
 
@@ -342,7 +342,7 @@ namespace XBOT.Modules.Command
                     await _db.SaveChangesAsync();
                 }
             }
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
+            await ReplyAsync(embed: emb.Build());
 
         }
 
@@ -389,7 +389,7 @@ namespace XBOT.Modules.Command
                 }
                 else emb.WithDescription($"Количество варнов может быть больше 1 и меньше 15");
             }
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
+            await ReplyAsync(embed: emb.Build());
 
         }
 
@@ -409,7 +409,7 @@ namespace XBOT.Modules.Command
             else emb.WithDescription($"Варн с номером {CountWarn} отсутствует.");
 
             emb.WithFooter($"Посмотреть все варны {Prefix}ws");
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
+            await ReplyAsync(embed: emb.Build());
 
         }
 
@@ -466,7 +466,7 @@ namespace XBOT.Modules.Command
                     await user.AddRoleAsync(role.Id);
                 }
             }
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
+            await ReplyAsync(embed: emb.Build());
 
         }
 
@@ -493,8 +493,7 @@ namespace XBOT.Modules.Command
             }
             _db.User.Update(user);
             await _db.SaveChangesAsync();
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
-
+            await ReplyAsync(embed: emb.Build());
         }
 
         //[Aliases, Commands, Usage, Descriptions]
@@ -531,8 +530,7 @@ namespace XBOT.Modules.Command
                 await _db.SaveChangesAsync();
                 emb.WithDescription($"Префикс бота изменен с {Settings.Prefix} на {prefix}");
             }
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
-
+            await ReplyAsync(embed: emb.Build());
         }
 
 
@@ -593,8 +591,7 @@ namespace XBOT.Modules.Command
             else
                 emb.WithDescription("Сообщение с таким Id не найдено!");
 
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
-
+            await ReplyAsync(embed: emb.Build());
         }
 
 
@@ -690,7 +687,7 @@ namespace XBOT.Modules.Command
             }
             else emb.WithDescription($"Введите нужный вам канал, пример - {Prefix}cs [channel]");
 
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
+            await ReplyAsync(embed: emb.Build());
 
         }
     }

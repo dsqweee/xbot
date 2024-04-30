@@ -510,9 +510,12 @@ c:\Users\xXx\source\repos\xbot\obj\Debug\net7.0\alpine-x64\XBOT.GeneratedMSBuild
 c:\Users\xXx\source\repos\xbot\obj\Debug\net7.0\alpine-x64\XBOT.AssemblyInfoInputs.cache
 c:\Users\xXx\source\repos\xbot\obj\Debug\net7.0\alpine-x64\XBOT.AssemblyInfo.cs
 c:\Users\xXx\source\repos\xbot\obj\Debug\net7.0\alpine-x64\XBOT.csproj.CoreCompileInputs.cache
-c:\Users\xXx\source\repos\xbot\obj\Debug\net7.0\alpine-x64\XBOT.csproj.CopyComplete
 c:\Users\xXx\source\repos\xbot\obj\Debug\net7.0\alpine-x64\XBOT.dll
 c:\Users\xXx\source\repos\xbot\obj\Debug\net7.0\alpine-x64\refint\XBOT.dll
 c:\Users\xXx\source\repos\xbot\obj\Debug\net7.0\alpine-x64\XBOT.pdb
 c:\Users\xXx\source\repos\xbot\obj\Debug\net7.0\alpine-x64\XBOT.genruntimeconfig.cache
 c:\Users\xXx\source\repos\xbot\obj\Debug\net7.0\alpine-x64\ref\XBOT.dll
+c:\Users\xxx\source\repos\xbot\obj\Debug\net7.0\alpine-x64\XBOT.sourcelink.json
+c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\Microsoft.Extensions.Diagnostics.dll
+c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\Microsoft.Extensions.Diagnostics.Abstractions.dll
+c:\Users\xxx\source\repos\xbot\obj\Debug\net7.0\alpine-x64\XBOT.csproj.Up2Date

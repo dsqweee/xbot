@@ -10,7 +10,6 @@ using Fergun.Interactive.Pagination;
 using System.Data;
 using static XBOT.DataBase.Guild_Warn;
 using Pcg;
-using System.Data.SqlTypes;
 
 namespace XBOT.Modules.Command
 {
@@ -34,25 +33,23 @@ namespace XBOT.Modules.Command
             var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor)
                                             .WithAuthor($"Топ пользователей", Context.User.GetAvatarUrl());
 
-            var users = _db.User;
+            var users = _db.User.AsEnumerable();
 
-            var userLevel = users.AsEnumerable().OrderBy(x => x.XP).Take(5);
-            var userRep = users.AsEnumerable().OrderBy(x => x.reputation).Take(5);
-            var userMoney = users.AsEnumerable().OrderBy(x => x.money).Take(5);
+            var userLevel = users.OrderByDescending(x => x.XP).Take(5);
+            var userRep = users.OrderByDescending(x => x.reputation).Take(5);
+            var userMoney = users.OrderByDescending(x => x.money).Take(5);
 
 
             string GetTopUsersText(IEnumerable<ulong> Ids, IEnumerable<ulong> Value, string ValueName)
             {
+                if (!Ids.Any())
+                    return "Недостаточно данных";
+
                 var stringBuilder = new StringBuilder();
-                if (Ids.Count() > 5)
+                for (int i = 0; i < Ids.Count(); i++)
                 {
-                    for (int i = 0; i < Ids.Count(); i++)
-                    {
-                        stringBuilder.AppendLine($"{i}.<@{Ids.ElementAt(i)}> - {Value.ElementAt(i)} {ValueName}");
-                    }
+                    stringBuilder.AppendLine($"{i+1}.<@{Ids.ElementAt(i)}> - {Value.ElementAt(i)} {ValueName}");
                 }
-                else
-                    stringBuilder.AppendLine("Недостаточно данных");
 
                 return stringBuilder.ToString();
             }
@@ -67,7 +64,7 @@ namespace XBOT.Modules.Command
             emb.AddField("ТОП COINS 🏧", Text, true);
 
 
-            await Context.Channel.SendMessageAsync($"", embed: emb.Build());
+            await ReplyAsync(embed: emb.Build());
         }
 
         [Aliases, Commands, Usage, Descriptions]
@@ -76,22 +73,21 @@ namespace XBOT.Modules.Command
             var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor)
                                         .WithAuthor($"Совместимость пары", Context.User.GetAvatarUrl());
 
-            var percent = new Random().Next(0, 101);
-            emb.WithDescription($"{user.Mention} и {Context.User.Mention} совместимы на {percent}%");
+            if (user == Context.User)
+                emb.WithDescription("ЗРЯ...");
+            else
+            {
+                var percent = new Random().Next(0, 101);
+                emb.WithDescription($"{user.Mention} и {Context.User.Mention} совместимы на {percent}%");
+            }
 
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
+            await ReplyAsync(embed: emb.Build());
         }
 
         //[Aliases, Commands, Usage, Descriptions]
-        //public async Task clicker()
+        //public async Task test()
         //{
         //    var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor);
-        //    var user = _db.User.FirstOrDefault(x => x.Id == Context.User.Id);
-            
-        //    var percent = new Random().Next(0, 101);
-        //    emb.WithDescription($"{user.money} -> {user.money + 1}");
-        //    user.money += 1;
-        //    await _db.SaveChangesAsync();
         //    await Context.Channel.SendMessageAsync("", false, emb.Build());
         //}
 
@@ -107,18 +103,18 @@ namespace XBOT.Modules.Command
 
             var prefix = _db.Settings.FirstOrDefault().Prefix;
 
-            if (thisuserDb.BirthDate.Year != 1 || thisuserDb.BirthDate.Year <= 18)
+            if (thisuserDb.BirthDate.Year != 1 || DateTime.Now.Year - thisuserDb.BirthDate.Year <= 18)
             {
-                emb.WithDescription($"Какой секс, в школу пора...\nУ вас не указана дата рождения: {prefix}bds [01.01.2001]").WithFooter("Паспорт покажи...");
-                await Context.Channel.SendMessageAsync($"", embed: emb.Build());
+                emb.WithDescription($"Какой секс, в школу пора...\nУ вас не указана дата рождения: {prefix}bds [пример - 01.01.2001]").WithFooter("Паспорт покажи...");
+                await ReplyAsync(embed: emb.Build());
                 return;
             }
             var mentionuserDb = await _db.GetUser(user.Id);
 
-            if (mentionuserDb.BirthDate.Year != 1 || mentionuserDb.BirthDate.Year <= 18)
+            if (mentionuserDb.BirthDate.Year != 1 || DateTime.Now.Year - mentionuserDb.BirthDate.Year <= 18)
             {
-                emb.WithDescription($"Ей нет 18... Fbi open up\nУ пользователя не указана дата рождения: {prefix}bds [01.01.2001]").WithFooter("Спроси паспорт...");
-                await Context.Channel.SendMessageAsync($"", embed: emb.Build());
+                emb.WithDescription($"Ей нет 18... Fbi open up\nУ пользователя не указана дата рождения: {prefix}bds [пример - 01.01.2001]").WithFooter("Спроси паспорт...");
+                await ReplyAsync(embed: emb.Build());
                 return;
             }
 
@@ -163,11 +159,9 @@ namespace XBOT.Modules.Command
                 }
                 else
                     emb.WithDescription($"{user.Mention} отказался(лась) от чпоканья!");
-
             }
 
             await result.Message.ModifyAsync(x => x.Embed = emb.Build());
-
         }
 
         [Aliases, Commands, Usage, Descriptions]
@@ -182,7 +176,7 @@ namespace XBOT.Modules.Command
             if (!DateOnly.TryParseExact(date, "dd.MM.yyyy", out dateConvert))
             {
                 emb.WithDescription($"Введит дату в формате: {DateTime.Now.ToString("dd.MM.yyyy")}");
-                await Context.Channel.SendMessageAsync("", false, emb.Build());
+                await ReplyAsync(embed: emb.Build());
                 return;
             }
 
@@ -213,22 +207,18 @@ namespace XBOT.Modules.Command
             var result = await _interactive.SendSelectionAsync(buttonSelection, Context.Channel, TimeoutMessage);
 
 
-            if (result.IsTimeout)
-                await result.Message.DeleteAsync();
-            else
+            if (result.IsTimeout || result.Value.Option == "Отклонить")
             {
-                if (result.Value.Option == "Принять")
-                {
-                    emb.WithDescription($"Вы успешно выставили дату рождения.\nДата: {date}");
-                    var user = await _db.GetUser(Context.User.Id);
-                    user.BirthDate = dateConvert;
-                    _db.User.Update(user);
-                    await _db.SaveChangesAsync();
-                    await result.Message.ModifyAsync(x => x.Embed = emb.Build());
-                }
-                else
-                    await result.Message.DeleteAsync();
+                await result.Message.DeleteAsync();
+                return;
             }
+
+            emb.WithDescription($"Вы успешно выставили дату рождения.\nДата: {date}");
+            var user = await _db.GetUser(Context.User.Id);
+            user.BirthDate = dateConvert;
+            _db.User.Update(user);
+            await _db.SaveChangesAsync();
+            await result.Message.ModifyAsync(x => x.Embed = emb.Build());
 
         }
 
@@ -252,25 +242,19 @@ namespace XBOT.Modules.Command
                     switch (warn.ReportTypes)
                     {
                         case ReportTypeEnum.TimeBan:
-                            text = $"Бан на {warn.Time}";
+                            text = $"Временный бан на " + TimeToStringConverter(warn.Time);
                             break;
                         case ReportTypeEnum.Mute:
-                            text = $"Мут";
+                            text = "Мут";
                             break;
                         case ReportTypeEnum.TimeOut:
-                            text = $"Мут на ";
-                            if (warn.Time.Days > 0)
-                                text += $"{warn.Time.Days} дней ";
-                            if (warn.Time.Hours > 0)
-                                text += $"{warn.Time.Hours} часов ";
-                            if (warn.Time.Minutes > 0)
-                                text += $"{warn.Time.Minutes} минут ";
+                            text = $"Мут на " + TimeToStringConverter(warn.Time);
                             break;
                         case ReportTypeEnum.Kick:
-                            text = $"Кик";
+                            text = "Кик";
                             break;
                         case ReportTypeEnum.Ban:
-                            text = $"Бан";
+                            text = "Бан";
                             break;
                     }
 
@@ -278,7 +262,18 @@ namespace XBOT.Modules.Command
                 }
             }
 
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
+
+            string TimeToStringConverter(TimeSpan time)
+            {
+                if (time.Days > 0)
+                    return $"{time.Days} дней ";
+                if (time.Hours > 0)
+                    return $"{time.Hours} часов ";
+
+                return $"{time.Minutes} минут ";
+            }
+
+            await ReplyAsync(embed: emb.Build());
         }
 
         [Aliases, Commands, Usage, Descriptions]
@@ -310,29 +305,30 @@ namespace XBOT.Modules.Command
                 }
             }
 
-            string DailyRep = null;
             TimeToDaily = UserDataBase.reputation_Time - DateTime.Now;
+
+            string dailyRep;
             if (TimeToDaily.TotalSeconds < -1)
-                DailyRep = "Репутация - доступна сейчас!";
+                dailyRep = "Репутация - доступна сейчас!";
             else
-                DailyRep = $"До репутации - {TimeToDaily.Hours}:{TimeToDaily.Minutes}:{TimeToDaily.Seconds}";
+                dailyRep = $"До репутации - {TimeToDaily.Hours}:{TimeToDaily.Minutes}:{TimeToDaily.Seconds}";
 
             string Marryed = "Не состоит";
             var marryedId = Convert.ToUInt64(UserDataBase.MarriageId);
             if (marryedId != 0)
             {
-                string Timemarryed = string.Empty;
                 var Time = DateTime.Now - UserDataBase.MarriageTime;
+                string timeMarryed;
                 if (Time.TotalSeconds < 60)
-                    Timemarryed = "Меньше минуты";
+                    timeMarryed = "Меньше минуты";
                 else if (Time.TotalMinutes <= 60)
-                    Timemarryed = $"{Math.Round(Time.TotalMinutes)} минут";
+                    timeMarryed = $"{Math.Round(Time.TotalMinutes)} минут";
                 else if (Time.TotalHours <= 24)
-                    Timemarryed = $"{Math.Round(Time.TotalHours)} часов";
+                    timeMarryed = $"{Math.Round(Time.TotalHours)} часов";
                 else
-                    Timemarryed = $"{Math.Round(Time.TotalDays)} дней";
+                    timeMarryed = $"{Math.Round(Time.TotalDays)} дней";
 
-                Marryed = $"Половинка: <@{UserDataBase.MarriageId}>\nВ браке: {Timemarryed}";
+                Marryed = $"Половинка: <@{UserDataBase.MarriageId}>\nВ браке: {timeMarryed}";
             }
 
             if (UserDataBase.BirthDate.Year != 1 && UserDataBase.BirthDate.Year >= 18)
@@ -340,14 +336,14 @@ namespace XBOT.Modules.Command
 
             emb.AddField("Отношения", Marryed, true);
 
-            emb.AddField("Репутация", $"Количество: {UserDataBase.reputation}\n{DailyRep}", true);
+            emb.AddField("Репутация", $"Количество: {UserDataBase.reputation}\n{dailyRep}", true);
 
             emb.AddField("Coins", $"Количество: {UserDataBase.money}\nКомбо: {UserDataBase.streak}\n{DailyCoin}", true);
 
             var Settings = _db.Settings.FirstOrDefault();
-            string birthday = "";
+            string birthday;
             if (UserDataBase.BirthDate.Year != 1)
-                birthday = $"{UserDataBase.BirthDate}";
+                birthday = $"{UserDataBase.BirthDate.ToString("dd.MM.yyyy")}";
             else
                 birthday = $"{Settings.Prefix}birthdateset 01.01.2005";
 
@@ -366,8 +362,7 @@ namespace XBOT.Modules.Command
             uint countNext = Convert.ToUInt32((UserDataBase.Level + 1) * User.PointFactor * (UserDataBase.Level + 1));
             emb.AddField("Опыт", $"Уровень: {UserDataBase.Level}\nОпыт: {UserDataBase.XP - count}/{countNext - count}\nАктивность в голосовых чатах: {TimePublic}\nАктивность в приватных чатах: {TimePrivate}", false);
 
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
-
+            await ReplyAsync(embed: emb.Build());
         }
 
         [Aliases, Commands, Usage, Descriptions]
@@ -422,8 +417,7 @@ namespace XBOT.Modules.Command
                     .WithFooter("Роль может выдаваться в течении часа.");
 
             }
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
-
+            await ReplyAsync(embed: emb.Build());
         }
 
         //[Aliases, Commands, Usage, Descriptions]
@@ -550,7 +544,6 @@ namespace XBOT.Modules.Command
                 emb.WithDescription(description);
                 await ReplyAsync(embed: emb.Build());
             }
-
         }
 
         [Aliases, Commands, Usage, Descriptions]
@@ -562,7 +555,7 @@ namespace XBOT.Modules.Command
                                         .WithAuthor($" - Репутация 🏧", Context.User.GetAvatarUrl());
             var userDB = await _db.GetUser(Context.User.Id);
             var DateNow = DateTime.Now;
-
+            string message;
 
             DateTime Daily = userDB.reputation_Time;
 
@@ -572,7 +565,7 @@ namespace XBOT.Modules.Command
             if (DateNow >= Daily)
             {
                 if (RepUser.Id == Context.User.Id)
-                    emb.WithDescription("Повысить репутацию самому себе нельзя.");
+                    message = "Повысить репутацию самому себе нельзя.";
                 else
                 {
                     if (userDB.lastReputationUserId == 0 || RepUser.Id != userDB.lastReputationUserId)
@@ -585,26 +578,26 @@ namespace XBOT.Modules.Command
                         userDB.lastReputationUserId = UserDb.Id;
                         userDB.reputation_Time = DateNow.AddHours(User.PeriodHours);
 
-                        emb.WithDescription($"{Context.User.Mention} повысил репутацию {RepUser.Mention}\nРепутация: +{UserDb.reputation}\nСледующая репутация через {User.PeriodHours} часов"); // {Math.Round((UserThis.DailyRep - DateTime.Now).TotalHours)}
+                        message = $"{Context.User.Mention} повысил репутацию {RepUser.Mention}\nРепутация: +{UserDb.reputation}\nСледующая репутация через {User.PeriodHours} часов"; // {Math.Round((UserThis.DailyRep - DateTime.Now).TotalHours)}
                         _db.TransactionUsers_Logs.Add(TransferLog);
                         _db.User.UpdateRange(new[] { UserDb, userDB });
                         await _db.SaveChangesAsync();
                     }
                     else
-                        emb.WithDescription("Вы не можете выдать репутацию одному и тому же пользователю 2 раза подряд.");
+                        message = "Вы не можете выдать репутацию одному и тому же пользователю 2 раза подряд.";
                 }
             }
             else
             {
                 var TimeToDaily = Daily - DateNow;
                 if (TimeToDaily.TotalSeconds >= 3600)
-                    emb.WithDescription($"Дождитесь {TimeToDaily.Hours} часов и {TimeToDaily.Minutes} минут чтобы выдать репутацию!");
+                    message = $"Дождитесь {TimeToDaily.Hours} часов и {TimeToDaily.Minutes} минут чтобы выдать репутацию!";
                 else
-                    emb.WithDescription($"Дождитесь {(TimeToDaily.TotalSeconds > 60 ? $"{TimeToDaily.Minutes} минут и " : "")} {TimeToDaily.Seconds} секунд чтобы выдать репутацию!");
+                    message = $"Дождитесь {(TimeToDaily.TotalSeconds > 60 ? $"{TimeToDaily.Minutes} минут и " : "")} {TimeToDaily.Seconds} секунд чтобы выдать репутацию!";
             }
 
-            await ReplyAsync("", embed: emb.Build());
-
+            emb.WithDescription(message);
+            await ReplyAsync(embed: emb.Build());
         }
 
         public async Task RepRole(SocketGuildUser UserDiscord, ulong Reputation)
@@ -681,7 +674,7 @@ namespace XBOT.Modules.Command
                     emb.WithDescription($"Дождитесь {(TimeToDaily.TotalSeconds > 60 ? $"{TimeToDaily.Minutes} минут и " : "")} {TimeToDaily.Seconds} секунд чтобы получить coins!");
             }
 
-            await Context.Channel.SendMessageAsync("", embed: emb.Build());
+            await ReplyAsync(embed: emb.Build());
 
         }
 
@@ -732,7 +725,7 @@ namespace XBOT.Modules.Command
 
             if (emb.Description != null)
             {
-                await Context.Channel.SendMessageAsync("", false, emb.Build());
+                await ReplyAsync(embed: emb.Build());
                 return;
             }
 
@@ -844,8 +837,7 @@ namespace XBOT.Modules.Command
             _db.User.UpdateRange(new[] { ContextUser, MarryedUser });
             await _db.SaveChangesAsync();
 
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
-
+            await ReplyAsync(embed: emb.Build());
         }
 
 
@@ -887,14 +879,14 @@ namespace XBOT.Modules.Command
             }
             else
             {
-                var embed = new EmbedBuilder()
+                var emb = new EmbedBuilder()
                         .WithAuthor($"🔨 Репутационные роли")
                         .WithColor(BotSettings.DiscordColor);
-                embed.Author.Name += "отсутствуют ⚠️";
+                emb.Author.Name += "отсутствуют ⚠️";
                 var prefix = _db.Settings.FirstOrDefault().Prefix;
-                RoleForOwnerMessage(RoleType.Reputation, prefix, ref embed);
+                RoleForOwnerMessage(RoleType.Reputation, prefix, ref emb);
 
-                await Context.Channel.SendMessageAsync("", false, embed.Build());
+                await ReplyAsync(embed: emb.Build());
             }
         }
 
@@ -958,14 +950,14 @@ namespace XBOT.Modules.Command
             }
             else
             {
-                var embed = new EmbedBuilder()
+                var emb = new EmbedBuilder()
                         .WithAuthor($"🔨 Уровневые роли")
                         .WithColor(BotSettings.DiscordColor);
-                embed.Author.Name += "отсутствуют ⚠️";
+                emb.Author.Name += "отсутствуют ⚠️";
                 var prefix = _db.Settings.FirstOrDefault().Prefix;
-                RoleForOwnerMessage(RoleType.Level, prefix, ref embed);
+                RoleForOwnerMessage(RoleType.Level, prefix, ref emb);
 
-                await Context.Channel.SendMessageAsync("", false, embed.Build());
+                await ReplyAsync(embed: emb.Build());
             }
         }
 
@@ -1008,14 +1000,14 @@ namespace XBOT.Modules.Command
             }
             else
             {
-                var embed = new EmbedBuilder()
+                var emb = new EmbedBuilder()
                         .WithAuthor($"🔨 Рефферальные роли")
                         .WithColor(BotSettings.DiscordColor);
-                embed.Author.Name += "отсутствуют ⚠️";
+                emb.Author.Name += "отсутствуют ⚠️";
                 var prefix = _db.Settings.FirstOrDefault().Prefix;
-                RoleForOwnerMessage(RoleType.Refferal, prefix, ref embed);
+                RoleForOwnerMessage(RoleType.Refferal, prefix, ref emb);
 
-                await Context.Channel.SendMessageAsync("", false, embed.Build());
+                await ReplyAsync(embed: emb.Build());
             }
 
 
@@ -1041,16 +1033,16 @@ namespace XBOT.Modules.Command
         {
             //using var _db = new Db();
             var User = Context.User as SocketGuildUser;
-            var embed = new EmbedBuilder().WithColor(BotSettings.DiscordColor);
+            var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor);
 
             var DBroles = _db.Roles_Buy;
 
             if (!DBroles.Any())
             {
                 var prefix = _db.Settings.FirstOrDefault().Prefix;
-                RoleForOwnerMessage(RoleType.Buy, prefix, ref embed);
-                embed.WithAuthor($"🔨BuyRole - Роли не выставлены на продажу ⚠️");
-                await Context.Channel.SendMessageAsync("", false, embed.Build());
+                RoleForOwnerMessage(RoleType.Buy, prefix, ref emb);
+                emb.WithAuthor($"🔨BuyRole - Роли не выставлены на продажу ⚠️");
+                await ReplyAsync(embed: emb.Build());
             }
             else
             {
@@ -1100,21 +1092,21 @@ namespace XBOT.Modules.Command
                             userDb.money -= ThisRole.Price;
                             _db.User.Update(userDb);
                             await _db.SaveChangesAsync();
-                            embed.WithDescription($"Вы успешно купили {ThisRoleDs.Mention} за {ThisRole.Price} coins");
+                            emb.WithDescription($"Вы успешно купили {ThisRoleDs.Mention} за {ThisRole.Price} coins");
                         }
                         else
-                            embed.WithDescription($"Вы уже купили роль {ThisRoleDs.Mention}");
+                            emb.WithDescription($"Вы уже купили роль {ThisRoleDs.Mention}");
 
                         if (!User.Roles.Contains(ThisRoleDs))
                             await User.AddRoleAsync(ThisRoleDs.Id);
                     }
                     else
-                        embed.WithDescription($"У вас недостаточно средств на счете!\nВаш баланс: {userDb.money} coins");
+                        emb.WithDescription($"У вас недостаточно средств на счете!\nВаш баланс: {userDb.money} coins");
 
 
                     await result.Message.ModifyAsync(x =>
                     {
-                        x.Embed = embed.Build();
+                        x.Embed = emb.Build();
                         x.Components = new ComponentBuilder().Build();
                     });
                 }
@@ -1203,7 +1195,7 @@ namespace XBOT.Modules.Command
 
             if (returnmessage)
             {
-                await Context.Channel.SendMessageAsync("", embed: emb.Build());
+                await ReplyAsync(embed: emb.Build());
                 return;
             }
 
@@ -1227,7 +1219,7 @@ namespace XBOT.Modules.Command
             _db.User.Update(account);
             await _db.SaveChangesAsync();
 
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
+            await ReplyAsync(embed: emb.Build());
         }
 
 

@@ -21,6 +21,7 @@ namespace XBOT.Modules.Command
         public async Task IventMessage(string JsonText)
         {
             var mes = JsonToEmbed.JsonCheck(JsonText);
+            string message = "";
             if (mes.Item1 == null)
             {
                 mes.Item2 = null;
@@ -28,7 +29,12 @@ namespace XBOT.Modules.Command
                 mes.Item1.WithAuthor("Ошибка!");
                 mes.Item1.Description = "Неправильная конвертация в Json.\nИспользуйте [сайт](https://embed.discord-bot.net/), после скопируйте текст справа и вставьте вместо сообщения.";
             }
-            await Context.Channel.SendMessageAsync($"{mes.Item2}\n<@{BotSettings.IventerLoverId}>", false, mes.Item1.Build());
+            else
+            {
+                message = $"{mes.Item2}\n<@{BotSettings.IventerLoverId}>";
+            }
+             
+            await ReplyAsync(message, false, mes.Item1.Build());
         }
 
         [Aliases, Commands, Usage, Descriptions]
@@ -74,7 +80,7 @@ namespace XBOT.Modules.Command
             }
 
             if (Error)
-                await Context.Channel.SendMessageAsync("", false, emb.Build());
+                await ReplyAsync(embed: emb.Build());
         }
 
         [Aliases, Commands, Usage, Descriptions]
@@ -96,7 +102,7 @@ namespace XBOT.Modules.Command
             else
                 emb.WithDescription("Розыгрыша с таким сообщением не существует!");
 
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
+            await ReplyAsync(embed: emb.Build());
         }
     }
 }

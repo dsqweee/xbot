@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Castle.Core.Configuration;
 
 
 //var builder = Host.CreateApplicationBuilder(args);
@@ -68,7 +69,8 @@ using IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
         services.AddSingleton<Culture>(); // Поддержка русской культуры
-        services.AddSingleton(new DiscordSocketClient(XBOT.Services.Configuration.DiscordConfig.discordSocketConfig));
+        var client = new DiscordSocketClient(XBOT.Services.Configuration.DiscordConfig.discordSocketConfig);
+        services.AddSingleton(client);
         services.AddSingleton(new CommandService(XBOT.Services.Configuration.DiscordConfig.configService));
 
         //services.AddSingleton<InteractionService>();
@@ -78,7 +80,11 @@ using IHost host = Host.CreateDefaultBuilder(args)
         {
             x.UseSqlite(BotSettings.connectionStringDbPath);
             x.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddFilter((category, level) => false)));
-        });
+            //x.UseLazyLoadingProxies(); // Загрузка Includes
+        }, ServiceLifetime.Transient); // 
+
+        
+
         services.AddSingleton<TaskTimer>();
         services.AddSingleton<Refferal_Service>();
         services.AddSingleton<GiveAway_Service>();

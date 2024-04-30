@@ -12,7 +12,7 @@ namespace XBOT.DataBase.Models
         public DiscordInvite_ReferralLink RefferalInvite { get; set; }
 
         public ulong? User_Permission_Id { get; set; }
-        public User_Permission User_Permission { get; set; }
+        public virtual User_Permission User_Permission { get; set; }
 
         //public ulong? User_MinecraftId { get; set; }
         //public User_Minecraft User_Minecraft { get; set; }

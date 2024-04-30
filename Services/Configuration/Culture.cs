@@ -8,6 +8,7 @@ public class Culture
     {
         var CurrentCulture = new CultureInfo(Culture);
         Thread.CurrentThread.CurrentCulture = CurrentCulture;
+        Thread.CurrentThread.CurrentUICulture = CurrentCulture;
         CultureInfo.DefaultThreadCurrentCulture = CurrentCulture;
         CultureInfo.DefaultThreadCurrentUICulture = CurrentCulture;
     }

@@ -30,7 +30,7 @@ namespace XBOT.Modules.Command
                 var Prefix = _db.Settings.FirstOrDefault().Prefix;
                 emb.WithDescription("У вас еще нет нарушений для варнов!")
                    .WithFooter($"Подробнее `{Prefix}i addwarn`");
-                await Context.Channel.SendMessageAsync("", false, emb.Build());
+                await ReplyAsync(embed: emb.Build());
                 return;
             }
 
@@ -40,7 +40,7 @@ namespace XBOT.Modules.Command
             if (warn == null)
             {
                 emb.WithDescription("У пользователя максимальное кол-во нарушений.");
-                await Context.Channel.SendMessageAsync("", false, emb.Build());
+                await ReplyAsync(embed: emb.Build());
                 return;
             }
 
@@ -48,7 +48,7 @@ namespace XBOT.Modules.Command
             if (ActiveWarn)
             {
                 emb.WithDescription("У пользователя уже есть активное нарушение!");
-                await Context.Channel.SendMessageAsync("", false, emb.Build());
+                await ReplyAsync(embed: emb.Build());
                 return;
             }
 
@@ -70,6 +70,7 @@ namespace XBOT.Modules.Command
             }
 
             var Permission = _db.User_Permission.FirstOrDefault(x=>x.User_Id == Context.User.Id);
+
             var ThisWarn = new User_Warn { AdminId = Permission.Id, UserId = User.Id, Guild_WarnsId = warn.Id, Reason = Reason, TimeSetWarn = DateTime.Now };
             switch (warn.ReportTypes)
             {
@@ -99,7 +100,7 @@ namespace XBOT.Modules.Command
             _db.User_Warn.Add(ThisWarn);
             await _db.SaveChangesAsync();
 
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
+            await ReplyAsync(embed: emb.Build());
 
         }
 
@@ -135,8 +136,7 @@ namespace XBOT.Modules.Command
                 emb.WithDescription(text);
                 await user.SetTimeOutAsync(result);
             }
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
-
+            await ReplyAsync(embed: emb.Build());
         }
 
         [Aliases, Commands, Usage, Descriptions]
@@ -153,8 +153,7 @@ namespace XBOT.Modules.Command
                 emb.WithDescription("Вы успешно сняли мут с пользователя.");
                 await user.RemoveTimeOutAsync();
             }
-
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
+            await ReplyAsync(embed: emb.Build());
         }
 
         [Aliases, Commands, Usage, Descriptions]
@@ -169,7 +168,7 @@ namespace XBOT.Modules.Command
             var messages = await Context.Message.Channel.GetMessagesAsync((int)CountMessage + 1).FlattenAsync();
             await ((SocketTextChannel)Context.Channel).DeleteMessagesAsync(messages);
             emb.WithDescription($"Удалено {messages.Count()} сообщений");
-            var x = await Context.Channel.SendMessageAsync("", false, emb.Build());
+            var x = await ReplyAsync(embed: emb.Build());
             await Task.Delay(5000);
             await x.DeleteAsync();
         }
@@ -193,7 +192,7 @@ namespace XBOT.Modules.Command
                 await Context.Message.DeleteAsync();
 
             await ((SocketTextChannel)Context.Message.Channel).DeleteMessagesAsync(result);
-            var x = await Context.Channel.SendMessageAsync("", false, emb.Build());
+            var x = await ReplyAsync(embed: emb.Build());
             await Task.Delay(5000);
             await x.DeleteAsync();
         }

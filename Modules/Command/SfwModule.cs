@@ -14,7 +14,7 @@ namespace DarlingNet.Modules
     {
         private async Task GenerateGif(SfwEndpoint Type, SocketUser user = null, string text = "")
         {
-            var embed = new EmbedBuilder()
+            var emb = new EmbedBuilder()
                 .WithColor(BotSettings.DiscordColor)
                 .WithAuthor($"{Type} GIF");
             NekosV2Client NekoClient = new();
@@ -38,12 +38,12 @@ namespace DarlingNet.Modules
 
             if (Request != null)
             {
-                embed.WithImageUrl(Request.First().Url)
+                emb.WithImageUrl(Request.First().Url)
                      .WithDescription(Description);
             }
             else
-                embed.WithDescription("Повторите попытку.");
-            await Context.Channel.SendMessageAsync("", false, embed.Build());
+                emb.WithDescription("Повторите попытку.");
+            await ReplyAsync(embed: emb.Build());
         }
 
 

@@ -61,7 +61,7 @@ namespace XBOT.Modules.Command
             if (emb.Fields.Count == 0)
                 emb.WithDescription("Модули бота отсутствуют!");
 
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
+            await ReplyAsync(embed: emb.Build());
 
         }
 
@@ -143,7 +143,7 @@ namespace XBOT.Modules.Command
                    .WithAuthor($"📜{modules} - ошибка");
 
 
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
+            await ReplyAsync(embed: emb.Build());
 
         }
 
@@ -172,7 +172,7 @@ namespace XBOT.Modules.Command
             else
                 emb.WithDescription($"Команда `{command}` не найдена!");
 
-            await Context.Channel.SendMessageAsync("", false, emb.Build());
+            await ReplyAsync(embed: emb.Build());
 
         }
     }

@@ -203,10 +203,10 @@ C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\runtimes\win-x86\native\e_sqlite
 C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\runtimes\win\lib\net7.0\System.Diagnostics.EventLog.Messages.dll
 C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\runtimes\win\lib\net7.0\System.Diagnostics.EventLog.dll
 C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\runtimes\browser\lib\net7.0\System.Text.Encodings.Web.dll
-C:\Users\xXx\source\repos\xbot\obj\Debug\net7.0\XBOT.csproj.CopyComplete
 C:\Users\xXx\source\repos\xbot\obj\Debug\net7.0\XBOT.genruntimeconfig.cache
 C:\Users\xXx\source\repos\xbot\obj\Debug\net7.0\ref\XBOT.dll
 C:\Users\xXx\source\repos\xbot\obj\Debug\net7.0\XBOT.sourcelink.json
 C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\Microsoft.Extensions.Diagnostics.dll
 C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\Microsoft.Extensions.Diagnostics.Abstractions.dll
 C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\System.Diagnostics.DiagnosticSource.dll
+C:\Users\xxx\source\repos\xbot\obj\Debug\net7.0\XBOT.csproj.Up2Date

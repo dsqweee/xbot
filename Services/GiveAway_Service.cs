@@ -117,8 +117,8 @@ public class GiveAway_Service
 
     public async Task GiveAwayScan()
     {
+        Console.WriteLine("--- GiveawayScan START ---");
         var Guild = _client.Guilds.First();
-        Console.WriteLine(Guild.Id + " - guild");
         foreach (var Give in _db.GiveAways)
         {
             var textChannel = Guild.GetTextChannel(Give.TextChannelId);
@@ -135,7 +135,7 @@ public class GiveAway_Service
             else
                 _db.GiveAways.Remove(Give);
         }
-        Console.WriteLine(_db.GiveAways.Count());
         await _db.SaveChangesAsync();
+        Console.WriteLine("--- GiveawayScan STOP ---");
     }
 }

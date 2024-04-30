@@ -17,15 +17,20 @@ public class Refferal_Service
 
     internal Task StartRefferalScan()
     {
-        RefferalScan();
+        Console.WriteLine("--- StartRefferalScan START ---");
 
-        System.Timers.Timer TaskTime = new(new TimeSpan(0, 60, 0));
-        TaskTime.Elapsed += (s, e) => RefferalScan();
+        System.Timers.Timer TaskTime = new(new TimeSpan(0, 0, 1));
+        TaskTime.Elapsed += (s, e) => RefferalScan(TaskTime);
         TaskTime.Start();
+        Console.WriteLine("--- StartRefferalScan STOP ---");
         return Task.CompletedTask;
     }
-    private async void RefferalScan()
+    private async void RefferalScan(System.Timers.Timer TaskTime)
     {
+        if (TaskTime.Interval == 1000)
+            TaskTime.Interval = new TimeSpan(0, 60, 0).TotalMilliseconds;
+        Console.WriteLine("RefferalScan START ---");
+
         var Users = _client.Guilds.First().Users;
         await ReferalRoleScaningUser(Users);
     }

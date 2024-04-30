@@ -160,7 +160,7 @@ public class Guild_Logs_Service
             //using var _db = new Db();
             var LogChannel = _db.Guild_Logs.FirstOrDefault(x => x.Type == (left ? ChannelsTypeEnum.Left : ChannelsTypeEnum.Kick));
 
-            var LogDiscord = Guild.GetTextChannel(Convert.ToUInt64(LogChannel?.TextChannelId));
+            var LogDiscord = Guild.GetTextChannel(LogChannel.TextChannelId);
             return LogDiscord;
         }
 
@@ -172,8 +172,6 @@ public class Guild_Logs_Service
             await LeftChannel.SendMessageAsync("", false, builder.Build());
         }
             
-
-
 
 
         var KickChannel = GetLogChannel(false);
@@ -197,13 +195,13 @@ public class Guild_Logs_Service
     }
 
     public async Task InUserUnBanned(SocketUser user, SocketGuild guild)
-        => await BanOrUnBan(user, guild, false);
+        => await BanOrUnBan(user, guild, ChannelsTypeEnum.UnBan);
     public async Task InUserBanned(SocketUser user, SocketGuild guild)
-        => await BanOrUnBan(user, guild, true);
-    private async Task BanOrUnBan(SocketUser user, SocketGuild Guild, bool Ban)
+        => await BanOrUnBan(user, guild, ChannelsTypeEnum.Ban);
+    private async Task BanOrUnBan(SocketUser user, SocketGuild Guild, ChannelsTypeEnum ChannelType)
     {
         //using var _db = new Db();
-        var Guild_Log = _db.Guild_Logs.FirstOrDefault(x => x.Type == (Ban ? ChannelsTypeEnum.Ban : ChannelsTypeEnum.UnBan));
+        var Guild_Log = _db.Guild_Logs.FirstOrDefault(x => x.Type == ChannelType);
         if (Guild_Log == null)
             return;
 
@@ -213,7 +211,7 @@ public class Guild_Logs_Service
 
 
         List<Audits> Bans;
-        if (Ban)
+        if (ChannelType == ChannelsTypeEnum.Ban)
             Bans = await Guild.BanAudit(user.Id, 1);
         else
             Bans = await Guild.UnBanAudit(user.Id, 1);
@@ -221,9 +219,9 @@ public class Guild_Logs_Service
         Audits Banned = Bans.FirstOrDefault();
         var builder = new EmbedBuilder().WithColor(BotSettings.DiscordColor)
                                         .WithTimestamp(DateTimeOffset.Now.ToUniversalTime())
-                                        .WithAuthor($"{user} - Пользователь {(Ban ? "Забанен" : "Разбанен")}")
+                                        .WithAuthor($"{user} - Пользователь {(ChannelType == ChannelsTypeEnum.Ban ? "Забанен" : "Разбанен")}")
                                         .AddField($"Пользователь", user.Mention, true)
-                                        .AddField($"{(Ban ? "Забанил" : "Разбанил")}", Banned.User.Mention, true)
+                                        .AddField($"{(ChannelType == ChannelsTypeEnum.Ban ? "Забанил" : "Разбанил")}", Banned.User.Mention, true)
                                         .AddField($"Причина бана", $"{(string.IsNullOrWhiteSpace(Banned.Reason) ? "-" : Banned.Reason)}");
         await ChannelForMessage.SendMessageAsync("", false, builder.Build());
 
@@ -239,13 +237,13 @@ public class Guild_Logs_Service
     {
         //using var _db = new Db();
         var Message = await CachedMessage.GetOrDownloadAsync();
-        if (Message == null || Message.Author.IsBot || Message.Content.Length > 1023 || MessageNow?.Content.Length > 1023)
+        if (Message == null || Message.Author == null || Message.Author.IsBot || Message?.Content.Length > 1023 || MessageNow?.Content.Length > 1023)
             return;
 
         if (Message.Author is not SocketGuildUser User)
             return;
 
-        var GuildLog_Type = (MessageNow == null ? ChannelsTypeEnum.MessageDelete : ChannelsTypeEnum.MessageEdit);
+        var GuildLog_Type = MessageNow == null ? ChannelsTypeEnum.MessageDelete : ChannelsTypeEnum.MessageEdit;
         var Guild_Log = _db.Guild_Logs.FirstOrDefault(x => x.Type == GuildLog_Type);
         if (Guild_Log == null)
             return;
@@ -275,11 +273,7 @@ public class Guild_Logs_Service
            .AddField("Отправитель", Message.Author.Mention, true)
            .WithTimestamp(DateTime.Now.ToUniversalTime());
 
-
-        
-
         await MessageChannel.SendMessageAsync("", false, emb.Build());
-
     }
 
     public async Task Birthday(SocketGuildUser user)
@@ -297,7 +291,7 @@ public class Guild_Logs_Service
         if (Channel == null)
             return;
 
-        var Prefix = _db.Settings.FirstOrDefault().Prefix;
+        var prefix = _db.Settings.FirstOrDefault().Prefix;
 
         var userDb = _db.User.FirstOrDefault(x => x.Id == user.Id);
         bool daynow = false;
@@ -305,7 +299,7 @@ public class Guild_Logs_Service
             daynow = true;
 
         emb.WithDescription($"У пользователя 🎊{user.Mention}🎊 {(daynow ? "сегодня" : "недавно")} день рождения\nдавайте вместе поздравим его🎊")
-           .WithFooter($"Укажи день рождения чтобы получать уведомления - {Prefix}birthdayset");
+           .WithFooter($"Укажи день рождения чтобы получать уведомления - {prefix}birthdayset");
         await Channel.SendMessageAsync(user.Mention, false, emb.Build());
     }
 }

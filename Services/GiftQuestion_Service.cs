@@ -21,10 +21,12 @@ public class GiftQuestion_Service
 
     internal Task StartGiftQuestion()
     {
+        Console.WriteLine("--- StartGiftQuestion START ---");
         TimeSpan time = new TimeSpan(0, 60, 0);
         System.Timers.Timer TaskTime = new(time);
         TaskTime.Elapsed += GiftQuestionActivate;
         TaskTime.Start();
+        Console.WriteLine("--- StartGiftQuestion STOP ---");
         return Task.CompletedTask;
     }
 
@@ -43,41 +45,15 @@ public class GiftQuestion_Service
             .WithColor(BotSettings.DiscordColor)
             .WithAuthor("Викторина призов!");
 
-        var Random = new Random();
-
-        string operations = "+-*/";
-
-        long result = 0;
-        long RandomNumber1 = Random.Next(-100000, 100000);
-        long RandomNumber2 = Random.Next(-100000, 100000);
-
-        char symbol = operations[Random.Next(operations.Length)];
-        switch (symbol)
-        {
-            case '+':
-                result = RandomNumber1 + RandomNumber2;
-                break;
-            case '-':
-                result = RandomNumber1 - RandomNumber2;
-                break;
-            case '*':
-                result = RandomNumber1 * RandomNumber2;
-                break;
-            case '/':
-                result = RandomNumber1 / RandomNumber2;
-                break;
-        }
-        QuestionResult = result;
+        CalculateMath();
 
         var TimeActive = TimeSpan.FromSeconds(60);
-
-        Question = $"{RandomNumber1} {symbol} {RandomNumber2}";
         emb.WithDescription($"Вопрос: сколько будет {Question}?")
            .WithFooter($"На ответ дается {TimeActive.TotalSeconds} секунд.");
 
         var message = await channel.SendMessageAsync("",false, emb.Build());
 
-        var MessageResult = await _interactive.NextMessageAsync((message) =>
+        var messageResult = await _interactive.NextMessageAsync((message) =>
         {
             string sanitizedInput = Regex.Replace(message.Content, @"\s+", "");
             if (!Regex.IsMatch(sanitizedInput, @"^-?\d+$"))
@@ -94,7 +70,7 @@ public class GiftQuestion_Service
 
         //var MessageResult = await _interactive.NextMessageAsync(x => long.TryParse(x.Content, out long result) == QuestionResult, timeout: TimeActive); // не активировались условия
 
-        if (MessageResult.IsTimeout)
+        if (messageResult.IsTimeout)
         {
             emb.WithDescription($"Вопрос: сколько будет {Question}?\nОтвет: {QuestionResult}")
                 .WithFooter("Ни кто не успел ответить правильно.");
@@ -102,15 +78,16 @@ public class GiftQuestion_Service
             await Task.Delay(5000);
             await message.DeleteAsync();
         }
-        else if (MessageResult.IsSuccess)
+        else if (messageResult.IsSuccess)
         {
+            var userId = messageResult.Value.Author.Id;
             emb.WithAuthor("Победитель викторины!");
-            var userDb = await _db.GetUser(MessageResult.Value.Author.Id);
+            var userDb = await _db.GetUser(userId);
             var randomMoney = (uint)new Random().Next(0, 500);
             userDb.money += randomMoney;
             _db.Update(userDb);
             await _db.SaveChangesAsync();
-            emb.WithDescription($"Победитель: {MessageResult.Value.Author.Mention}\n" +
+            emb.WithDescription($"Победитель: <@{userId}>\n" +
                                 $"{QuestionResult} = {Question}\n" +
                                 $"Приз: {randomMoney} coins")
                .WithFooter("Не пропусти следующую викторину, и забери приз!");
@@ -118,5 +95,36 @@ public class GiftQuestion_Service
             await message.DeleteAsync();
             await channel.SendMessageAsync("", false, emb.Build());
         }
+    }
+
+    private void CalculateMath()
+    {
+        var random = new Random();
+
+        string operations = "+-*/";
+
+        long result = 0;
+        long randomNumber1 = random.Next(-100000, 100000);
+        long randomNumber2 = random.Next(-100000, 100000);
+
+        char symbol = operations[random.Next(operations.Length)];
+        switch (symbol)
+        {
+            case '+':
+                result = randomNumber1 + randomNumber2;
+                break;
+            case '-':
+                result = randomNumber1 - randomNumber2;
+                break;
+            case '*':
+                result = randomNumber1 * randomNumber2;
+                break;
+            case '/':
+                result = randomNumber1 / randomNumber2;
+                break;
+        }
+
+        QuestionResult = result;
+        Question = $"{randomNumber1} {symbol} {randomNumber2}";
     }
 }

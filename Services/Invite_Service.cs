@@ -17,6 +17,7 @@ public class Invite_Service
 
     public async Task InviteScanning()
     {
+        Console.WriteLine("--- InviteScanning START ---");
         //using var _db = new Db();
         var Invites = await _client.Guilds.First().GetInvitesAsync();
         foreach (var Invite in Invites)
@@ -37,6 +38,7 @@ public class Invite_Service
             }
         }
         await _db.SaveChangesAsync();
+        Console.WriteLine("--- InviteScanning STOP ---");
     }
     //public static async Task InviteDelete(SocketGuildChannel Guild, string InviteId)
     //{

@@ -38,6 +38,7 @@ public class TaskTimer
 
     internal async Task StartVoiceAllActivity() /*СДелать проверку если перезапустится, чтобы включался механизм*/
     {
+        Console.WriteLine("--- StartVoiceAllActivity START ---");
         var Guild = _client.Guilds.First();
         foreach (var VoiceChannel in Guild.VoiceChannels)
         {
@@ -46,14 +47,15 @@ public class TaskTimer
                 await StartVoiceActivity(User);
             }
         }
+        Console.WriteLine("--- StartVoiceAllActivity STOP ---");
     }
 
-    private async void VoiceActivity(System.Timers.Timer TaskTime, SocketGuildUser User)
+    private async Task VoiceActivity(System.Timers.Timer TaskTime, SocketGuildUser User)
     {
         //using var _db = new Db();
         //using (var db = new Db(new DbContextOptionsBuilder<Db>().UseSqlite(BotSettings.connectionStringDbPath).Options))
-
-        if (User.VoiceChannel != null && User.VoiceChannel.Id != User.Guild.AFKChannel?.Id)
+        
+        if (User.VoiceChannel?.Id != User.Guild.AFKChannel?.Id)
         {
             if (User.VoiceChannel.ConnectedUsers.Count > 1)
             {
@@ -81,7 +83,7 @@ public class TaskTimer
                         user.voiceActive_private += TimeAddExp;
                     else
                         user.voiceActive_public += TimeAddExp;
-                    //Console.WriteLine(User.Mention + " - " + $" 30 сек 10 опыта {DateTime.Now}");
+
                     //user.XP += 5;
                     await _db.SaveChangesAsync();
                 }
@@ -135,15 +137,13 @@ public class TaskTimer
 
     }
 
-
-
-
     internal Task StartBirthdates()
     {
+        Console.WriteLine("--- StartBirthdates START ---");
         //using var _db = new Db();
         var TimeNow = DateTime.Now;
 
-        var UsersBirthdayInThisYear = _db.User.Where(x => x.BirthDateComplete == TimeNow.Year);
+        var UsersBirthdayInThisYear = _db.User.Where(x => x.BirthDateComplete == TimeNow.Year).AsEnumerable();
         foreach (var User in UsersBirthdayInThisYear)
         {
             DateTime UserDateTime = User.BirthDate.ToDateTime(new TimeOnly(10, 0, 0));
@@ -153,10 +153,9 @@ public class TaskTimer
             TaskTime.AutoReset = false;
             TaskTime.Elapsed += (s, e) => Birthdates(User);
             TaskTime.Start();
-
         }
+        Console.WriteLine("--- StartBirthdates STOP ---");
         return Task.CompletedTask;
-
     }
 
     private async void Birthdates(User User)
@@ -189,6 +188,5 @@ public class TaskTimer
             await UserDiscord.SendMessageAsync("", false, emb.Build());
         }
         catch { }
-
     }
 }

@@ -16,6 +16,7 @@ public class PrivateSystem
 
     public async Task PrivateChecking()
     {
+        Console.WriteLine("--- PrivateChecking START ---");
         //using var _db = new Db();
         var guild = _client.Guilds.First();
         foreach (var PC in _db.PrivateChannel)
@@ -27,6 +28,7 @@ public class PrivateSystem
                 _db.PrivateChannel.Remove(PC);
         }
         await _db.SaveChangesAsync();
+        Console.WriteLine("--- PrivateChecking STOP ---");
     }
 
     public async Task PrivateScanUsers(SocketVoiceChannel VoiceChannel, PrivateChannel ThisPrivateChannel)
@@ -51,7 +53,7 @@ public class PrivateSystem
         }
     }
 
-    private readonly OverwritePermissions PermissionCreatorChannel = new(connect: PermValue.Allow, muteMembers: PermValue.Allow, deafenMembers: PermValue.Allow, moveMembers: PermValue.Allow, manageChannel: PermValue.Allow);
+    private readonly OverwritePermissions PermissionCreatorChannel = new(connect: PermValue.Allow, muteMembers: PermValue.Allow, deafenMembers: PermValue.Allow, moveMembers: PermValue.Allow, manageChannel: PermValue.Allow, manageRoles: PermValue.Allow);
 
     public async Task PrivateCreate(SocketGuildUser user, SocketVoiceChannel PrivateChannel)
     {
