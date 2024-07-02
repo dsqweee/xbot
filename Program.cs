@@ -8,7 +8,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Castle.Core.Configuration;
 
 
 //var builder = Host.CreateApplicationBuilder(args);
@@ -66,8 +65,9 @@ using IHost host = Host.CreateDefaultBuilder(args)
     {
         config.AddYamlFile(BotSettings.tokenPath, false);
     })
-    .ConfigureServices(services =>
+    .ConfigureServices(async services =>
     {
+
         services.AddSingleton<Culture>(); // Поддержка русской культуры
         var client = new DiscordSocketClient(XBOT.Services.Configuration.DiscordConfig.discordSocketConfig);
         services.AddSingleton(client);
@@ -81,10 +81,9 @@ using IHost host = Host.CreateDefaultBuilder(args)
             x.UseSqlite(BotSettings.connectionStringDbPath);
             x.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddFilter((category, level) => false)));
             //x.UseLazyLoadingProxies(); // Загрузка Includes
-        }, ServiceLifetime.Transient); // 
+        }, ServiceLifetime.Scoped); // 
 
         
-
         services.AddSingleton<TaskTimer>();
         services.AddSingleton<Refferal_Service>();
         services.AddSingleton<GiveAway_Service>();
@@ -102,7 +101,9 @@ using IHost host = Host.CreateDefaultBuilder(args)
 
         services.AddHostedService<CommandHandlingService>();
         services.AddHostedService<DiscordStartupService>();
+        
     })
     .Build();
+
 
 await host.RunAsync();

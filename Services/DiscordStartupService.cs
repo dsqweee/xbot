@@ -18,7 +18,7 @@ public class DiscordStartupService : IHostedService
         _config = config;
         _discordlogger = discordlogger;
 
-        _discord.Log += msg => LoggingService.OnLogAsync(_discordlogger, msg);
+        _discord.Log += msg => LoggingService.OnLogAsync(/*_discordlogger,*/ msg);
         _db = db;
     }
 

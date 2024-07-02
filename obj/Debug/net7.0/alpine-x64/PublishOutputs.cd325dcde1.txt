@@ -189,6 +189,7 @@ c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\publish\Discord.Net.R
 c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\publish\Discord.Net.WebSocket.dll
 c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\publish\Fergun.Interactive.dll
 c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\publish\GEmojiSharp.dll
+c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\publish\Microsoft.Bcl.AsyncInterfaces.dll
 c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\publish\Microsoft.Data.Sqlite.dll
 c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\publish\Microsoft.EntityFrameworkCore.dll
 c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\publish\Microsoft.EntityFrameworkCore.Abstractions.dll
@@ -228,15 +229,14 @@ c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\publish\Microsoft.Ext
 c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\publish\Nekos.Net.dll
 c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\publish\NetEscapades.Configuration.Yaml.dll
 c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\publish\Newtonsoft.Json.dll
-c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\publish\PcgRandom.dll
-c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\publish\RconSharp.dll
+c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\publish\RandN.dll
+c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\publish\RandN.Core.dll
 c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\publish\SQLitePCLRaw.batteries_v2.dll
 c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\publish\SQLitePCLRaw.core.dll
 c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\publish\SQLitePCLRaw.provider.e_sqlite3.dll
 c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\publish\System.Diagnostics.DiagnosticSource.dll
 c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\publish\System.Diagnostics.EventLog.dll
 c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\publish\System.Interactive.Async.dll
-c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\publish\System.IO.Pipelines.dll
 c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\publish\System.Linq.Async.dll
 c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\publish\System.Reactive.dll
 c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\publish\System.Text.Encodings.Web.dll

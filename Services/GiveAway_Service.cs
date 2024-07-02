@@ -90,7 +90,7 @@ public class GiveAway_Service
                     List<IUser> WIN = new();
                     for (int i = 0; i < ThisTask.WinnerCount; i++)
                     {
-                        var User = Allusers.ElementAt(new Random().Next(Allusers.Count + 1));
+                        var User = Allusers.ElementAt(new Random().Next(Allusers.Count - 1));
                         WIN.Add(User);
                         Allusers.Remove(User);
                         Winner += $"<@{User.Id}>,";
@@ -109,7 +109,8 @@ public class GiveAway_Service
             else
                 emb.WithDescription("Недостаточно участников для розыгрыша!");
         }
-        _db.GiveAways.Remove(ThisTask);
+        var taskToDelete = _db.GiveAways.FirstOrDefault(x => x.Id == ThisTask.Id);
+        _db.GiveAways.Remove(taskToDelete);
         await _db.SaveChangesAsync();
 
         await message.ModifyAsync(x => x.Embed = emb.Build());

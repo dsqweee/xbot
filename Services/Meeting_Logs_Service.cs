@@ -17,7 +17,8 @@ public class Meeting_Logs_Service
         var Settings = _db.Settings.FirstOrDefault();
 
         var RoleId = Convert.ToUInt64(Settings.WelcomeRoleId);
-        await User?.AddRoleAsync(RoleId);
+        if(RoleId != 0)
+            await User?.AddRoleAsync(RoleId);
 
         var WelcomeTextChannelId = Convert.ToUInt64(Settings.WelcomeTextChannelId); 
         await MeetingSendMessage(User, User.Guild, Settings.WelcomeMessage, WelcomeTextChannelId);

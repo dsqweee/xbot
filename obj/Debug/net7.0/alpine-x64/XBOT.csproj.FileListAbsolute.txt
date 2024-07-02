@@ -310,15 +310,12 @@ c:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\Mono.TextTemplating.d
 c:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\Nekos.Net.dll
 c:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\NetEscapades.Configuration.Yaml.dll
 c:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\Newtonsoft.Json.dll
-c:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\PcgRandom.dll
-c:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\RconSharp.dll
 c:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\SQLitePCLRaw.batteries_v2.dll
 c:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\SQLitePCLRaw.core.dll
 c:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\SQLitePCLRaw.provider.e_sqlite3.dll
 c:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\System.CodeDom.dll
 c:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\System.Diagnostics.EventLog.dll
 c:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\System.Interactive.Async.dll
-c:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\System.IO.Pipelines.dll
 c:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\System.Linq.Async.dll
 c:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\System.Reactive.dll
 c:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\System.Text.Encodings.Web.dll
@@ -519,3 +516,6 @@ c:\Users\xxx\source\repos\xbot\obj\Debug\net7.0\alpine-x64\XBOT.sourcelink.json
 c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\Microsoft.Extensions.Diagnostics.dll
 c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\Microsoft.Extensions.Diagnostics.Abstractions.dll
 c:\Users\xxx\source\repos\xbot\obj\Debug\net7.0\alpine-x64\XBOT.csproj.Up2Date
+c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\RandN.dll
+c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\RandN.Core.dll
+c:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\alpine-x64\Microsoft.Bcl.AsyncInterfaces.dll

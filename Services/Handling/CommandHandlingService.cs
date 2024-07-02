@@ -47,7 +47,7 @@ public class CommandHandlingService : IHostedService
         _services = services;
         _commandslogger = commandslogger;
 
-        _commands.Log += msg => LoggingService.OnLogAsync(_commandslogger, msg);
+        _commands.Log += msg => LoggingService.OnLogAsync(/*_commandslogger,*/ msg);
         _timer = timer;
         _gift = gift;
         _invite = invite;
@@ -122,7 +122,13 @@ public class CommandHandlingService : IHostedService
         _discord.UserJoined += UserJoined;
         _discord.UserLeft += UserLeft;
 
-        _discord.Ready += Ready;
+        _discord.Ready += () => _giveaway.GiveAwayScan();              // Запуск розыгрышей    
+        _discord.Ready += () => _invite.InviteScanning();              // Проверка инвайтов
+        _discord.Ready += () => _refferal.StartRefferalScan();         // Запуск сканирования рефералок
+        _discord.Ready += () => _gift.StartGiftQuestion();             // Запуск Мат. задач
+        _discord.Ready += () => _privatesystem.PrivateChecking();      // Проверка приваток
+        _discord.Ready += () => _timer.StartBirthdates();              // Запуск дней рождений
+        _discord.Ready += () => _timer.StartVoiceAllActivity();        // Запуск активности в голосовых
 
         _discord.SelectMenuExecuted += SelectMenuExecuted;
         _discord.ButtonExecuted += SelectMenuExecuted;
@@ -254,23 +260,6 @@ public class CommandHandlingService : IHostedService
 
 
 
-    private async Task Ready()
-    {
-        Console.WriteLine($"Connected and Start Scanning!");
-
-        await _giveaway.GiveAwayScan();              // Запуск розыгрышей
-        await _invite.InviteScanning();              // Проверка инвайтов
-        await _refferal.StartRefferalScan();         // Запуск сканирования рефералок
-        await _gift.StartGiftQuestion();             // Запуск Мат. задач
-        await _privatesystem.PrivateChecking();      // Проверка приваток
-        await _timer.StartBirthdates();              // Запуск дней рождений
-        await _timer.StartVoiceAllActivity();        // Запуск активности в голосовых
-
-
-        Console.WriteLine("Ready to work!");
-    }
-
-
     public Task StopAsync(CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
@@ -288,7 +277,7 @@ public class CommandHandlingService : IHostedService
         var Settings = _db.Settings.FirstOrDefault();
         var userDiscord = User as SocketGuildUser;
         await _db.GetUser(userDiscord.Id);
-        await _guildlogs.InVoicelogs(User, Before, After);
+        await _guildlogs.InVoicelogs(userDiscord, Before, After);
 
 
         if (Before.VoiceChannel != null)
@@ -336,8 +325,8 @@ public class CommandHandlingService : IHostedService
         if (deleteMessage)
             return;
 
-        if (TextChannel.giveXp)
-            await _messagesolution.SetPointAsync(userMessage);
+        //if (TextChannel.giveXp)
+        //    await _messagesolution.SetPointAsync(userMessage);
 
 
 
@@ -360,7 +349,6 @@ public class CommandHandlingService : IHostedService
 
         if (!TextChannel.useCommand)
         {
-
             bool CheckCommands(string CommandName)
             {
                 var commands = _commands.Modules.FirstOrDefault(x => x.Name == CommandName)?.Commands;
@@ -379,7 +367,7 @@ public class CommandHandlingService : IHostedService
             bool SuccessCommand = false;
             if (TextChannel.useRPcommand && CheckCommands("SfwGif")) // Проверка на RP команды
                 SuccessCommand = true;
-            else if (TextChannel.useAdminCommand && (CheckCommands("Admin") || CheckCommands("Moderator"))) // Проверка на Админ команды
+            else if (TextChannel.useAdminCommand && (CheckCommands("Admin") || CheckCommands("Moderator") || CheckCommands("Iventer"))) // Проверка на Админ команды
                 SuccessCommand = true;
 
             if (!SuccessCommand)

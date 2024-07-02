@@ -16,6 +16,7 @@ public class DiscordConfig
                 GatewayIntents.GuildVoiceStates | 
                 GatewayIntents.DirectMessages,
                 
+                
         UseInteractionSnowflakeDate = false,
         MessageCacheSize = 128,
         DefaultRetryMode = RetryMode.Retry502,

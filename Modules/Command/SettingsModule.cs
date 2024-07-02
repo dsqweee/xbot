@@ -30,14 +30,14 @@ namespace XBOT.Modules.Command
             var Settings = _db.Settings.FirstOrDefault();
 
             var PrivateVoiceChannel = Context.Guild.GetVoiceChannel(Settings.PrivateVoiceChannelId);
-            List<Overwrite> voicePermissions = new List<Overwrite> { new Overwrite(Context.Guild.EveryoneRole.Id, PermissionTarget.Role, new OverwritePermissions(speak: PermValue.Deny, deafenMembers: PermValue.Deny)) };
+            List<Overwrite> voicePermissions = new List<Overwrite> { new Overwrite(Context.Guild.EveryoneRole.Id, PermissionTarget.Role, new OverwritePermissions(speak: PermValue.Deny)) };
             if (PrivateVoiceChannel == null)
             {
                 var Category = await Context.Guild.CreateCategoryChannelAsync(BotSettings.PrivateCategoryName, X => { X.Position = int.MaxValue; });
                 var PrivateVoice = await Context.Guild.CreateVoiceChannelAsync(BotSettings.PrivateVoiceName, x => { x.CategoryId = Category.Id; x.PermissionOverwrites = voicePermissions; });
                 Settings.PrivateVoiceChannelId = PrivateVoice.Id;
                 await _db.SaveChangesAsync();
-                emb.WithDescription("Приватка успешно создана!");
+                emb.WithDescription("Приватка успешно создана!"); //сделать текстовый канал
             }
             else
                 emb.WithDescription("Приватка уже существует.")
@@ -560,11 +560,11 @@ namespace XBOT.Modules.Command
                 {
                     menu = new SelectMenuBuilder()
                     .WithPlaceholder("Выберите роль")
-                    .WithCustomId($"infinity_{(add ? "add" : "rem")}role_{Guid.NewGuid()}")
+                    .WithCustomId($"infinity_{(add ? "add" : "rem")}role_{Guid.NewGuid()}") //Плашку можно добавить только для добавления роли или удаления. Плашка должна быть универсальной
                     .WithMinValues(1)
                     .WithMaxValues(1);
 
-                    menu.AddOption($"{role.Name}", $"{role.Id}");
+                    menu.AddOption($"{role.Name}", $"{role.Id}"); //А вот тут должно быть действие, к примеру "Забрать ... (название роли)"
                     emb.WithDescription($"Вы успешно выставили роль {role.Mention} в список!");
                 }
                 else
@@ -585,7 +585,7 @@ namespace XBOT.Modules.Command
                 var builder = new ComponentBuilder()
                     .WithSelectMenu(menu);
 
-
+                
                 await channel.ModifyMessageAsync(messageId, x => x.Components = builder.Build());
             }
             else

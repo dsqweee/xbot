@@ -2,6 +2,7 @@
 using XBOT.Services.DiscordAudit.Data;
 using XBOT.Services.DiscordAudit;
 using XBOT.Services.Configuration;
+using System.Threading.Channels;
 
 namespace XBOT.Services;
 
@@ -15,15 +16,14 @@ public class Guild_Logs_Service
         _invite = invite;
         _db = db;
     }
-    public async Task InVoicelogs(SocketUser User, SocketVoiceState ActionBefore, SocketVoiceState ActionAfter)
+    public async Task InVoicelogs(SocketGuildUser User, SocketVoiceState ActionBefore, SocketVoiceState ActionAfter)
     {
         //using var _db = new Db();
         var Guild_Log = _db.Guild_Logs.FirstOrDefault(x => x.Type == ChannelsTypeEnum.VoiceAction);
         if (Guild_Log == null)
             return;
 
-        var UserGuild = User as SocketGuildUser;
-        var chnl = UserGuild.Guild.GetTextChannel(Guild_Log.TextChannelId);
+        var chnl = User.Guild.GetTextChannel(Guild_Log.TextChannelId);
         if (chnl == null)
             return;
 
@@ -39,20 +39,20 @@ public class Guild_Logs_Service
             if (ActionAfter.VoiceChannel == null)
             {
                 emb.WithAuthor(" - Выход из Голосового чата", User.GetAvatarUrl())
-                   .AddField($"Выход из", $"{ActionBefore.VoiceChannel.Name}", true);
+                   .AddField($"Выход из", $"{ActionBefore.VoiceChannel.Mention}", true);
             }
             else if (ActionBefore.VoiceChannel != ActionAfter.VoiceChannel)
             {
-                emb.WithAuthor(" - Переход в другой Голосовой канал", UserGuild.GetAvatarUrl())
-                   .AddField($"Переход из", $"{ActionBefore.VoiceChannel.Name}", true)
-                   .AddField($"Переход в", $"{ActionAfter.VoiceChannel.Name}", true);
+                emb.WithAuthor(" - Переход в другой Голосовой канал", User.GetAvatarUrl())
+                   .AddField($"Переход из", $"{ActionBefore.VoiceChannel.Mention}", true)
+                   .AddField($"Переход в", $"{ActionAfter.VoiceChannel.Mention}", true);
             }
             else
             {
                 var Audit = new AuditsUserAction();
                 string text = string.Empty;
 
-                emb.AddField($"В канале", $"{ActionBefore.VoiceChannel.Name}", true);
+                emb.AddField($"В канале", $"{ActionBefore.VoiceChannel.Mention}", true);
                 var TypeAction = VoiceAuditActionEnum.Defect;
 
                 if (ActionAfter.IsDeafened)
@@ -112,7 +112,7 @@ public class Guild_Logs_Service
         if (ActionAfter.VoiceChannel != null && ActionBefore.VoiceChannel == null)
         {
             emb.WithAuthor(" - Вход в голосовой чат", User.GetAvatarUrl())
-               .AddField($"Вход в ", $"{ActionAfter.VoiceChannel.Name}", true);
+               .AddField($"Вход в ", $"{ActionAfter.VoiceChannel.Mention}", true);
         }
 
         await chnl.SendMessageAsync("", false, emb.Build());
@@ -237,6 +237,10 @@ public class Guild_Logs_Service
     {
         //using var _db = new Db();
         var Message = await CachedMessage.GetOrDownloadAsync();
+        Console.WriteLine($"Message - {Message}");
+        Console.WriteLine($"Message.Author - {Message.Author}");
+        Console.WriteLine($"Message.Content - {Message.Content}");
+        Console.WriteLine($"MessageNow.Content - {MessageNow.Content}");
         if (Message == null || Message.Author == null || Message.Author.IsBot || Message?.Content.Length > 1023 || MessageNow?.Content.Length > 1023)
             return;
 

@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using XBOT.DataBase.Models;
 using XBOT.Services.Configuration;
+using XBOT.Services.Handling;
 
 namespace XBOT.Services;
 
@@ -22,6 +21,7 @@ public class TaskTimer
 
     private readonly List<ulong> userInVoiceActive = new();
 
+
     internal Task StartVoiceActivity(SocketGuildUser User) /*СДелать проверку если перезапустится, чтобы включался механизм*/
     {
         if (!userInVoiceActive.Any(x => x == User.Id))
@@ -36,9 +36,8 @@ public class TaskTimer
         return Task.CompletedTask;
     }
 
-    internal async Task StartVoiceAllActivity() /*СДелать проверку если перезапустится, чтобы включался механизм*/
+    public async Task StartVoiceAllActivity() /*СДелать проверку если перезапустится, чтобы включался механизм*/
     {
-        Console.WriteLine("--- StartVoiceAllActivity START ---");
         var Guild = _client.Guilds.First();
         foreach (var VoiceChannel in Guild.VoiceChannels)
         {
@@ -47,17 +46,16 @@ public class TaskTimer
                 await StartVoiceActivity(User);
             }
         }
-        Console.WriteLine("--- StartVoiceAllActivity STOP ---");
     }
 
     private async Task VoiceActivity(System.Timers.Timer TaskTime, SocketGuildUser User)
     {
         //using var _db = new Db();
         //using (var db = new Db(new DbContextOptionsBuilder<Db>().UseSqlite(BotSettings.connectionStringDbPath).Options))
-        
+
         if (User.VoiceChannel?.Id != User.Guild.AFKChannel?.Id)
         {
-            if (User.VoiceChannel.ConnectedUsers.Count > 1)
+            if (User.VoiceChannel?.ConnectedUsers.Count > 1)
             {
                 uint CountSpeak = 0;
                 bool ThisUserActive = false;

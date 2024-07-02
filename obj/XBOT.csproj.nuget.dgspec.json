@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\xxx\\source\\repos\\xbot\\XBOT.csproj": {}
+    "C:\\Users\\xxx\\source\\repos\\xbot\\XBOT.csproj": {}
   },
   "projects": {
-    "c:\\Users\\xxx\\source\\repos\\xbot\\XBOT.csproj": {
+    "C:\\Users\\xxx\\source\\repos\\xbot\\XBOT.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\xxx\\source\\repos\\xbot\\XBOT.csproj",
+        "projectUniqueName": "C:\\Users\\xxx\\source\\repos\\xbot\\XBOT.csproj",
         "projectName": "XBOT",
-        "projectPath": "c:\\Users\\xxx\\source\\repos\\xbot\\XBOT.csproj",
+        "projectPath": "C:\\Users\\xxx\\source\\repos\\xbot\\XBOT.csproj",
         "packagesPath": "C:\\Users\\xxx\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\xxx\\source\\repos\\xbot\\obj\\",
+        "outputPath": "C:\\Users\\xxx\\source\\repos\\xbot\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\xxx\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -47,19 +47,19 @@
           "dependencies": {
             "Discord.Net.Commands": {
               "target": "Package",
-              "version": "[3.13.1, )"
+              "version": "[3.15.0, )"
             },
             "Discord.Net.Interactions": {
               "target": "Package",
-              "version": "[3.13.1, )"
+              "version": "[3.15.0, )"
             },
             "Discord.Net.WebSocket": {
               "target": "Package",
-              "version": "[3.13.1, )"
+              "version": "[3.15.0, )"
             },
             "Fergun.Interactive": {
               "target": "Package",
-              "version": "[1.7.3, )"
+              "version": "[1.7.6, )"
             },
             "GEmojiSharp": {
               "target": "Package",
@@ -67,21 +67,21 @@
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[8.0.0-preview.2.23128.3, )"
+              "version": "[7.0.19, )"
             },
             "Microsoft.EntityFrameworkCore.Proxies": {
               "target": "Package",
-              "version": "[8.0.0-preview.2.23128.3, )"
+              "version": "[7.0.19, )"
             },
             "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
-              "version": "[8.0.0-preview.2.23128.3, )"
+              "version": "[7.0.19, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.0-preview.2.23128.3, )"
+              "version": "[7.0.19, )"
             },
             "Microsoft.Extensions.Hosting": {
               "target": "Package",
@@ -95,13 +95,9 @@
               "target": "Package",
               "version": "[3.1.0, )"
             },
-            "PcgRandom": {
+            "RandN": {
               "target": "Package",
-              "version": "[1.2.0, )"
-            },
-            "RconSharp": {
-              "target": "Package",
-              "version": "[2.0.1, )"
+              "version": "[0.4.0, )"
             }
           },
           "imports": [
@@ -115,31 +111,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Runtime.linux-musl-x64",
-              "version": "[7.0.18, 7.0.18]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.linux-musl-x64",
-              "version": "[7.0.18, 7.0.18]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Runtime.linux-musl-x64",
-              "version": "[7.0.18, 7.0.18]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204\\RuntimeIdentifierGraph.json"
-        }
-      },
-      "runtimes": {
-        "alpine-x64": {
-          "#import": []
         }
       }
     }

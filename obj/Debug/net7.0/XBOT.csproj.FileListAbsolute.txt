@@ -163,15 +163,12 @@ C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\Mono.TextTemplating.dll
 C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\Nekos.Net.dll
 C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\NetEscapades.Configuration.Yaml.dll
 C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\Newtonsoft.Json.dll
-C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\PcgRandom.dll
-C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\RconSharp.dll
 C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\SQLitePCLRaw.batteries_v2.dll
 C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\SQLitePCLRaw.core.dll
 C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\SQLitePCLRaw.provider.e_sqlite3.dll
 C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\System.CodeDom.dll
 C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\System.Diagnostics.EventLog.dll
 C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\System.Interactive.Async.dll
-C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\System.IO.Pipelines.dll
 C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\System.Linq.Async.dll
 C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\System.Reactive.dll
 C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\System.Text.Encodings.Web.dll
@@ -210,3 +207,6 @@ C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\Microsoft.Extensions.Diagnostics
 C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\Microsoft.Extensions.Diagnostics.Abstractions.dll
 C:\Users\xXx\source\repos\xbot\bin\Debug\net7.0\System.Diagnostics.DiagnosticSource.dll
 C:\Users\xxx\source\repos\xbot\obj\Debug\net7.0\XBOT.csproj.Up2Date
+C:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\RandN.dll
+C:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\RandN.Core.dll
+C:\Users\xxx\source\repos\xbot\bin\Debug\net7.0\Microsoft.Bcl.AsyncInterfaces.dll

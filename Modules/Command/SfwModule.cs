@@ -18,17 +18,17 @@ namespace DarlingNet.Modules
                 .WithColor(BotSettings.DiscordColor)
                 .WithAuthor($"{Type} GIF");
             NekosV2Client NekoClient = new();
-            IEnumerable<NekosImage> Request;
+            IEnumerable<NekosImage> Request = null;
 
             try
             {
-                Request = await NekoClient.RequestSfwResultsAsync(Type);
+                Request = await NekoClient.RequestSfwResultsAsync(Type, 50); //выходит Null
             }
-            catch 
+            catch
             {
-                Request = null;
             }
-            string Description = $"{Context.User.Mention} " + text;
+            
+            string Description = $"{Context.User.Mention} " + text; 
 
             if (user != null && user != Context.User)
                 Description += $" {user.Mention}";
@@ -38,7 +38,7 @@ namespace DarlingNet.Modules
 
             if (Request != null)
             {
-                emb.WithImageUrl(Request.First().Url)
+                emb.WithImageUrl(Request.Where(x=> !string.IsNullOrWhiteSpace(x.Url)).First().Url)
                      .WithDescription(Description);
             }
             else

@@ -8,8 +8,8 @@ sealed class ActivityPermission : PreconditionAttribute
     public override async Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context, CommandInfo command, IServiceProvider services)
     {
         ulong userId = context.User.Id;
-        if (userId == BotSettings.xId)
-            return PreconditionResult.FromSuccess();
+        //if (userId == BotSettings.xId)
+        //    return PreconditionResult.FromSuccess();
 
         var _db = services.GetRequiredService<Db>();
         //using var _db = new Db();
@@ -25,7 +25,7 @@ sealed class ActivityPermission : PreconditionAttribute
             bool isActive = user.Level >= 5;
             if (user.messageCounterForDaily >= 30 || (user.daily_Time - DateTime.Now).TotalHours <= 8)
             {
-                if (command.Name == "reputation")
+                if (command.Name == "reputation" || command.Name == "rep")
                 {
                     isActive = user.streak >= 5;
                 }

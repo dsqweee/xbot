@@ -1,0 +1,6 @@
+c:\Users\xxx\source\repos\xbot\obj\Release\net8.0\alpine-x64\XBOT.csproj.AssemblyReference.cache
+c:\Users\xxx\source\repos\xbot\obj\Release\net8.0\alpine-x64\XBOT.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\xxx\source\repos\xbot\obj\Release\net8.0\alpine-x64\XBOT.AssemblyInfoInputs.cache
+c:\Users\xxx\source\repos\xbot\obj\Release\net8.0\alpine-x64\XBOT.AssemblyInfo.cs
+c:\Users\xxx\source\repos\xbot\obj\Release\net8.0\alpine-x64\XBOT.csproj.CoreCompileInputs.cache
+c:\Users\xxx\source\repos\xbot\obj\Release\net8.0\alpine-x64\XBOT.sourcelink.json

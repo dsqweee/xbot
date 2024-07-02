@@ -9,7 +9,7 @@ using Fergun.Interactive;
 using Fergun.Interactive.Pagination;
 using System.Data;
 using static XBOT.DataBase.Guild_Warn;
-using Pcg;
+using RandN;
 
 namespace XBOT.Modules.Command
 {
@@ -84,11 +84,12 @@ namespace XBOT.Modules.Command
             await ReplyAsync(embed: emb.Build());
         }
 
-        //[Aliases, Commands, Usage, Descriptions]
+        //[Command("test")]
         //public async Task test()
         //{
-        //    var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor);
-        //    await Context.Channel.SendMessageAsync("", false, emb.Build());
+        //    _db.User.FirstOrDefault(x => x.Id == Context.User.Id).money++;
+        //    await _db.SaveChangesAsync();
+        //    await ReplyAsync("+1");
         //}
 
 
@@ -99,25 +100,44 @@ namespace XBOT.Modules.Command
             var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor)
                                         .WithAuthor($"Чпокан чпокан чпокан", Context.User.GetAvatarUrl());
 
-            var thisuserDb = await _db.GetUser(Context.User.Id);
+
 
             var prefix = _db.Settings.FirstOrDefault().Prefix;
+            var yearNow = DateTime.Now.Year;
 
-            if (thisuserDb.BirthDate.Year != 1 || DateTime.Now.Year - thisuserDb.BirthDate.Year <= 18)
+            var thisUserDb = await _db.GetUser(Context.User.Id);
+            var thisUserYearNow = thisUserDb.BirthDate.Year;
+
+            if (yearNow - thisUserYearNow < 18)
             {
-                emb.WithDescription($"Какой секс, в школу пора...\nУ вас не указана дата рождения: {prefix}bds [пример - 01.01.2001]").WithFooter("Паспорт покажи...");
+                emb.WithDescription($"Какой секс, в школу пора...").WithFooter("Ты еще маленький...");
+            }
+            else if (thisUserYearNow == 1)
+            {
+                emb.WithDescription($"Какой секс, Паспорт покажи...\nУ вас не указана дата рождения: {prefix}bds [пример - 01.01.2001]");
+            }
+            
+            var mentionUserDb = await _db.GetUser(user.Id);
+            var mentionYearNow = mentionUserDb.BirthDate.Year;
+
+            if (yearNow - mentionYearNow < 18)
+            {
+                emb.WithDescription($"Какой секс, ему(ей) школу пора...").WithFooter("Он(она) еще маленький...");
+            }
+            else if (mentionYearNow == 1)
+            {
+                emb.WithDescription($"Ему(ей) нет 18... Fbi open up\nУ {user.Mention} не указана дата рождения: {prefix}bds [пример - 01.01.2001]");
+            }
+
+            if (user.Id == Context.User.Id)
+                emb.WithDescription("Бро... Ну типо... купи себе игрушку, развлекись там без нас... ок?");
+
+
+            if(!string.IsNullOrWhiteSpace(emb.Description))
+            {
                 await ReplyAsync(embed: emb.Build());
                 return;
             }
-            var mentionuserDb = await _db.GetUser(user.Id);
-
-            if (mentionuserDb.BirthDate.Year != 1 || DateTime.Now.Year - mentionuserDb.BirthDate.Year <= 18)
-            {
-                emb.WithDescription($"Ей нет 18... Fbi open up\nУ пользователя не указана дата рождения: {prefix}bds [пример - 01.01.2001]").WithFooter("Спроси паспорт...");
-                await ReplyAsync(embed: emb.Build());
-                return;
-            }
-
 
             var TimeoutMessage = new TimeSpan(0, 1, 0);
             var options = new ButtonOption<string>[]
@@ -151,9 +171,9 @@ namespace XBOT.Modules.Command
             {
                 if (result.Value.Option == "Принять")
                 {
-                    thisuserDb.CountSex += 1;
-                    mentionuserDb.CountSex += 1;
-                    _db.User.UpdateRange(new[] { thisuserDb, mentionuserDb });
+                    thisUserDb.CountSex += 1;
+                    mentionUserDb.CountSex += 1;
+                    _db.User.UpdateRange(new[] { thisUserDb, mentionUserDb });
                     await _db.SaveChangesAsync();
                     emb.WithDescription($"{user.Mention} 💕 {Context.User.Mention} захубабубились!");
                 }
@@ -770,6 +790,7 @@ namespace XBOT.Modules.Command
                     ContextUser.MarriageTime = DateTime.Now;
                     _db.User.UpdateRange(new[] { ContextUser, marryuser });
                     await _db.SaveChangesAsync();
+                    emb.WithAuthor($"💞 Женидьба - Успех");
                     emb.WithDescription($"Я, данной мне властью, обьявляю парой {user.Mention} и {Context.User.Mention}!");
                 }
                 else
@@ -1199,10 +1220,13 @@ namespace XBOT.Modules.Command
                 return;
             }
 
+            
+            StandardRng rng = StandardRng.Create();
+            
 
-            var RandomNumber = new PcgRandom().Next(0, 100);
+            var RandomNumber = rng.NextUInt32();//new PcgRandom().Next(0, 100);
             string WinnerText = Fishka.ToString();
-            if (RandomNumber > 50)
+            if (RandomNumber >= uint.MaxValue/2)
             {
                 emb.Author.Name += "✔️ Выигрыш";
                 account.money += money;
@@ -1215,7 +1239,7 @@ namespace XBOT.Modules.Command
                 account.money -= money;
                 emb.Author.Name += "❌ Проигрыш";
             }
-            emb.WithDescription($"Выпало: {WinnerText}\nZeroCoin: {account.money}");
+            emb.WithDescription($"Выпало: {WinnerText}\nCoins: {account.money}");
             _db.User.Update(account);
             await _db.SaveChangesAsync();
 

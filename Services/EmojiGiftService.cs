@@ -1,5 +1,4 @@
 ﻿using GEmojiSharp;
-using Pcg;
 
 namespace XBOT.Services;
 
@@ -53,12 +52,12 @@ public class EmojiGiftService
     public async Task<EmojiGift_emojiadded> UserSetEmoji(ulong userId)
     {
         //using var _db = new Db();
-        var randomDropemoji = new PcgRandom().NextDouble();
+        var randomDropemoji = new Random().NextDouble();
 
         if (randomDropemoji > 0.3) // Chance drop emoji 
             return null;
 
-        var randomDouble = new PcgRandom().NextDouble(); // Chance drop rare emoji
+        var randomDouble = new Random().NextDouble(); // Chance drop rare emoji
         var AllEmoji = _db.EmojiGift_emojiadded.Where(x=>!x.IsDisable).ToList();
 
         var RndEmoji = AllEmoji
