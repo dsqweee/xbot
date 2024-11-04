@@ -20,7 +20,7 @@ namespace XBOT.Modules.Command
 
 
         [Aliases, Commands, Usage, Descriptions]
-        public async Task warn(SocketGuildUser User, string Reason)
+        public async Task warn(SocketGuildUser User, [Remainder] string Reason)
         {
             //using var _db = new Db();
             var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor).WithAuthor("Warn");

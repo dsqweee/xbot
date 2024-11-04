@@ -89,23 +89,25 @@ public class UserMessagesSolution
             return false; // Для модерации проверка ниже не производится
         }
 
-        bool isDelete = false;
-
         if (Channel.delUrl)
         {
-            isDelete = MessageDetectUrl(Context, Channel, message);
+            bool isDelete = MessageDetectUrl(Context, Channel, message);
+            if (isDelete)
+            {
+                await Context.Message.DeleteAsync();
+                return true;
+            }
         }
 
         if (Channel.inviteLink)
         {
-            isDelete = await MessageDetectInvite(Context);
+            bool isDelete = await MessageDetectInvite(Context);
+            if (isDelete)
+            {
+                await Context.Message.DeleteAsync();
+                return true;
+            }
         } 
-
-        if(isDelete)
-        {
-            await Context.Message.DeleteAsync();
-            return true;
-        }
 
         return false;
     }

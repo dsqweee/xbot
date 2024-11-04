@@ -58,16 +58,13 @@ using Microsoft.Extensions.Logging;
 //await host.RunAsync();
 
 
-
-
 using IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration(config =>
     {
         config.AddYamlFile(BotSettings.tokenPath, false);
     })
-    .ConfigureServices(async services =>
+    .ConfigureServices(services =>
     {
-
         services.AddSingleton<Culture>(); // Поддержка русской культуры
         var client = new DiscordSocketClient(XBOT.Services.Configuration.DiscordConfig.discordSocketConfig);
         services.AddSingleton(client);
@@ -96,8 +93,6 @@ using IHost host = Host.CreateDefaultBuilder(args)
         //services.AddSingleton<ListBuilder>();
         //services.AddSingleton(new InteractiveConfig { ReturnAfterSendingPaginator = true });
         services.AddSingleton<InteractiveService>();
-
-
 
         services.AddHostedService<CommandHandlingService>();
         services.AddHostedService<DiscordStartupService>();

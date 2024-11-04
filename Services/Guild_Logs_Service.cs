@@ -240,7 +240,7 @@ public class Guild_Logs_Service
         Console.WriteLine($"Message - {Message}");
         Console.WriteLine($"Message.Author - {Message.Author}");
         Console.WriteLine($"Message.Content - {Message.Content}");
-        Console.WriteLine($"MessageNow.Content - {MessageNow.Content}");
+        Console.WriteLine($"MessageNow.Content - {MessageNow?.Content}");
         if (Message == null || Message.Author == null || Message.Author.IsBot || Message?.Content.Length > 1023 || MessageNow?.Content.Length > 1023)
             return;
 

@@ -1,17 +1,17 @@
 {
   "version": 2,
-  "dgSpecHash": "9JF+KOyYsKmNluR5gzPHsfP03ThZeDk2B0QOuJGbrFR9v00MEGjB+Y8jp6I2E5Y4IgbLxxxBEM837AdZAxdrBA==",
+  "dgSpecHash": "auFRT464Vsg=",
   "success": true,
   "projectFilePath": "C:\\Users\\xxx\\source\\repos\\xbot\\XBOT.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\xxx\\.nuget\\packages\\castle.core\\5.1.0\\castle.core.5.1.0.nupkg.sha512",
-    "C:\\Users\\xxx\\.nuget\\packages\\discord.net.commands\\3.15.0\\discord.net.commands.3.15.0.nupkg.sha512",
-    "C:\\Users\\xxx\\.nuget\\packages\\discord.net.core\\3.15.0\\discord.net.core.3.15.0.nupkg.sha512",
-    "C:\\Users\\xxx\\.nuget\\packages\\discord.net.interactions\\3.15.0\\discord.net.interactions.3.15.0.nupkg.sha512",
-    "C:\\Users\\xxx\\.nuget\\packages\\discord.net.rest\\3.15.0\\discord.net.rest.3.15.0.nupkg.sha512",
-    "C:\\Users\\xxx\\.nuget\\packages\\discord.net.websocket\\3.15.0\\discord.net.websocket.3.15.0.nupkg.sha512",
-    "C:\\Users\\xxx\\.nuget\\packages\\fergun.interactive\\1.7.6\\fergun.interactive.1.7.6.nupkg.sha512",
-    "C:\\Users\\xxx\\.nuget\\packages\\gemojisharp\\3.1.0\\gemojisharp.3.1.0.nupkg.sha512",
+    "C:\\Users\\xxx\\.nuget\\packages\\discord.net.commands\\3.15.3\\discord.net.commands.3.15.3.nupkg.sha512",
+    "C:\\Users\\xxx\\.nuget\\packages\\discord.net.core\\3.15.3\\discord.net.core.3.15.3.nupkg.sha512",
+    "C:\\Users\\xxx\\.nuget\\packages\\discord.net.interactions\\3.15.3\\discord.net.interactions.3.15.3.nupkg.sha512",
+    "C:\\Users\\xxx\\.nuget\\packages\\discord.net.rest\\3.15.3\\discord.net.rest.3.15.3.nupkg.sha512",
+    "C:\\Users\\xxx\\.nuget\\packages\\discord.net.websocket\\3.15.3\\discord.net.websocket.3.15.3.nupkg.sha512",
+    "C:\\Users\\xxx\\.nuget\\packages\\fergun.interactive\\1.7.7\\fergun.interactive.1.7.7.nupkg.sha512",
+    "C:\\Users\\xxx\\.nuget\\packages\\gemojisharp\\4.0.0\\gemojisharp.4.0.0.nupkg.sha512",
     "C:\\Users\\xxx\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\xxx\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\6.0.0\\microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",
     "C:\\Users\\xxx\\.nuget\\packages\\microsoft.data.sqlite.core\\7.0.19\\microsoft.data.sqlite.core.7.0.19.nupkg.sha512",
@@ -76,7 +76,13 @@
     "C:\\Users\\xxx\\.nuget\\packages\\system.text.encodings.web\\8.0.0\\system.text.encodings.web.8.0.0.nupkg.sha512",
     "C:\\Users\\xxx\\.nuget\\packages\\system.text.json\\8.0.0\\system.text.json.8.0.0.nupkg.sha512",
     "C:\\Users\\xxx\\.nuget\\packages\\system.valuetuple\\4.5.0\\system.valuetuple.4.5.0.nupkg.sha512",
-    "C:\\Users\\xxx\\.nuget\\packages\\yamldotnet\\13.0.1\\yamldotnet.13.0.1.nupkg.sha512"
+    "C:\\Users\\xxx\\.nuget\\packages\\yamldotnet\\13.0.1\\yamldotnet.13.0.1.nupkg.sha512",
+    "C:\\Users\\xxx\\.nuget\\packages\\microsoft.netcore.app.ref\\7.0.20\\microsoft.netcore.app.ref.7.0.20.nupkg.sha512",
+    "C:\\Users\\xxx\\.nuget\\packages\\microsoft.netcore.app.runtime.linux-musl-x64\\7.0.20\\microsoft.netcore.app.runtime.linux-musl-x64.7.0.20.nupkg.sha512",
+    "C:\\Users\\xxx\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\7.0.20\\microsoft.windowsdesktop.app.ref.7.0.20.nupkg.sha512",
+    "C:\\Users\\xxx\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\7.0.20\\microsoft.aspnetcore.app.ref.7.0.20.nupkg.sha512",
+    "C:\\Users\\xxx\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.linux-musl-x64\\7.0.20\\microsoft.aspnetcore.app.runtime.linux-musl-x64.7.0.20.nupkg.sha512",
+    "C:\\Users\\xxx\\.nuget\\packages\\microsoft.netcore.app.host.linux-musl-x64\\7.0.20\\microsoft.netcore.app.host.linux-musl-x64.7.0.20.nupkg.sha512"
   ],
   "logs": []
 }

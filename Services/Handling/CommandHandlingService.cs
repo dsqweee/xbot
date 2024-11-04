@@ -153,8 +153,6 @@ public class CommandHandlingService : IHostedService
 
     private async Task BulkDeleteMessages(IReadOnlyCollection<Cacheable<IMessage, ulong>> messages, Cacheable<IMessageChannel, ulong> channel)
     {
-        //using var _db = new Db();
-
         if (await channel.GetOrDownloadAsync() is not SocketTextChannel textChannel)
             return;
 
@@ -171,7 +169,7 @@ public class CommandHandlingService : IHostedService
             .WithAuthor("Массовое удаление сообщений")
             .WithTimestamp(DateTime.UtcNow);
 
-        IUser? currentUser = null;
+        IUser currentUser = null;
 
         var reversedMessages = messages.Reverse().ToList();
 
@@ -219,44 +217,44 @@ public class CommandHandlingService : IHostedService
         }
     }
 
-    private async Task ReactAdd(Cacheable<IUserMessage, ulong> mess, Cacheable<IMessageChannel, ulong> chnl, SocketReaction emj)
-        => await GetOrRemoveRole(mess, emj, false);
-    private async Task ReactRem(Cacheable<IUserMessage, ulong> mess, Cacheable<IMessageChannel, ulong> chnl, SocketReaction emj)
-        => await GetOrRemoveRole(mess, emj, true);
-    private static async Task GetOrRemoveRole(Cacheable<IUserMessage, ulong> mess, SocketReaction emj, bool getOrRemove)
-    {
-        if (emj.User.Value.IsBot)
-            return;
+    //private async Task ReactAdd(Cacheable<IUserMessage, ulong> mess, Cacheable<IMessageChannel, ulong> chnl, SocketReaction emj)
+    //    => await GetOrRemoveRole(mess, emj, false);
+    //private async Task ReactRem(Cacheable<IUserMessage, ulong> mess, Cacheable<IMessageChannel, ulong> chnl, SocketReaction emj)
+    //    => await GetOrRemoveRole(mess, emj, true);
+    //private static Task GetOrRemoveRole(Cacheable<IUserMessage, ulong> mess, SocketReaction emj, bool getOrRemove)
+    //{
+    //    if (emj.User.Value.IsBot)
+    //        return;
 
-        //var message = await mess.GetOrDownloadAsync();
-        //if (message != null)
-        //{
-        //    string EmoteName = emj.Emote.ToString();
-        //    var mes = db.EmoteClick.FirstOrDefault(x => x.MessageId == message.Id && EmoteName == x.Emote);
-        //    if (mes != null)
-        //    {
-        //        var usr = emj.User.Value as SocketGuildUser;
-        //        var role = usr.Guild.GetRole(mes.RoleId);
-        //        if (role != null)
-        //        {
-        //            var rolepos = usr.Guild.CurrentUser.Roles.FirstOrDefault(x => x.Position > role.Position);
-        //            if (rolepos != null)
-        //            {
-        //                if (getOrRemove && !mes.Get || !getOrRemove && mes.Get)
-        //                {
-        //                    if (usr.Roles.FirstOrDefault(x => x.Id == role.Id) != null)
-        //                        await usr.RemoveRoleAsync(role.Id);
-        //                }
-        //                else if (!getOrRemove && !mes.Get)
-        //                {
-        //                    if (usr.Roles.FirstOrDefault(x => x.Id == role.Id) == null)
-        //                        await usr.RemoveRoleAsync(role.Id);
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
-    } // Проверка эмодзи в событии ReactRem и ReactAdd
+    //    //var message = await mess.GetOrDownloadAsync();
+    //    //if (message != null)
+    //    //{
+    //    //    string EmoteName = emj.Emote.ToString();
+    //    //    var mes = db.EmoteClick.FirstOrDefault(x => x.MessageId == message.Id && EmoteName == x.Emote);
+    //    //    if (mes != null)
+    //    //    {
+    //    //        var usr = emj.User.Value as SocketGuildUser;
+    //    //        var role = usr.Guild.GetRole(mes.RoleId);
+    //    //        if (role != null)
+    //    //        {
+    //    //            var rolepos = usr.Guild.CurrentUser.Roles.FirstOrDefault(x => x.Position > role.Position);
+    //    //            if (rolepos != null)
+    //    //            {
+    //    //                if (getOrRemove && !mes.Get || !getOrRemove && mes.Get)
+    //    //                {
+    //    //                    if (usr.Roles.FirstOrDefault(x => x.Id == role.Id) != null)
+    //    //                        await usr.RemoveRoleAsync(role.Id);
+    //    //                }
+    //    //                else if (!getOrRemove && !mes.Get)
+    //    //                {
+    //    //                    if (usr.Roles.FirstOrDefault(x => x.Id == role.Id) == null)
+    //    //                        await usr.RemoveRoleAsync(role.Id);
+    //    //                }
+    //    //            }
+    //    //        }
+    //    //    }
+    //    //}
+    //} // Проверка эмодзи в событии ReactRem и ReactAdd
 
 
 
@@ -325,8 +323,8 @@ public class CommandHandlingService : IHostedService
         if (deleteMessage)
             return;
 
-        //if (TextChannel.giveXp)
-        //    await _messagesolution.SetPointAsync(userMessage);
+        if (TextChannel.giveXp)
+            await _messagesolution.SetPointAsync(userMessage);
 
 
 

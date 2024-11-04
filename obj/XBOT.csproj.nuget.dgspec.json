@@ -47,23 +47,23 @@
           "dependencies": {
             "Discord.Net.Commands": {
               "target": "Package",
-              "version": "[3.15.0, )"
+              "version": "[3.15.3, )"
             },
             "Discord.Net.Interactions": {
               "target": "Package",
-              "version": "[3.15.0, )"
+              "version": "[3.15.3, )"
             },
             "Discord.Net.WebSocket": {
               "target": "Package",
-              "version": "[3.15.0, )"
+              "version": "[3.15.3, )"
             },
             "Fergun.Interactive": {
               "target": "Package",
-              "version": "[1.7.6, )"
+              "version": "[1.7.7, )"
             },
             "GEmojiSharp": {
               "target": "Package",
-              "version": "[3.1.0, )"
+              "version": "[4.0.0, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
@@ -111,12 +111,43 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[7.0.20, 7.0.20]"
+            },
+            {
+              "name": "Microsoft.AspNetCore.App.Runtime.linux-musl-x64",
+              "version": "[7.0.20, 7.0.20]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.linux-musl-x64",
+              "version": "[7.0.20, 7.0.20]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[7.0.20, 7.0.20]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Runtime.linux-musl-x64",
+              "version": "[7.0.20, 7.0.20]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[7.0.20, 7.0.20]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303\\RuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "alpine-x64": {
+          "#import": []
         }
       }
     }

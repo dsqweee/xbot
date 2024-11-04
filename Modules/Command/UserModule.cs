@@ -191,9 +191,8 @@ namespace XBOT.Modules.Command
             //using var _db = new Db();
             var emb = new EmbedBuilder().WithColor(BotSettings.DiscordColor)
                                         .WithAuthor($"День рождения", Context.User.GetAvatarUrl());
-            DateOnly dateConvert;
 
-            if (!DateOnly.TryParseExact(date, "dd.MM.yyyy", out dateConvert))
+            if (!DateOnly.TryParseExact(date, "dd.MM.yyyy", out DateOnly dateConvert))
             {
                 emb.WithDescription($"Введит дату в формате: {DateTime.Now.ToString("dd.MM.yyyy")}");
                 await ReplyAsync(embed: emb.Build());
@@ -282,8 +281,7 @@ namespace XBOT.Modules.Command
                 }
             }
 
-
-            string TimeToStringConverter(TimeSpan time)
+            static string TimeToStringConverter(TimeSpan time)
             {
                 if (time.Days > 0)
                     return $"{time.Days} дней ";
@@ -374,7 +372,7 @@ namespace XBOT.Modules.Command
             var TimePublic = ConvertTime(UserDataBase.voiceActive_public);
             var TimePrivate = ConvertTime(UserDataBase.voiceActive_private);
 
-            string ConvertTime(TimeSpan Time)
+            static string ConvertTime(TimeSpan Time)
                 => $"{(int)Time.TotalHours:00}:{Time.Minutes:00}:{Time.Seconds:00}";
 
 

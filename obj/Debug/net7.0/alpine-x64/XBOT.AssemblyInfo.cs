@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("XBOT")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+01b910a1cfc65265a0085de410611448107f712c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+13caedb570f34c31ce3fa63253fc05a83423ef0d")]
 [assembly: System.Reflection.AssemblyProductAttribute("XBOT")]
 [assembly: System.Reflection.AssemblyTitleAttribute("XBOT")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

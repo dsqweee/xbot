@@ -16,7 +16,6 @@ public class GiveAway_Service
         _client = client;
     }
 
-
     public string GiveawayTextFormat(TimeSpan TimeToGo, string Give)
     {
         var text = $"Розыгрыш ***{Give} ***\nНажмите на эмодзи 🎟 чтобы учавствовать!";
@@ -83,11 +82,11 @@ public class GiveAway_Service
             var users = await message.GetReactionUsersAsync(new Emoji("🎟"), int.MaxValue).FlattenAsync();
             var Allusers = users.Where(x => !x.IsBot).ToList();
 
-            if (Allusers.Any())
+            if (Allusers.Count != 0)
             {
                 if (ThisTask.WinnerCount > 1)
                 {
-                    List<IUser> WIN = new();
+                    List<IUser> WIN = new List<IUser>();
                     for (int i = 0; i < ThisTask.WinnerCount; i++)
                     {
                         var User = Allusers.ElementAt(new Random().Next(Allusers.Count - 1));
