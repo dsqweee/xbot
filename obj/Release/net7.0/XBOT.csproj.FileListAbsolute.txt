@@ -1,5 +1,0 @@
-C:\Users\xXx\source\repos\XBOT\XBOT\obj\Release\net7.0\XBOT.csproj.AssemblyReference.cache
-C:\Users\xXx\source\repos\XBOT\XBOT\obj\Release\net7.0\XBOT.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\xXx\source\repos\XBOT\XBOT\obj\Release\net7.0\XBOT.AssemblyInfoInputs.cache
-C:\Users\xXx\source\repos\XBOT\XBOT\obj\Release\net7.0\XBOT.AssemblyInfo.cs
-C:\Users\xXx\source\repos\XBOT\XBOT\obj\Release\net7.0\XBOT.csproj.CoreCompileInputs.cache
